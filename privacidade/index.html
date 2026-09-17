@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Política de privacidade do Plexus: o que acessa, para quê, com quem compartilha, como protege e por quanto tempo guarda.">
+<title>Privacidade no Plexus</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap">
+<style>:root {
+  --ground: #f3f5f4;
+  --paper: #ffffff;
+  --ink: #16211d;
+  --ink-soft: #55655f;
+  --rule: #d5ddd9;
+  --accent: #0f6e63;
+  --accent-ink: #ffffff;
+  --note: #e7efec;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0f1614;
+    --paper: #16201d;
+    --ink: #e8efec;
+    --ink-soft: #9db0a9;
+    --rule: #26332e;
+    --accent: #52bfae;
+    --accent-ink: #0b1512;
+    --note: #1b2925;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0f1614;
+  --paper: #16201d;
+  --ink: #e8efec;
+  --ink-soft: #9db0a9;
+  --rule: #26332e;
+  --accent: #52bfae;
+  --accent-ink: #0b1512;
+  --note: #1b2925;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.wrap { max-width: 44rem; margin: 0 auto; padding-inline: 20px; padding-block: 0 4rem; }
+.top {
+  display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: baseline;
+  padding-block: 1.25rem 1rem; border-bottom: 1px solid var(--rule);
+}
+.mark { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+.top nav { display: flex; gap: 1.25rem; font-size: 0.95rem; }
+.top nav a[aria-current="page"] { color: var(--ink); text-decoration: none; font-weight: 600; }
+h1 {
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 5vw, 2.75rem);
+  line-height: 1.1; letter-spacing: -0.02em; margin: 2.5rem 0 1rem; text-wrap: balance;
+}
+.lead { font-size: 1.2rem; color: var(--ink-soft); margin: 0 0 2.5rem; max-width: 36rem; }
+h2 {
+  font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; letter-spacing: -0.01em;
+  margin: 2.75rem 0 0.75rem; text-wrap: balance;
+}
+h3 { font-family: var(--font-body); font-weight: 600; font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+p, li { max-width: 40rem; }
+p { margin: 0 0 1rem; }
+ul { padding-left: 1.25rem; margin: 0 0 1rem; }
+li { margin-bottom: 0.4rem; }
+.eyebrow {
+  display: block; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent); font-weight: 600; margin-bottom: 0.25rem;
+}
+.summary {
+  background: var(--paper); border: 1px solid var(--rule); border-left: 4px solid var(--accent);
+  padding: 1rem 1.25rem; margin: 0 0 2rem; border-radius: 4px;
+}
+.summary p { margin: 0; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0 1.5rem; }
+.pair > div { background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 1rem 1.1rem; }
+.pair h3 { margin: 0 0 0.5rem; }
+.pair ul { margin: 0; }
+@media (max-width: 560px) { .pair { grid-template-columns: 1fr; } }
+.note { background: var(--note); padding: 0.9rem 1.1rem; border-radius: 4px; margin: 1rem 0 1.5rem; }
+.note p { margin: 0; }
+code { font-family: "IBM Plex Mono", ui-monospace, Consolas, monospace; font-size: 0.92em; background: var(--note); padding: 0.05em 0.35em; border-radius: 3px; }
+dl { margin: 0 0 1rem; }
+dt { font-weight: 600; margin-top: 0.75rem; }
+dd { margin: 0.2rem 0 0; color: var(--ink); }
+footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--ink-soft); }
+footer p { margin: 0 0 0.35rem; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="/">Plexus</a>
+    <nav aria-label="Páginas">
+      <a href="/">Início</a>
+      <a href="/privacidade/" aria-current="page">Privacidade</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Política de privacidade</h1>
+    <p class="lead">O que o Plexus acessa na sua conta do Google, para quê, com quem compartilha, como protege e por quanto tempo guarda. Vale para todas as pessoas que conectam uma conta ao Plexus. Atualizada em 17 de setembro de 2026.</p>
+
+    <div class="summary">
+      <p><strong>Em uma frase:</strong> o Plexus lê só as conversas que a sua tarefa aponta, responde só dentro delas e só a quem você autorizou, não guarda a sua caixa depois que a tarefa termina, não vende nem usa os seus dados para publicidade, e não usa dados do Google para treinar modelos de inteligência artificial.</p>
+    </div>
+
+    <h2>1. Quem é responsável e como falar conosco</h2>
+    <p>O Plexus é operado no Brasil pela pessoa responsável indicada no contato abaixo, que responde por esta política como controlador dos dados, nos termos da Lei Geral de Proteção de Dados (Lei 13.709/2018). Para qualquer pedido ou dúvida, escreva para <a href="mailto:brainplexus@gmail.com">brainplexus@gmail.com</a>.</p>
+
+    <h2>2. Quais dados do Google o Plexus acessa</h2>
+    <p>Ao conectar o Gmail, você escolhe um de dois usos. As permissões pedidas ao Google são exatamente as que o uso exige:</p>
+    <dl>
+      <dt>Ler (permissão «ver suas mensagens de e-mail e configurações»)</dt>
+      <dd>As conversas que a sua tarefa aponta por um filtro (uma etiqueta, um remetente, um período), com o texto das mensagens, os cabeçalhos necessários para responder (remetente, assunto, identificadores da conversa) e, dos anexos, apenas o nome e o tamanho. O conteúdo dos anexos não é baixado.</dd>
+      <dt>Ler e responder (a permissão acima mais «enviar e-mails em seu nome»)</dt>
+      <dd>Tudo do uso «ler», mais o envio de respostas dentro da mesma conversa, com o seu endereço como remetente.</dd>
+      <dt>O endereço da caixa e o total de mensagens</dt>
+      <dd>Lidos uma vez por dia, no máximo, para conferir que a conexão continua válida.</dd>
+    </dl>
+    <p>O Plexus não acessa contatos, agenda, arquivos, configurações da conta nem qualquer outro serviço do Google. Não cria rascunhos, não apaga, não move e não marca mensagens.</p>
+
+    <h2>3. Para que usamos</h2>
+    <p>Só para executar a tarefa que você criou: ler as conversas apontadas e, se você escolheu «ler e responder», escrever respostas dentro delas. As respostas vão apenas a remetentes que você colocou na sua lista; para qualquer outro remetente, o Plexus guarda a resposta e pede a sua autorização antes de enviar. Toda resposta passa por um verificador automático antes de sair, e o envio fica registrado com data, conversa e destinatário.</p>
+    <p>Não usamos os seus dados do Google para publicidade, para traçar perfis, para avaliar crédito, para nenhum fim além da tarefa, e nunca os vendemos.</p>
+
+    <h2>4. Com quem compartilhamos</h2>
+    <p>Com ninguém, exceto o que a execução da tarefa exige:</p>
+    <ul>
+      <li><strong>O provedor do modelo de linguagem.</strong> As respostas são escritas por um assistente de inteligência artificial. Para isso, o texto das conversas apontadas pela tarefa é enviado ao provedor do modelo (hoje, a Anthropic), sob contrato que proíbe usar esses dados para treinar ou melhorar modelos. Nenhum outro dado da sua conta vai ao provedor.</li>
+      <li><strong>O Google.</strong> As leituras e os envios são feitos pela API do Gmail, dentro da sua própria conta.</li>
+    </ul>
+    <p>Nenhuma pessoa lê o conteúdo da sua caixa: o operador do Plexus vê registros de execução (que tarefa rodou, quando, quantas mensagens leu, o que enviou), não o texto das mensagens. Só cumprimos ordem legal se houver obrigação, e avisamos você quando a lei permitir.</p>
+
+    <h2>5. Como protegemos</h2>
+    <ul>
+      <li>A autorização de longa duração que você concede ao Google fica num cofre do operador, cifrado em repouso, separado das casas dos usuários. O assistente que executa as tarefas nunca a recebe.</li>
+      <li>Para cada tarefa, o cofre entrega um acesso temporário de uma hora, que expira com a tarefa e não é guardado.</li>
+      <li>A sessão do assistente roda sem acesso à rede: o Plexus lê a caixa antes e envia as respostas depois, e as duas coisas ficam registradas.</li>
+      <li>A sua casa no Plexus (as tarefas, os resultados, os registros) é cifrada em repouso e mora numa máquina do operador em São Paulo, Brasil, com acesso só por chave.</li>
+      <li>Todo pedido ao serviço fica no registro com quem pediu e o quê.</li>
+    </ul>
+
+    <h2>6. Por quanto tempo guardamos</h2>
+    <dl>
+      <dt>A cópia das conversas lidas</dt>
+      <dd>Vive só na área de trabalho da tarefa e é apagada quando a tarefa termina.</dd>
+      <dt>As respostas escritas e o recibo do envio</dt>
+      <dd>Ficam na sua casa, junto ao resultado da tarefa, para você conferir. Você pode pedir a exclusão a qualquer momento.</dd>
+      <dt>O registro da conexão</dt>
+      <dd>Guarda o endereço da conta, as permissões concedidas, a data da última conferência e do último uso, e um ponteiro para a credencial no cofre. Nunca o conteúdo da caixa.</dd>
+      <dt>A credencial</dt>
+      <dd>Fica no cofre até você desligar a conexão. Ao desligar, o Plexus revoga a autorização no Google e apaga a credencial.</dd>
+    </dl>
+
+    <h2>7. Como desligar, e os seus direitos</h2>
+    <p>Você pode desligar a conexão a qualquer momento no Plexus, o que revoga a autorização no Google e apaga a credencial, ou pelo lado do Google, na página de <a href="https://myaccount.google.com/permissions" rel="noopener">aplicativos com acesso à sua conta</a>. Nos dois casos o Plexus deixa de acessar a sua caixa imediatamente.</p>
+    <p>Pela Lei Geral de Proteção de Dados você pode pedir, pelo e-mail acima: confirmação de que tratamos os seus dados, acesso a eles, correção, exclusão, e informação sobre com quem foram compartilhados. Respondemos em até quinze dias.</p>
+
+    <h2>8. O compromisso com o Google</h2>
+    <p>O uso que o Plexus faz das informações recebidas das APIs do Google segue a <a href="https://developers.google.com/terms/api-services-user-data-policy" rel="noopener">Política de Dados do Usuário dos Serviços de API do Google</a>, inclusive os requisitos de Uso Limitado. Em particular: os dados obtidos das APIs do Google são usados apenas para oferecer a função que você vê no Plexus; não são transferidos a terceiros fora do descrito na seção 4; não são usados para publicidade; não são lidos por pessoas, salvo com o seu consentimento explícito, por segurança, para cumprir a lei ou de forma agregada; e <strong>não são usados para desenvolver, melhorar ou treinar modelos de inteligência artificial ou de aprendizado de máquina, generalizados ou não</strong>.</p>
+
+    <h2>9. Mudanças nesta política</h2>
+    <p>Quando esta política mudar, a versão nova é publicada nesta página com a data da atualização. Se a mudança alterar o que o Plexus acessa ou como usa os seus dados, avisamos você pelo e-mail da conta conectada antes de ela valer.</p>
+  </main>
+
+  <footer>
+    <p>Plexus · Brasil.</p>
+    <p><a href="/">Início</a> · política atualizada em 17 de setembro de 2026.</p>
+  </footer>
+</div>
+
+</body>
+</html>

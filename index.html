@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="O que o Plexus faz com a sua conta do Google, por que pede cada permissão, onde fica a credencial e como desligar.">
+<title>Plexus</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap">
+<style>:root {
+  --ground: #f3f5f4;
+  --paper: #ffffff;
+  --ink: #16211d;
+  --ink-soft: #55655f;
+  --rule: #d5ddd9;
+  --accent: #0f6e63;
+  --accent-ink: #ffffff;
+  --note: #e7efec;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0f1614;
+    --paper: #16201d;
+    --ink: #e8efec;
+    --ink-soft: #9db0a9;
+    --rule: #26332e;
+    --accent: #52bfae;
+    --accent-ink: #0b1512;
+    --note: #1b2925;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0f1614;
+  --paper: #16201d;
+  --ink: #e8efec;
+  --ink-soft: #9db0a9;
+  --rule: #26332e;
+  --accent: #52bfae;
+  --accent-ink: #0b1512;
+  --note: #1b2925;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.wrap { max-width: 44rem; margin: 0 auto; padding-inline: 20px; padding-block: 0 4rem; }
+.top {
+  display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: baseline;
+  padding-block: 1.25rem 1rem; border-bottom: 1px solid var(--rule);
+}
+.mark { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+.top nav { display: flex; gap: 1.25rem; font-size: 0.95rem; }
+.top nav a[aria-current="page"] { color: var(--ink); text-decoration: none; font-weight: 600; }
+h1 {
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 5vw, 2.75rem);
+  line-height: 1.1; letter-spacing: -0.02em; margin: 2.5rem 0 1rem; text-wrap: balance;
+}
+.lead { font-size: 1.2rem; color: var(--ink-soft); margin: 0 0 2.5rem; max-width: 36rem; }
+h2 {
+  font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; letter-spacing: -0.01em;
+  margin: 2.75rem 0 0.75rem; text-wrap: balance;
+}
+h3 { font-family: var(--font-body); font-weight: 600; font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+p, li { max-width: 40rem; }
+p { margin: 0 0 1rem; }
+ul { padding-left: 1.25rem; margin: 0 0 1rem; }
+li { margin-bottom: 0.4rem; }
+.eyebrow {
+  display: block; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent); font-weight: 600; margin-bottom: 0.25rem;
+}
+.summary {
+  background: var(--paper); border: 1px solid var(--rule); border-left: 4px solid var(--accent);
+  padding: 1rem 1.25rem; margin: 0 0 2rem; border-radius: 4px;
+}
+.summary p { margin: 0; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0 1.5rem; }
+.pair > div { background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 1rem 1.1rem; }
+.pair h3 { margin: 0 0 0.5rem; }
+.pair ul { margin: 0; }
+@media (max-width: 560px) { .pair { grid-template-columns: 1fr; } }
+.note { background: var(--note); padding: 0.9rem 1.1rem; border-radius: 4px; margin: 1rem 0 1.5rem; }
+.note p { margin: 0; }
+code { font-family: "IBM Plex Mono", ui-monospace, Consolas, monospace; font-size: 0.92em; background: var(--note); padding: 0.05em 0.35em; border-radius: 3px; }
+dl { margin: 0 0 1rem; }
+dt { font-weight: 600; margin-top: 0.75rem; }
+dd { margin: 0.2rem 0 0; color: var(--ink); }
+footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--ink-soft); }
+footer p { margin: 0 0 0.35rem; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="/">Plexus</a>
+    <nav aria-label="Páginas">
+      <a href="/" aria-current="page">Início</a>
+      <a href="/privacidade/">Privacidade</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Um assistente que trabalha com o que você já usa, e só faz o que você aprovou.</h1>
+    <p class="lead">O Plexus lê o que você conecta (e-mail, repositórios de código, arquivos), executa tarefas que você cria, e devolve o resultado para a sua conferência. Cada pessoa tem uma casa própria, cifrada, numa máquina do operador. Hoje ele está em piloto, com poucas pessoas convidadas.</p>
+
+    <span class="eyebrow">O que ele faz com a sua conta do Google</span>
+    <h2>Lê as conversas que você apontar e responde, em seu nome, só dentro delas</h2>
+    <p>Ao conectar o Gmail, você escolhe o que o Plexus pode fazer:</p>
+    <div class="pair">
+      <div>
+        <h3>Ler</h3>
+        <ul>
+          <li>Lê as conversas que a sua tarefa aponta: uma etiqueta, um remetente, os últimos dias.</li>
+          <li>Lê o texto das mensagens. Dos anexos, só o nome e o tamanho.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Ler e responder</h3>
+        <ul>
+          <li>Tudo do «ler», mais responder na mesma conversa, com o seu nome.</li>
+          <li>Só a remetentes da sua lista. Para qualquer outro, ele pede a sua autorização antes.</li>
+        </ul>
+      </div>
+    </div>
+    <p>Toda resposta passa por um verificador antes de sair, e você vê o que foi enviado. O Plexus nunca escreve para endereços novos, nunca anexa arquivos, nunca cria rascunhos, nunca apaga, move ou marca nada na sua caixa.</p>
+
+    <span class="eyebrow">Por que ele pede essas permissões</span>
+    <h2>Duas permissões, e nenhuma a mais</h2>
+    <p>Na tela do Google você verá exatamente duas: <strong>ver suas mensagens de e-mail e configurações</strong> (para ler as conversas) e <strong>enviar e-mails em seu nome</strong> (para responder dentro delas). O Plexus não pede permissão para gerenciar, apagar ou organizar a sua caixa, nem para acessar contatos, agenda ou arquivos. Quando uma função nova precisar de outra permissão, ela é pedida separadamente, e você decide de novo.</p>
+
+    <span class="eyebrow">Onde fica a sua credencial</span>
+    <h2>Fora do alcance do assistente</h2>
+    <p>A autorização que você dá ao Google fica guardada num cofre do operador, cifrado em repouso, ao lado das outras chaves do serviço. O assistente que executa as suas tarefas nunca a vê: para cada tarefa, o cofre entrega um acesso de uma hora, que morre com a tarefa. A sessão do assistente roda sem acesso à rede; o Plexus lê a caixa antes e envia as respostas depois, com tudo registrado.</p>
+
+    <span class="eyebrow">Para desligar</span>
+    <h2>Um clique, e nada da leitura fica guardado</h2>
+    <p>No Plexus, «desligar» revoga a autorização no Google e apaga a credencial do cofre. Você também pode desligar do lado do Google, na página de <a href="https://myaccount.google.com/permissions" rel="noopener">aplicativos com acesso à sua conta</a>. A cópia da caixa vive só enquanto a tarefa roda; o que fica são as respostas que o assistente escreveu e o recibo do envio, na sua casa.</p>
+
+    <div class="note">
+      <p><strong>Sobre a tela «o Google não verificou este app».</strong> O Plexus está publicado, mas ainda não passou pela verificação do Google, que exige uma auditoria de segurança anual paga. Enquanto o piloto for pequeno, você verá esse aviso ao conectar e precisará clicar em «avançado» e «ir para Plexus». O aviso fala da verificação, não do que o Plexus faz: o que ele faz está descrito nesta página e na <a href="/privacidade/">política de privacidade</a>.</p>
+    </div>
+
+    <span class="eyebrow">Contato</span>
+    <h2>Fale com quem opera</h2>
+    <p>Dúvidas sobre o Plexus, sobre os seus dados ou para pedir a exclusão de qualquer coisa: <a href="mailto:brainplexus@gmail.com">brainplexus@gmail.com</a>.</p>
+  </main>
+
+  <footer>
+    <p>Plexus · Brasil.</p>
+    <p><a href="/privacidade/">Política de privacidade</a> · atualizada em 17 de setembro de 2026.</p>
+  </footer>
+</div>
+
+</body>
+</html>
