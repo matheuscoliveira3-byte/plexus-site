@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://plexusbrain.com/sitemap.xml

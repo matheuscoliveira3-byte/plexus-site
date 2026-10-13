@@ -1,0 +1,170 @@
+/*
+ * A folha comum do site do Plexus (V1, 12/10/2026): a página inicial e a política usam esta folha.
+ * Uma cara só, a «cinema» da V0 (a Legora nas cores do Plexus). A escala é a da frente 4 da pesquisa:
+ * três tamanhos de letra, nada em negrito. Fora da conta ficam só a palavra «Plexus» (a letra do
+ * front, Bricolage 700 em 20) e os pedaços da tela do produto (os tokens do front).
+ *
+ * V2 (12-13/10/2026), a auditoria do verde: o verde da marca é #4a643c (a escolha dele de 02/10, «gostei
+ * mais escuro»), o mesmo do front. Ele vale igual nos botões (parado, sob o ponteiro e pressionado), na
+ * faixa, nos links, na faixa da confiança, no cartão do fim e no laço. Nenhum tom derivado de verde na página;
+ * a única exceção é a réplica da tela do produto, que segue os tokens do front.
+ *
+ * A publicação de 14/10/2026: a página inicial provisória de uma tela só, a política e os termos. Saem a faixa
+ * verde de cima, os links das seções, o botão da lista de espera e o campo do pedido; a barra fica só com a marca.
+ */
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('../fonts/plex-pt-400-600.woff2') format('woff2-variations'), url('../fonts/plex-pt-400-600.woff2') format('woff2');
+  font-weight: 400 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  /* só os glifos da palavra «Plexus», na instância 700 e no tamanho óptico 96 (1,2 KB) */
+  font-family: 'Plexus Marca';
+  src: url('../fonts/bricolage-700-96-plexus.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
+:root {
+  /* as cores: o verde da identidade como único destaque, um escuro só (o do topo) */
+  --paper: #fafaf9;
+  --stone: #ecebe6;
+  --surface: #ffffff;
+  --ink: #1b1b19;
+  --ink-soft: #5c5b56;
+  --ink-faint: #6f6e69;
+  --accent: #4a643c;
+  --dark: var(--accent);
+  --dark-ink: #ffffff;
+  --dark-soft: rgba(255, 255, 255, 0.86);
+  --line: rgba(27, 27, 25, 0.12);
+  --line-strong: rgba(27, 27, 25, 0.22);
+
+  --font-ui: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* os três tamanhos (frente 4, seção 5.1) */
+  --size-display: clamp(32px, calc(1.524vw + 26.06px), 48px);
+  --size-lead: 18px;
+  --size-text: 15px;
+  --leading-display: 1.1;
+  --leading-lead: 1.45;
+  --leading-text: 1.6;
+  --tracking-display: -0.02em;
+
+  /* as larguras e os espaços (frente 4, seções 5.2 a 5.4) */
+  --wrap: 1200px;
+  --gutter: 32px;
+  --measure-title: 760px;
+  --measure-lead: 30em;
+  --measure-text: 30em;
+  --section: 112px;
+  --space-head: 24px;
+  --space-block: 56px;
+  --space-row: 40px;
+  --nav-h: 64px;
+  --control: 36px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (max-width: 1020px) {
+  :root { --section: 96px; --gutter: 24px; }
+}
+@media (max-width: 640px) {
+  :root { --size-lead: 17px; --gutter: 24px; --section: 96px; --space-block: 48px; --nav-h: 56px; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--nav-h) + 16px); }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 var(--size-text)/var(--leading-text) var(--font-ui);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+p, h1, h2, h3, ul, ol, figure, blockquote { margin: 0; }
+ul, ol { padding: 0; }
+button { font: inherit; color: inherit; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
+.display {
+  font-size: var(--size-display); font-weight: 400; line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display); text-wrap: balance;
+}
+.lead { font-size: var(--size-lead); line-height: var(--leading-lead); text-wrap: pretty; }
+.soft { color: var(--ink-soft); }
+.faint { color: var(--ink-faint); }
+p { text-wrap: pretty; }
+.nw { white-space: nowrap; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+/* as marcas visíveis do que ainda falta (o texto de espera da política e dos termos) */
+mark.q {
+  background: #fff3c4; color: #5c4700; padding: 1px 4px; border-radius: 4px;
+  font-size: var(--size-text); font-weight: 400;
+}
+
+/* O foco em duas cores, que aparece no verde, no creme e no escuro (frente 3, seção 5) */
+:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; box-shadow: 0 0 0 4px #0d1016; }
+
+/* A palavra da marca, na letra do front: o .wordmark da barra lateral (Bricolage, opsz 96, 700, 20, -0,01em) */
+.wordmark {
+  font-family: 'Plexus Marca', 'Bricolage Grotesque', var(--font-ui);
+  font-weight: 700; font-size: 20px; letter-spacing: -0.01em; line-height: 1.25;
+}
+/* a do centro da barra, sutilmente maior (V2, o pedido dele): 22 em vez de 20, o laço acompanha */
+.nav .brand .wordmark { font-size: 22px; }
+.nav .brand svg { width: 26px; height: 27px; }
+
+/* O salto para o conteúdo, escondido até receber o foco do teclado */
+.pular { position: absolute; left: 16px; top: -64px; z-index: 40; padding: 8px 16px; border-radius: 999px; background: var(--ink); color: #fff; text-decoration: none; }
+.pular:focus { top: 8px; }
+
+/* A barra: só a marca, no centro. Na política e nos termos ela fica presa no alto, no creme; na página
+ * inicial ela fica sobre o fundo verde, transparente (o CSS da própria página) */
+.nav {
+  position: sticky; top: 0; z-index: 30; background: var(--paper); color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  transition: background-color 300ms var(--ease), border-color 300ms var(--ease), color 300ms var(--ease);
+}
+.nav .wrap { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: var(--nav-h); }
+.brand { grid-column: 2; display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; border-radius: 6px; }
+.brand svg { width: 24px; height: 25px; }
+
+/* O botão (só o «Voltar ao início» da página que não existe): pílula de 36, texto 15 em 450, no verde da
+ * marca em todo estado; pressionado, uma sombra extremamente sutil (o pedido dele de 12/10). */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: var(--control); padding: 0 16px; border-radius: 999px; border: 0;
+  font: 450 var(--size-text)/1 var(--font-ui); text-decoration: none; cursor: pointer; white-space: nowrap;
+  background: var(--accent); color: #fff;
+  transition: box-shadow 160ms var(--ease);
+}
+.btn:active { box-shadow: 0 1px 2px rgba(13, 16, 10, 0.10), 0 2px 6px -2px rgba(13, 16, 10, 0.12); }
+.btn .arrow { display: grid; place-items: center; width: 20px; height: 20px; margin-right: -8px; border-radius: 50%; background: #fff; color: var(--accent); transition: transform 200ms var(--ease); }
+.btn:hover .arrow { transform: translateX(2px); }
+.btn .arrow svg { width: 12px; height: 12px; }
+
+/* O rodapé: colunas curtas e o P gigante no verde (a Legora) */
+footer { padding: 64px 0 0; overflow: hidden; }
+footer .cols { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 32px; }
+footer h2 { font-size: var(--size-text); font-weight: 400; color: var(--ink-soft); margin-bottom: 12px; }
+footer ul { list-style: none; display: grid; gap: 8px; }
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+footer .brand { justify-content: flex-start; width: max-content; color: var(--ink); }
+footer .made { margin-top: 12px; color: var(--ink-soft); }
+footer .giant { margin: 72px auto -12%; width: min(36vw, 420px); color: var(--accent); }
+footer .giant svg { width: 100%; height: auto; }
+
+@media (max-width: 1020px) {
+  footer .cols { grid-template-columns: 1fr 1fr; }
+  footer .cols > :first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  footer .giant { width: 64vw; margin-top: 56px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0s !important; animation: none !important; }
+}

@@ -1,164 +1,128 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
+<!-- parte:cabeca -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="O que o Plexus faz com a sua conta do Google, por que pede cada permissão, onde fica a credencial e como desligar.">
-<title>Plexus</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap">
-<style>:root {
-  --ground: #f3f5f4;
-  --paper: #ffffff;
-  --ink: #16211d;
-  --ink-soft: #55655f;
-  --rule: #d5ddd9;
-  --accent: #0f6e63;
-  --accent-ink: #ffffff;
-  --note: #e7efec;
-  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#4a643c">
+<link rel="icon" href="/assets/img/plexus-mark.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/plexus-icon-180.png">
+<link rel="preload" href="/assets/fonts/plex-pt-400-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+<!-- /parte:cabeca -->
+<title>Plexus · Sua empresa deve focar no que gera valor</title>
+<meta name="description" content="Sua empresa deve focar no que gera valor. O Plexus tira da sua empresa o trabalho que não gera valor.">
+<link rel="canonical" href="https://plexusbrain.com/">
+<link rel="preload" href="/assets/img/fundo-960.webp" as="image" type="image/webp" fetchpriority="high">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Plexus">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://plexusbrain.com/">
+<meta property="og:title" content="Sua empresa deve focar no que gera valor">
+<meta property="og:description" content="O Plexus tira da sua empresa o trabalho que não gera valor.">
+<meta property="og:image" content="https://plexusbrain.com/assets/img/compartilhar.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Sua empresa deve focar no que gera valor. O Plexus tira da sua empresa o trabalho que não gera valor.">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{ "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "Organization", "@id": "https://plexusbrain.com/#org", "name": "Plexus",
+      "url": "https://plexusbrain.com/", "logo": "https://plexusbrain.com/assets/img/plexus-logo-512.png",
+      "email": "matheus@plexusbrain.com" },
+    { "@type": "WebSite", "name": "Plexus", "url": "https://plexusbrain.com/", "inLanguage": "pt-BR",
+      "publisher": { "@id": "https://plexusbrain.com/#org" } } ] }
+</script>
+<style>
+/* A página inicial provisória (14/10/2026): uma tela só, o fundo do topo da V2 em tela inteira, o título,
+ * a frase dele e, embaixo, o rodapé mínimo com a privacidade, os termos e o contato.
+ * O fundo: a paleta da V0 com o creme mais fechado (a decisão dele de 13/10, 10:19, «C»), o véu leve da V2
+ * e o halo em volta das letras. Sem a sombra larga atrás do texto. Fica a técnica da V1: a imagem parada
+ * primeiro, o pedido de menos movimento e o peso. O botão de pausar saiu (o recado dele de 13/10, 10:48). */
+body { background: #24311d; }
+.palco {
+  position: relative; display: flex; flex-direction: column; overflow: hidden;
+  min-height: max(480px, 100svh);
+  background: #24311d url('/assets/img/fundo-960.webp') center / cover no-repeat;
+  color: #fff;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --ground: #0f1614;
-    --paper: #16201d;
-    --ink: #e8efec;
-    --ink-soft: #9db0a9;
-    --rule: #26332e;
-    --accent: #52bfae;
-    --accent-ink: #0b1512;
-    --note: #1b2925;
-  }
+.hero-media { position: absolute; inset: 0; }
+.hero-media canvas { display: block; opacity: 0; transition: opacity 600ms ease; }
+.hero-media.vivo canvas { opacity: 1; }
+.palco::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(8, 12, 6, 0.32) 0%, rgba(8, 12, 6, 0) 26%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.38) 100%),
+    linear-gradient(rgba(8, 12, 6, 0.14), rgba(8, 12, 6, 0.14));
 }
-:root[data-theme="dark"] {
-  --ground: #0f1614;
-  --paper: #16201d;
-  --ink: #e8efec;
-  --ink-soft: #9db0a9;
-  --rule: #26332e;
-  --accent: #52bfae;
-  --accent-ink: #0b1512;
-  --note: #1b2925;
+/* a barra fica sobre o fundo, transparente, com a marca em branco */
+.palco .nav { position: absolute; top: 0; left: 0; right: 0; z-index: 3; background: transparent; border-bottom-color: transparent; color: #fff; }
+.hero { position: relative; z-index: 2; flex: 1; display: flex; align-items: center; padding: calc(var(--nav-h) + 32px) 0 32px; }
+.hero-text { width: 100%; text-align: center; }
+/* o halo escuro e macio em volta de cada letra, preso ao texto */
+.palco { --halo: 0 0 1px rgba(8, 12, 6, 0.5), 0 0 6px rgba(8, 12, 6, 0.45), 0 0 18px rgba(8, 12, 6, 0.35); }
+.hero h1, .hero .lead, .pe, .palco .nav .wordmark { text-shadow: var(--halo); }
+.palco .nav .brand svg { filter: drop-shadow(0 0 10px rgba(10, 15, 8, 0.5)); }
+/* o título no desenho da V0 cinema (a Plex 400, -0,03em, linha de 1,08) na escala da V1 (48 no computador) */
+.hero h1 { color: #fff; letter-spacing: -0.03em; line-height: 1.08; max-width: none; margin: 0 auto; width: fit-content; }
+.hero .lead { max-width: var(--measure-lead); margin: 20px auto 0; color: #fff; }
+/* a sombra pequena, presa ao bloco do título e da frase, com 20 % de preto (a da V2 tinha 66 %): só o creme mais
+ * fechado não bastava, porque o verde claro da paleta deixa o título em 3,99:1. Ela cobre o bloco e se apaga em volta. */
+.bloco { position: relative; width: fit-content; margin: 0 auto; }
+.bloco::before { content: ''; position: absolute; z-index: -1; inset: -8px -24px; border-radius: 48px; pointer-events: none;
+  background: rgba(8, 12, 6, 0.2); box-shadow: 0 0 48px 24px rgba(8, 12, 6, 0.2); }
+/* o rodapé mínimo, dentro da primeira tela */
+.pe { position: relative; z-index: 2; padding: 0 0 20px; color: #fff; }
+.pe .wrap { display: flex; align-items: center; justify-content: space-between; gap: 8px 32px; flex-wrap: wrap; min-height: 36px; }
+.pe ul { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.pe a { color: #fff; text-decoration: none; border-radius: 4px; }
+.pe a:hover { text-decoration: underline; }
+
+/* O celular: a mesma tela, o rodapé centrado em duas linhas */
+@media (max-width: 640px) {
+  .hero { padding: calc(var(--nav-h) + 24px) 0 24px; }
+  .pe .wrap { flex-direction: column; justify-content: center; }
+  .pe ul { justify-content: center; gap: 4px 20px; }
 }
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: var(--ground);
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: 1.0625rem;
-  line-height: 1.6;
-}
-a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
-a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.wrap { max-width: 44rem; margin: 0 auto; padding-inline: 20px; padding-block: 0 4rem; }
-.top {
-  display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: baseline;
-  padding-block: 1.25rem 1rem; border-bottom: 1px solid var(--rule);
-}
-.mark { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
-.top nav { display: flex; gap: 1.25rem; font-size: 0.95rem; }
-.top nav a[aria-current="page"] { color: var(--ink); text-decoration: none; font-weight: 600; }
-h1 {
-  font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 5vw, 2.75rem);
-  line-height: 1.1; letter-spacing: -0.02em; margin: 2.5rem 0 1rem; text-wrap: balance;
-}
-.lead { font-size: 1.2rem; color: var(--ink-soft); margin: 0 0 2.5rem; max-width: 36rem; }
-h2 {
-  font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; letter-spacing: -0.01em;
-  margin: 2.75rem 0 0.75rem; text-wrap: balance;
-}
-h3 { font-family: var(--font-body); font-weight: 600; font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
-p, li { max-width: 40rem; }
-p { margin: 0 0 1rem; }
-ul { padding-left: 1.25rem; margin: 0 0 1rem; }
-li { margin-bottom: 0.4rem; }
-.eyebrow {
-  display: block; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--accent); font-weight: 600; margin-bottom: 0.25rem;
-}
-.summary {
-  background: var(--paper); border: 1px solid var(--rule); border-left: 4px solid var(--accent);
-  padding: 1rem 1.25rem; margin: 0 0 2rem; border-radius: 4px;
-}
-.summary p { margin: 0; }
-.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0 1.5rem; }
-.pair > div { background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 1rem 1.1rem; }
-.pair h3 { margin: 0 0 0.5rem; }
-.pair ul { margin: 0; }
-@media (max-width: 560px) { .pair { grid-template-columns: 1fr; } }
-.note { background: var(--note); padding: 0.9rem 1.1rem; border-radius: 4px; margin: 1rem 0 1.5rem; }
-.note p { margin: 0; }
-code { font-family: "IBM Plex Mono", ui-monospace, Consolas, monospace; font-size: 0.92em; background: var(--note); padding: 0.05em 0.35em; border-radius: 3px; }
-dl { margin: 0 0 1rem; }
-dt { font-weight: 600; margin-top: 0.75rem; }
-dd { margin: 0.2rem 0 0; color: var(--ink); }
-footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--ink-soft); }
-footer p { margin: 0 0 0.35rem; }
-@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <a class="mark" href="/">Plexus</a>
-    <nav aria-label="Páginas">
-      <a href="/" aria-current="page">Início</a>
-      <a href="/privacidade/">Privacidade</a>
+<div class="palco">
+<div class="hero-media" aria-hidden="true"></div>
+<!-- parte:topo -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="marca" viewBox="254 242 514 540"><path fill="currentColor" fill-rule="evenodd" d="M 393 255.511 C 352.407 261.085, 317.144 279.939, 295.255 307.771 C 284.975 320.841, 275.372 340.537, 270.931 357.658 C 257.763 408.431, 272.084 474.891, 305.784 519.408 L 310.837 526.082 314.168 523.163 C 325.039 513.639, 345.746 501.731, 364 494.508 C 369.225 492.440, 373.647 490.621, 373.826 490.465 C 374.005 490.309, 371.246 486.372, 367.694 481.717 C 348.348 456.362, 339.015 429.594, 339.004 399.434 C 338.992 366.878, 350.710 345.587, 375.272 333.539 C 394.220 324.244, 414.831 322.021, 439.322 326.632 C 443.625 327.442, 448.318 328.551, 449.752 329.096 L 452.360 330.087 445.831 336.794 C 425.507 357.671, 412.339 378.063, 404.048 401.500 C 396.258 423.521, 394 440.736, 394 478.097 L 394 504.707 382.338 508.445 C 355.572 517.026, 338.811 526.429, 320.718 543.018 C 287.435 573.533, 266.778 625.315, 266.672 678.500 C 266.636 696.723, 267.416 702.142, 272.041 715.767 C 275.917 727.188, 280.747 735.404, 288.522 743.801 C 303.641 760.131, 322.788 768.527, 347.589 769.704 C 373.368 770.926, 397.048 763.715, 415.198 749.114 C 439.931 729.217, 454.548 704.106, 461.480 669.602 C 464.161 656.258, 465.974 638.226, 465.990 624.750 C 465.995 619.938, 466.337 616.003, 466.750 616.007 C 467.163 616.011, 471.325 616.938, 476 618.066 C 520.308 628.765, 562.354 632.160, 598 627.917 C 636.196 623.371, 673.150 607.157, 701.164 582.655 C 764.454 527.299, 776.204 434.118, 728.784 363.624 C 702.850 325.071, 658.276 296.466, 611.843 288.579 C 596.744 286.015, 581.404 284.928, 570.525 285.653 L 560.549 286.317 567.635 292.908 C 584.779 308.856, 596.007 323.416, 606.474 343.274 C 614.985 359.421, 622.650 385.012, 624.507 403.483 C 625.424 412.601, 628.168 421.302, 632.064 427.442 C 633.788 430.159, 640.462 437.809, 646.894 444.442 C 659.801 457.751, 662.512 461.121, 666.247 468.500 C 674.510 484.829, 673.977 505.166, 664.908 519.500 C 652.734 538.744, 631.935 550.493, 600.020 556.157 C 586.645 558.530, 555.403 559.047, 541 557.133 C 528.755 555.505, 509 551.752, 509 551.053 C 509 550.724, 513.837 548.064, 519.750 545.141 C 570.642 519.978, 598.583 483.427, 605.090 433.500 C 607.423 415.598, 604.806 392.252, 598.257 372.536 C 584.558 331.297, 553.622 298.038, 507.803 275.290 C 472.455 257.741, 430.010 250.428, 393 255.511 M 509.489 376.671 C 491.370 388.780, 476.100 410.263, 470.160 432 C 466.882 444, 465.877 454.319, 466.199 472.684 L 466.500 489.869 477 485.913 C 505.274 475.259, 525.707 455.579, 531.472 433.448 C 535.003 419.889, 532.800 399.610, 526.388 386.661 C 523.610 381.051, 517.810 372.005, 516.989 372.002 C 516.708 372.001, 513.333 374.102, 509.489 376.671 M 384.758 584.654 C 371.281 591.843, 359.336 605.202, 350.951 622.465 C 340.472 644.039, 335.226 678.935, 340.539 691.728 C 342.531 696.523, 347.290 698.992, 354.554 698.996 C 371.207 699.007, 384.869 682.467, 390.710 655.224 C 393.001 644.538, 393.268 640.734, 393.725 612.250 C 394.142 586.280, 393.996 581.005, 392.863 581.029 C 392.113 581.045, 388.466 582.676, 384.758 584.654"/></symbol></svg>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Plexus, início"><svg aria-hidden="true" focusable="false"><use href="#marca"/></svg><span class="wordmark">Plexus</span></a>
+  </div>
+</header>
+<!-- /parte:topo -->
+<main class="hero" id="conteudo">
+  <div class="wrap hero-text">
+    <div class="bloco">
+      <h1 id="titulo" class="display">Sua empresa deve focar no que gera valor</h1>
+      <p class="lead">O Plexus tira da sua empresa o trabalho que não gera valor.</p>
+    </div>
+  </div>
+</main>
+<footer class="pe">
+  <div class="wrap">
+    <nav aria-label="O site">
+      <ul>
+        <li><a href="/privacidade/">Privacidade</a></li>
+        <li><a href="/termos/">Termos de uso</a></li>
+        <li><a href="mailto:matheus@plexusbrain.com">matheus@plexusbrain.com</a></li>
+      </ul>
     </nav>
-  </header>
-
-  <main>
-    <h1>Um assistente que trabalha com o que você já usa, e só faz o que você aprovou.</h1>
-    <p class="lead">O Plexus lê o que você conecta (e-mail, repositórios de código, arquivos), executa tarefas que você cria, e devolve o resultado para a sua conferência. Cada pessoa tem uma casa própria, cifrada, numa máquina do operador. Hoje ele está em piloto, com poucas pessoas convidadas.</p>
-
-    <span class="eyebrow">O que ele faz com a sua conta do Google</span>
-    <h2>Lê as conversas que você apontar e responde, em seu nome, só dentro delas</h2>
-    <p>Ao conectar o Gmail, você escolhe o que o Plexus pode fazer:</p>
-    <div class="pair">
-      <div>
-        <h3>Ler</h3>
-        <ul>
-          <li>Lê as conversas que a sua tarefa aponta: uma etiqueta, um remetente, os últimos dias.</li>
-          <li>Lê o texto das mensagens. Dos anexos, só o nome e o tamanho.</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Ler e responder</h3>
-        <ul>
-          <li>Tudo do «ler», mais responder na mesma conversa, com o seu nome.</li>
-          <li>Só a remetentes da sua lista. Para qualquer outro, ele pede a sua autorização antes.</li>
-        </ul>
-      </div>
-    </div>
-    <p>Toda resposta passa por um verificador antes de sair, e você vê o que foi enviado. O Plexus nunca escreve para endereços novos, nunca anexa arquivos, nunca cria rascunhos, nunca apaga, move ou marca nada na sua caixa.</p>
-
-    <span class="eyebrow">Por que ele pede essas permissões</span>
-    <h2>Duas permissões, e nenhuma a mais</h2>
-    <p>Na tela do Google você verá exatamente duas: <strong>ver suas mensagens de e-mail e configurações</strong> (para ler as conversas) e <strong>enviar e-mails em seu nome</strong> (para responder dentro delas). O Plexus não pede permissão para gerenciar, apagar ou organizar a sua caixa, nem para acessar contatos, agenda ou arquivos. Quando uma função nova precisar de outra permissão, ela é pedida separadamente, e você decide de novo.</p>
-
-    <span class="eyebrow">Onde fica a sua credencial</span>
-    <h2>Fora do alcance do assistente</h2>
-    <p>A autorização que você dá ao Google fica guardada num cofre do operador, cifrado em repouso, ao lado das outras chaves do serviço. O assistente que executa as suas tarefas nunca a vê: para cada tarefa, o cofre entrega um acesso de uma hora, que morre com a tarefa. A sessão do assistente roda sem acesso à rede; o Plexus lê a caixa antes e envia as respostas depois, com tudo registrado.</p>
-
-    <span class="eyebrow">Para desligar</span>
-    <h2>Um clique, e nada da leitura fica guardado</h2>
-    <p>No Plexus, «desligar» revoga a autorização no Google e apaga a credencial do cofre. Você também pode desligar do lado do Google, na página de <a href="https://myaccount.google.com/permissions" rel="noopener">aplicativos com acesso à sua conta</a>. A cópia da caixa vive só enquanto a tarefa roda; o que fica são as respostas que o assistente escreveu e o recibo do envio, na sua casa.</p>
-
-    <div class="note">
-      <p><strong>Sobre a tela «o Google não verificou este app».</strong> O Plexus está publicado, mas ainda não passou pela verificação do Google, que exige uma auditoria de segurança anual paga. Enquanto o piloto for pequeno, você verá esse aviso ao conectar e precisará clicar em «avançado» e «ir para Plexus». O aviso fala da verificação, não do que o Plexus faz: o que ele faz está descrito nesta página e na <a href="/privacidade/">política de privacidade</a>.</p>
-    </div>
-
-    <span class="eyebrow">Contato</span>
-    <h2>Fale com quem opera</h2>
-    <p>Dúvidas sobre o Plexus, sobre os seus dados ou para pedir a exclusão de qualquer coisa: <a href="mailto:brainplexus@gmail.com">brainplexus@gmail.com</a>.</p>
-  </main>
-
-  <footer>
-    <p>Plexus · Brasil.</p>
-    <p><a href="/privacidade/">Política de privacidade</a> · atualizada em 17 de setembro de 2026.</p>
-  </footer>
+    <p class="pe-fim">© 2026 Plexus</p>
+  </div>
+</footer>
 </div>
-
+<script type="module" src="/assets/js/fundo.js"></script>
 </body>
 </html>

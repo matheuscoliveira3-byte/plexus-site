@@ -1,9 +1,5 @@
 # plexus-site
 
-As páginas públicas do Plexus em https://plexusbrain.com: a página inicial e a política de
-privacidade, servidas pelo GitHub Pages. Só o que qualquer pessoa vê no site mora aqui; nenhum
-dado, nenhum código do Motor.
+As páginas públicas do Plexus em https://plexusbrain.com: a inicial, a política de privacidade e os termos de uso. HTML estático, servido pelo GitHub Pages, sem formulário, sem cookie e sem pedido a outro serviço (as fontes de letra são do próprio site).
 
-- `index.html`: a página inicial.
-- `privacidade/index.html`: a política de privacidade.
-- `CNAME`: o domínio que o GitHub Pages serve.
+Desde 14/10/2026 a inicial é provisória, de uma tela só, e a política e os termos estão na versão 1. A página inicial completa e a versão 2 da política entram depois.
