@@ -180,6 +180,13 @@ input:focus-visible { outline: none; box-shadow: none; }
   font: 400 var(--size-text)/1 var(--font-ui); color: var(--ink); padding: 0 8px 0 18px;
 }
 .ask input::placeholder { color: var(--ink-faint); opacity: 1; }
+/* O e-mail que o navegador sugere e preenche pinta o campo de azul claro e a letra de escuro (o defeito que ele achou
+ * em 16/10): o fundo do navegador fica para depois de uma espera que nunca acaba, e a letra fica a do campo */
+.ask input:-webkit-autofill, .ask input:-webkit-autofill:hover, .ask input:-webkit-autofill:focus, .ask input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--ink); caret-color: var(--ink);
+  -webkit-transition: background-color 600000s 0s, color 600000s 0s; transition: background-color 600000s 0s, color 600000s 0s;
+}
+.ask input:autofill { background-color: transparent; }
 .ask .isca { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .ask .erro { margin-top: 8px; color: #b4402f; }
 .ask .erro:empty { display: none; }
