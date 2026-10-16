@@ -41,14 +41,18 @@ async function ligar() {
 
   // O vigia do primeiro segundo: se a máquina não der 30 quadros, o fundo para.
   let quadros = 0;
+  let lento = false; // o vigia parou o fundo; o fim do pedido de menos movimento não o religa (a revisão da V3, L11)
   const t0 = performance.now();
   (function contar(t) {
     quadros++;
     if (t - t0 < 1000) requestAnimationFrame(contar);
-    else if (quadros < 30) fundo.setSpeed(0);
+    else if (quadros < 30) { lento = true; fundo.setSpeed(0); }
   })(t0);
   // O botão de pausar saiu na página provisória (o recado dele de 13/10, 10:48, «isso pode remover»).
-  // Quem pede menos movimento no sistema continua com a imagem parada.
+  // Quem pede menos movimento no sistema continua com a imagem parada, também se pedir com a página aberta.
+  matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+    fundo.setSpeed(e.matches || lento ? 0 : VELOCIDADE);
+  });
 }
 
 ('requestIdleCallback' in window ? requestIdleCallback : setTimeout)(ligar, { timeout: 1500 });

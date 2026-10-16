@@ -1,0 +1,61 @@
+/* Um dia com o Plexus (V7, 14/10/2026). A seção trava a tela como «Como o Plexus funciona»: enquanto a pessoa desce,
+ * a tela fica parada; à esquerda, os seis momentos do dia, com o do momento aberto e o texto dele; à direita, a
+ * demonstração ocupa o espaço inteiro (o pedido dele às 10:18: «não deve ter todo esse espaço vazio»). O desenho
+ * da linha do tempo mora em dia-linha.css (?linha=a|b|c) e o da demonstração em dia-tela-N (?tela=1|2|3). Sem
+ * JavaScript, a lista aparece aberta e a demonstração some. */
+
+.dia { background: var(--stone); }
+.dia.block { padding-bottom: 0; }
+/* o trilho pode passar do fim da seção (o fundo embaixo da janela, no dia.js): o que passa não aparece; clip, e não
+ * hidden, para a tela presa continuar presa; flow-root, para a margem do trilho não vazar para fora da seção */
+.js .dia.block { display: flow-root; overflow-y: clip; }
+/* 10:18: o vão de «Como o Plexus funciona» para esta seção igual ao da dor para «Como o Plexus funciona» */
+#solucao + #um-dia.block { padding-top: 56px; }
+.dia .wrap > .display { margin: 0; }
+.dia-lead { margin: 12px 0 0; max-width: var(--measure-lead); color: var(--ink-soft); }
+.dia-trilho { margin-top: 24px; }
+.dia-fixo { position: relative; }
+.dia-grade { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; column-gap: 48px; }
+.dia-tela { display: none; }
+.dia-linha { list-style: none; margin: 0; padding: 0; display: grid; align-content: center; }
+.dia-cab { margin: 0; display: grid; gap: 2px; }
+.dia-hora { font-size: 14px; line-height: 1.4; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.dia-nome { font-size: var(--size-text); line-height: 1.4; color: var(--ink); }
+.dia-corpo { display: grid; grid-template-rows: 1fr; }
+.dia-corpo > div { min-height: 0; overflow: hidden; }
+.dia-t { margin: 10px 0 6px; font-size: var(--size-lead); line-height: var(--leading-lead); font-weight: 400; color: var(--ink); text-wrap: pretty; }
+.dia-corpo p { margin: 0 0 4px; font-size: var(--size-text); line-height: var(--leading-text); color: var(--ink-soft); text-wrap: pretty; }
+.dia-progresso { display: none; }
+
+/* Com JavaScript: o trilho alto, a tela presa, um momento aberto por vez */
+/* 11:37: nove momentos com um pouco menos de rolagem em cada um (A), para a seção ter o comprimento da anterior */
+.js .dia-trilho { height: calc(100svh - var(--nav-h) + var(--n, 9) * 62svh); }
+.js .dia-fixo { position: sticky; top: var(--nav-h); height: calc(100svh - var(--nav-h)); overflow: hidden; }
+.js .dia-grade { height: 100%; padding-top: 28px; padding-bottom: 28px; }
+.js .dia-tela { display: block; position: relative; grid-column: 2; grid-row: 1 / 3; min-height: 0; }
+.js .dia-linha { grid-column: 1; grid-row: 1 / 3; position: relative; z-index: 2; min-height: 0; }
+.js .dia-cab { cursor: pointer; }
+.js .dia-corpo { grid-template-rows: 0fr; transition: grid-template-rows 480ms var(--ease); }
+.js .dia-corpo > div { opacity: 0; transition: opacity 140ms var(--ease); }
+.js .dia-m.ativo .dia-corpo { grid-template-rows: 1fr; }
+.js .dia-m.ativo .dia-corpo > div { opacity: 1; transition: opacity 300ms var(--ease) 200ms; }
+
+/* O palco da demonstração: o tamanho de desenho vem do motor (820 por 600, ou 400 por 560 no celular), centrado e
+ * escalado para caber (--escala) */
+.dia-palco { position: absolute; left: 50%; top: 50%; transform: scale(var(--escala, 1)); transform-origin: 50% 50%; }
+
+@media (max-width: 900px) {
+  #solucao + #um-dia.block { padding-top: 40px; }
+  .js .dia-grade { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; row-gap: 16px; padding-top: 8px; padding-bottom: 20px; }
+  .js .dia-tela { grid-column: 1; grid-row: 1; }
+  .js .dia-linha { grid-column: 1; grid-row: 2; }
+  /* 12:00: os nove textos no mesmo lugar, abertos, e só o do momento à vista: a lista tem sempre a altura do mais
+   * longo, e a área da demonstração (e a escala do palco) não muda de um momento para o outro */
+  .js .dia-m { grid-area: 1 / 1; }
+  .js .dia-m:not(.ativo) { visibility: hidden; }
+  .js .dia-corpo { grid-template-rows: 1fr; }
+  .js .dia-m:not(.ativo) .dia-corpo > div { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .dia-corpo, .js .dia-corpo > div, .js .dia-m.ativo .dia-corpo > div { transition: none; }
+}

@@ -1,0 +1,137 @@
+/* A peça da dor (V5b, 13/10/2026, 16:2x). Ele escolheu a ideia da triagem (o que chega; o que não gera valor vai
+ * para o Plexus; o que gera valor fica com a pessoa) e reprovou o desenho. Os pedidos dele: os logos reais das
+ * fontes, a animação à esquerda e o texto à direita, e a animação do Bond como referência. Dois desenhos:
+ *   a  o fluxo, a escolha dele às 16:41: os aplicativos entram no Plexus sem parar, e o trabalho sai em duas faixas
+ *      (o «On top of it» do Bond), sem a pergunta da teoria (o pedido dele);
+ *   b  a janela: o barulho dos aplicativos entra no Plexus e vira a lista do dia, com o que ele já fez riscado
+ *      (o topo do Bond, «you're all caught up»). O HTML já traz o estado final, parado. */
+
+#dor .op { padding: 0; }
+/* 13/10, 16:44: menos vazio entre a seção do dado e esta (o pedido dele, com a imagem) */
+/* 16:55: o vão de baixo, até o título da solução, igual ao de cima (o pedido dele, com a imagem) */
+#dor.block { padding-top: 64px; padding-bottom: 64px; }
+#dor + #solucao.block { padding-top: 56px; }
+@media (max-width: 640px) { #dor.block { padding-top: 48px; padding-bottom: 48px; } #dor + #solucao.block { padding-top: 40px; } }
+.dor-fl { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 72px; align-items: center; }
+.dor-fl > .op { order: -1; }
+.fl-ponto { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+
+/* O palco das duas: papel com a grade de pontos e um brilho verde no meio, como o fundo do Bond */
+.pj-palco, .pf-palco {
+  position: relative; overflow: hidden; border-radius: 20px; border: 1px solid var(--line);
+  background-color: var(--paper);
+  background-image: radial-gradient(rgba(27, 27, 25, 0.075) 1px, transparent 1.3px);
+  background-size: 20px 20px; background-position: 10px 10px;
+}
+.pj-palco::before, .pf-palco::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(closest-side at 50% 52%, rgba(74, 100, 60, 0.13), rgba(74, 100, 60, 0) 100%);
+}
+.app { position: relative; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(27, 27, 25, 0.06), 0 6px 16px rgba(27, 27, 25, 0.06); }
+.app img { width: 26px; height: 26px; }
+
+/* ===== a: a janela ===== */
+.pj-palco { height: 540px; }
+.pj-barulho { position: absolute; inset: 0; visibility: hidden; }
+.pj.vivo .pj-barulho { visibility: visible; }
+.pj-doca { position: absolute; left: 50%; top: 50%; translate: -50% -50%; display: flex; gap: 12px; padding: 10px; border-radius: 20px; background: rgba(255, 255, 255, 0.72); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(27, 27, 25, 0.08); backdrop-filter: blur(8px); }
+.pj-doca .app b { position: absolute; top: -7px; right: -7px; min-width: 19px; height: 19px; padding: 0 5px; border-radius: 10px; background: #e5484d; color: #fff; font-size: 11px; line-height: 19px; font-weight: 400; text-align: center; box-shadow: 0 0 0 2px var(--surface); }
+.pj-nota { position: absolute; width: 236px; padding: 10px 12px 11px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(27, 27, 25, 0.05), 0 12px 28px rgba(27, 27, 25, 0.09); font-size: 13.5px; line-height: 1.4; }
+.pj-nota .de { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; font-size: 12px; color: var(--ink-soft); }
+.pj-nota .de img { width: 14px; height: 14px; }
+.pj-nota .de span { margin-left: auto; color: var(--ink-faint); }
+.pj-nota[data-n="1"] { left: 5%; top: 8%; }
+.pj-nota[data-n="2"] { right: 5%; top: 13%; }
+.pj-nota[data-n="3"] { left: 8%; bottom: 13%; }
+.pj-nota[data-n="4"] { right: 6%; bottom: 8%; }
+.pj-nota[data-n="5"] { left: 50%; top: 27%; translate: -50% 0; z-index: 1; }
+.pj-no { position: absolute; left: 50%; top: 50%; width: 72px; height: 72px; margin: -36px 0 0 -36px; display: grid; place-items: center; border-radius: 20px; background: var(--accent); color: #fff; box-shadow: 0 0 0 10px rgba(74, 100, 60, 0.08), 0 18px 48px rgba(74, 100, 60, 0.38); z-index: 2; }
+.pj-no svg { width: 34px; height: 36px; }
+.pj.vivo .pj-doca, .pj.vivo .pj-doca .app, .pj.vivo .pj-doca .app b, .pj.vivo .pj-nota, .pj.vivo .pj-no { opacity: 0; }
+
+.pj-janela {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: min(520px, calc(100% - 48px));
+  border-radius: 14px; background: var(--surface); border: 1px solid var(--line);
+  box-shadow: 0 1px 1px rgba(27, 27, 25, 0.04), 0 4px 8px rgba(27, 27, 25, 0.04), 0 16px 32px rgba(27, 27, 25, 0.06), 0 32px 64px rgba(27, 27, 25, 0.07);
+}
+.pj-cromo { display: flex; gap: 6px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.pj-cromo i { width: 9px; height: 9px; border-radius: 50%; background: #dddbd4; }
+.pj-ola { padding: 20px 24px 0; font-size: 26px; line-height: 1.22; letter-spacing: -0.015em; color: var(--ink); text-wrap: balance; }
+.pj-sub { padding: 8px 24px 0; color: var(--ink-soft); }
+.pj-lista { list-style: none; padding: 12px 14px 14px; }
+.pj-lista li { display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: 12px; row-gap: 6px; align-items: center; padding: 9px 10px; border-top: 1px solid var(--line); }
+.pj-lista li:first-child { border-top: 0; }
+.pj-lista .caixa { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid rgba(27, 27, 25, 0.28); display: grid; place-items: center; color: #fff; transition: background-color 300ms var(--ease), border-color 300ms var(--ease); }
+.pj-lista .caixa svg { width: 11px; height: 11px; transition: opacity 250ms var(--ease) 80ms; }
+.pj-lista .txt { color: var(--ink); transition: color 400ms var(--ease); }
+.pj-lista .txt span { background: linear-gradient(currentColor, currentColor) no-repeat 0 58% / 100% 1px; -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: background-size 500ms var(--ease); }
+.pj-lista .sim .txt span { background-size: 0% 1px; }
+.pj-lista .chips { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; }
+.pj-lista .chips > span { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
+.pj-lista .de img { width: 12px; height: 12px; }
+.pj-lista .chips > .st { position: relative; display: inline-grid; transition: background-color 300ms var(--ease), border-color 300ms var(--ease), color 300ms var(--ease); }
+.pj-lista .st > span { grid-area: 1 / 1; transition: opacity 250ms var(--ease); }
+.pj-lista .st .q { opacity: 0; }
+/* o estado final (e o de quem pede menos movimento): o que não gera valor riscado e feito, o que gera valor em verde */
+.pj-lista .nao .caixa { background: var(--accent); border-color: var(--accent); }
+.pj-lista .nao .txt { color: var(--ink-soft); }
+.pj-lista .nao .chips > .st { color: var(--accent); background: rgba(74, 100, 60, 0.08); border-color: rgba(74, 100, 60, 0.22); }
+.pj-lista .sim .chips > .st { color: #fff; background: var(--accent); border-color: var(--accent); }
+/* em movimento: as linhas entram, a pergunta aparece e depois se resolve */
+.pj.vivo .pj-janela { opacity: 0; }
+.pj.vivo .pj-lista li { opacity: 0; transform: translateY(6px); transition: opacity 400ms var(--ease), transform 400ms var(--ease); }
+.pj.vivo .pj-lista li.on { opacity: 1; transform: none; }
+.pj.vivo .pj-lista li:not(.res) .caixa { background: transparent; border-color: rgba(27, 27, 25, 0.28); }
+.pj.vivo .pj-lista li:not(.res) .caixa svg { opacity: 0; }
+.pj.vivo .pj-lista li:not(.res) .txt { color: var(--ink); }
+.pj.vivo .pj-lista li:not(.res) .txt span { background-size: 0% 1px; }
+.pj.vivo .pj-lista li:not(.res) .chips > .st { color: var(--ink-soft); background: var(--paper); border-color: var(--line); }
+.pj.vivo .pj-lista li:not(.res) .st .q { opacity: 1; }
+.pj.vivo .pj-lista li:not(.res) .st .r { opacity: 0; }
+
+/* ===== b: o fluxo ===== */
+.pf-palco { height: 500px; }
+.pf-entram { position: absolute; inset: 0; }
+.pf-entram .app { position: absolute; left: var(--x); top: var(--y); }
+.pf.vivo .pf-entram .app:not(.voa) { opacity: 0; }
+.pf-entram .app.voa { left: 0; top: 0; z-index: 1; }
+.pf-no { position: absolute; left: 29%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; display: grid; place-items: center; border-radius: 18px; background: var(--accent); color: #fff; z-index: 2; box-shadow: 0 0 0 9px rgba(74, 100, 60, 0.08), 0 16px 40px rgba(74, 100, 60, 0.35); }
+.pf-no svg { width: 30px; height: 32px; }
+.pf-faixa { position: absolute; left: 50%; right: 20px; z-index: 1; }
+.pf-plexus { top: 9%; }
+.pf-voce { top: 58%; }
+.pf-t { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: var(--ink); }
+.pf-faixa ol { position: relative; list-style: none; display: grid; gap: 8px; justify-items: start; }
+.pf-item { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; padding: 7px 12px 7px 9px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(27, 27, 25, 0.05), 0 6px 14px rgba(27, 27, 25, 0.05); font-size: 14px; line-height: 1.3; }
+.pf-item img { width: 16px; height: 16px; flex: none; }
+.pf-item span { background: linear-gradient(currentColor, currentColor) no-repeat 0 58% / 0% 1px; transition: background-size 500ms var(--ease), color 400ms var(--ease); }
+.pf-item.feito span { background-size: 100% 1px; color: var(--ink-soft); }
+.pf-voce .pf-item { border-color: rgba(74, 100, 60, 0.4); }
+
+/* A tela média e o celular: o texto em cima, a peça embaixo */
+@media (max-width: 1020px) {
+  .dor-fl { grid-template-columns: 1fr; gap: 40px; }
+  .dor-fl > .op { order: 0; }
+}
+@media (max-width: 640px) {
+  .pj-palco { height: 560px; }
+  .app { width: 38px; height: 38px; border-radius: 10px; }
+  .app img { width: 22px; height: 22px; }
+  .pj-doca { gap: 6px; padding: 8px; border-radius: 16px; }
+  .pj-nota { width: 196px; font-size: 12.5px; padding: 8px 10px 9px; }
+  .pj-nota[data-n="1"] { left: 3%; top: 6%; }
+  .pj-nota[data-n="2"] { right: 3%; top: 17%; }
+  .pj-nota[data-n="3"] { left: 3%; bottom: 17%; }
+  .pj-nota[data-n="4"] { right: 3%; bottom: 6%; }
+  .pj-nota[data-n="5"] { display: none; }
+  .pj-janela { width: calc(100% - 24px); }
+  .pj-ola { padding: 16px 16px 0; font-size: 20px; }
+  .pj-sub { padding: 6px 16px 0; }
+  .pj-lista { padding: 8px 6px 10px; }
+  .pf-palco { height: 600px; }
+  .pf-no { left: 50%; top: 30%; }
+  .pf-faixa { left: 16px; right: 16px; }
+  .pf-plexus { top: 45%; }
+  .pf-voce { top: 75%; }
+  .pf-entram .app:not(.voa) { top: calc(var(--y) * 0.25); left: calc(var(--x) * 3); }
+}

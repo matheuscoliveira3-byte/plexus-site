@@ -1,0 +1,137 @@
+/*
+ * A seção das integrações (V7h, 14/10/2026). Três desenhos para ele escolher, trocados pelo endereço
+ * (?integracoes=a|b|c; sem nada, b, a escolhida por ele às 17:13 de 14/10). Quem troca é o roteiro
+ * integracoes.js, que põe data-op na seção; sem roteiro, aparece a b.
+ *   a, a lista por canal (a Circleback): uma linha por canal, com os logotipos, a frase do que o Plexus faz ali
+ *      e o estado; fecha com a linha do pedido.
+ *   b, as teclas grandes (a Harvey): duas fileiras de teclas brancas sobre o painel de pedra, paradas; cada tecla
+ *      diz o nome e o estado, e a última, tracejada, é o link para pedir uma integração.
+ *   c, a faixa que corre (a Attio e a Granola): uma fileira que anda devagar, com as pontas desbotadas, sempre
+ *      terminando no «+ a sua ferramenta»; para com o mouse em cima, fora da tela, com a aba escondida e com
+ *      movimento reduzido.
+ * A regra do estado vale nas três: Gmail e Outlook em cor, com o ponto verde e «ativo»; o resto num tom só, com
+ * «em breve». As letras seguem a escala do site (o título, 18 e 15), nada em negrito.
+ */
+
+/* a troca das opções */
+.apps .ig-op { display: none; }
+.apps .ig-b { display: block; }
+.apps[data-op="a"] .ig-b, .apps[data-op="c"] .ig-b { display: none; }
+.apps[data-op="a"] .ig-a, .apps[data-op="c"] .ig-c { display: block; }
+
+/* os vãos no padrão do site (16:08 e 17:13 de 14/10): 120 pixels no computador e 88 no celular, do fim da janela
+ * de «Um dia» até o título (64 de fundo embaixo da janela, acertados pelo dia.js, e 56 de respiro aqui; 48 e 40 no celular) e do painel até
+ * «Quem faz» */
+#integracoes.block { padding-top: 56px; padding-bottom: 0; }
+@media (max-width: 640px) { #integracoes.block { padding-top: 40px; } }
+#quem-faz.block { padding-top: 120px; }
+@media (max-width: 640px) { #quem-faz.block { padding-top: 88px; } }
+
+/* o estado, igual nas três */
+.apps .estado { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-faint); white-space: nowrap; }
+.apps .ativo .estado { color: var(--accent); }
+.apps .estado .ponto { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: none; }
+/* os logotipos do que se conecta a pedido ficam num tom só, mais claro */
+.apps .apedido img { filter: grayscale(1); opacity: 0.5; }
+
+/* o pedido da ferramenta que falta, em b e c */
+.apps .pedido { margin-top: 40px; color: var(--ink-soft); }
+.apps .pedido a, .apps .canal-frase a { color: var(--accent); }
+
+/* ---------- a, a lista por canal ---------- */
+.canais { list-style: none; margin-top: var(--space-block); border-top: 1px solid var(--line); }
+.canal {
+  display: grid; grid-template-columns: 220px 132px minmax(0, 1fr) 112px; column-gap: 32px; align-items: center;
+  padding: 24px 0; border-bottom: 1px solid var(--line);
+}
+.canal-nome .nome { display: block; font-size: var(--size-lead); line-height: var(--leading-lead); }
+.canal-nome .quais { display: block; color: var(--ink-faint); }
+.canal-logos { display: flex; align-items: center; gap: 12px; }
+.canal-logos img { width: 24px; height: 24px; object-fit: contain; }
+.canal-frase { color: var(--ink-soft); max-width: 34em; }
+.canal .estado { justify-self: end; }
+.canal .mais {
+  display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%;
+  border: 1px dashed var(--line-strong); color: var(--ink-soft); line-height: 1;
+}
+
+@media (max-width: 900px) {
+  .canal {
+    grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "nome estado" "logos logos" "frase frase";
+    row-gap: 12px; padding: 20px 0;
+  }
+  .canal-nome { grid-area: nome; }
+  .canal-logos { grid-area: logos; }
+  .canal-frase { grid-area: frase; }
+  .canal .estado { grid-area: estado; align-self: start; margin-top: 4px; }
+}
+
+/* ---------- b, as teclas grandes ---------- */
+.ig-b { --tecla: 124px; --vao: 14px; }
+.teclas {
+  margin-top: var(--space-block); padding: 48px; border-radius: 16px; background: var(--stone);
+  display: grid; justify-items: center; gap: var(--vao); overflow: hidden;
+}
+.teclas-fila { display: flex; gap: var(--vao); }
+/* a segunda fileira deslocada meia tecla (a Harvey), sem cortar nenhuma */
+.teclas-fila:first-child { transform: translateX(calc((var(--tecla) + var(--vao)) / -4)); }
+.teclas-fila + .teclas-fila { transform: translateX(calc((var(--tecla) + var(--vao)) / 4)); }
+.tecla {
+  width: var(--tecla); height: var(--tecla); padding: 18px 8px 12px; border-radius: 20px;
+  display: grid; grid-template-rows: 1fr auto auto; justify-items: center; align-items: center; gap: 2px;
+  background: var(--surface); border: 1px solid var(--line); color: var(--ink); cursor: default;
+  text-decoration: none; text-align: center; line-height: 1.35;
+  transition: border-color 200ms var(--ease), transform 200ms var(--ease);
+}
+.tecla img { width: 40px; height: 40px; object-fit: contain; }
+.tecla.ativo { border-color: transparent; box-shadow: 0 1px 2px rgba(13, 16, 10, 0.06), 0 10px 24px -14px rgba(13, 16, 10, 0.35); }
+/* a última tecla é o link para pedir uma integração: a tecla inteira se clica, e ela responde ao mouse */
+.tecla.sua { grid-template-rows: 1fr auto; padding-bottom: 16px; background: transparent; border: 1px dashed var(--line-strong); cursor: pointer; }
+.tecla.sua .mais { font-size: 32px; line-height: 40px; color: var(--ink-soft); transition: color 200ms var(--ease); }
+.tecla.sua .t-nome { font-size: 14px; line-height: 1.3; }
+.tecla.sua:hover { background: var(--surface); border-style: solid; border-color: var(--accent); }
+.tecla.sua:hover .mais { color: var(--accent); }
+.tecla.sua:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* abaixo de 1100, as fileiras viram uma grade sem deslocamento, e a tecla encolhe com a largura */
+@media (max-width: 1099px) {
+  .teclas { grid-template-columns: repeat(5, minmax(0, var(--tecla))); justify-content: center; justify-items: stretch; padding: 40px 24px; }
+  .teclas-fila { display: contents; }
+  .teclas-fila:first-child, .teclas-fila + .teclas-fila { transform: none; }
+  .tecla { width: auto; height: auto; aspect-ratio: 1 / 1; }
+}
+@media (max-width: 760px) {
+  .ig-b { --tecla: 112px; --vao: 10px; }
+  .teclas { grid-template-columns: repeat(3, minmax(0, var(--tecla))); padding: 24px 12px; }
+  .tecla { padding: 14px 4px 10px; }
+  .tecla img { width: 34px; height: 34px; }
+}
+
+/* ---------- c, a faixa que corre ---------- */
+.faixa {
+  margin-top: var(--space-block); overflow: hidden; padding: 8px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+}
+.faixa-trilho { list-style: none; display: flex; gap: 28px; width: max-content; will-change: transform; }
+.fx-peca { width: 128px; display: grid; align-content: start; justify-items: center; text-align: center; line-height: 1.35; }
+.fx-icone {
+  display: grid; place-items: center; width: 96px; height: 96px; margin-bottom: 12px; border-radius: 22px;
+  background: var(--surface); border: 1px solid var(--line); color: var(--ink-soft); text-decoration: none;
+}
+.fx-peca.ativo .fx-icone { border-color: transparent; box-shadow: 0 1px 2px rgba(13, 16, 10, 0.06), 0 10px 24px -14px rgba(13, 16, 10, 0.35); }
+.fx-icone img { width: 40px; height: 40px; object-fit: contain; }
+.fx-peca.sua .fx-icone { background: transparent; border: 1px dashed var(--line-strong); font-size: 32px; line-height: 1; }
+.fx-peca.sua .estado { color: var(--accent); }
+.fx-peca .estado { margin-top: 2px; }
+/* parada (movimento reduzido): sem as cópias e sem o desbotado, todas à vista, em linhas */
+.faixa.parada { -webkit-mask-image: none; mask-image: none; }
+.faixa.parada .faixa-trilho { width: auto; flex-wrap: wrap; justify-content: center; row-gap: 32px; transform: none !important; }
+.faixa.parada .faixa-trilho > [aria-hidden="true"] { display: none; }
+
+@media (max-width: 640px) {
+  .faixa-trilho { gap: 20px; }
+  .fx-peca { width: 100px; }
+  .fx-icone { width: 80px; height: 80px; border-radius: 20px; }
+  .fx-icone img { width: 34px; height: 34px; }
+}

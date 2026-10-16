@@ -1,0 +1,102 @@
+/* A linha do tempo de «Um dia com o Plexus» (V7, 14/10/2026), nos três desenhos que ele pediu às 10:18 («me dê 3
+ * opções de design para a time line»). Trocados pelo endereço: ?linha=a (sem nada, a), b ou c. O motor (dia.js)
+ * marca o momento com .ativo e os anteriores com .visto; dia-linha.js mede o que cada desenho precisa e monta o
+ * relógio e os pontos.
+ *   a, a linha que se enche: a linha vertical com um ponto por momento, o verde descendo com o dia;
+ *   b, a régua do dia: os momentos numa régua horizontal em cima, o verde andando por ela, o texto embaixo;
+ *   c, o relógio: a hora grande do momento, que rola para a próxima, e os pontos do dia embaixo.
+ * No celular, os três mostram só o momento aberto, com os pontos do dia (e o relógio, no c). */
+
+/* ===== os pontos do dia (o c no computador; os três no celular) ===== */
+.dia-pontos { display: none; }
+.dia-pontos button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: var(--line-strong); cursor: pointer;
+  transition: width 420ms var(--ease), background-color 300ms var(--ease); }
+.dia-pontos button.visto { background: rgba(74, 100, 60, 0.45); }
+.dia-pontos button.ativo { width: 28px; background: var(--accent); }
+.dia-pontos button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ===== a, a linha que se enche ===== */
+.js .dia[data-linha="a"] .dia-linha { --x: 7px; padding-left: 32px; gap: 10px; }
+.js .dia[data-linha="a"] .dia-linha::before,
+.js .dia[data-linha="a"] .dia-linha::after { content: ''; position: absolute; left: var(--x); width: 2px; margin-left: -1px; border-radius: 1px; }
+.js .dia[data-linha="a"] .dia-linha::before { top: var(--l-ini, 0px); height: var(--l-tudo, 0px); background: var(--line-strong); }
+.js .dia[data-linha="a"] .dia-linha::after { top: var(--l-ini, 0px); height: var(--l-cheio, 0px); background: var(--accent); }
+.js .dia[data-linha="a"] .dia-m { position: relative; }
+.js .dia[data-linha="a"] .dia-m::before { content: ''; position: absolute; left: calc(var(--x) - 32px); top: 4px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%;
+  background: var(--stone); border: 2px solid var(--line-strong); box-sizing: border-box; z-index: 1;
+  transition: background-color 300ms var(--ease), border-color 300ms var(--ease), box-shadow 300ms var(--ease); }
+.js .dia[data-linha="a"] .dia-m.visto::before { background: var(--accent); border-color: var(--accent); }
+.js .dia[data-linha="a"] .dia-m.ativo::before { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 5px rgba(74, 100, 60, 0.16); }
+/* 11:37: com nove momentos, a hora e o nome na mesma linha, como numa agenda, para a lista caber em 1280 por 720 */
+.js .dia[data-linha="a"] .dia-cab { grid-template-columns: 96px minmax(0, 1fr); column-gap: 12px; align-items: baseline; }
+.js .dia[data-linha="a"] .dia-hora { transition: color 300ms var(--ease); }
+.js .dia[data-linha="a"] .dia-nome { color: var(--ink-soft); transition: color 300ms var(--ease); }
+.js .dia[data-linha="a"] .dia-m.ativo .dia-hora { color: var(--accent); }
+.js .dia[data-linha="a"] .dia-m.ativo .dia-nome { color: var(--ink); }
+
+/* ===== b, a régua do dia ===== */
+.js .dia[data-linha="b"] .dia-grade { position: relative; grid-template-rows: auto minmax(0, 1fr); row-gap: 32px; }
+.js .dia[data-linha="b"] .dia-tela { grid-column: 2; grid-row: 2; }
+.js .dia[data-linha="b"] .dia-linha { grid-column: 1 / 3; grid-row: 1; display: grid; grid-template-columns: repeat(var(--n, 6), minmax(0, 1fr)); align-content: start; padding-top: 24px; }
+.js .dia[data-linha="b"] .dia-linha::before,
+.js .dia[data-linha="b"] .dia-linha::after { content: ''; position: absolute; top: 6px; left: 6px; right: 0; height: 2px; margin-top: -1px; border-radius: 1px; }
+.js .dia[data-linha="b"] .dia-linha::before { background: var(--line-strong); }
+.js .dia[data-linha="b"] .dia-linha::after { background: var(--accent); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
+.js .dia[data-linha="b"] .dia-m { position: static; padding-right: 16px; }
+.js .dia[data-linha="b"] .dia-cab { position: relative; }
+.js .dia[data-linha="b"] .dia-cab::before { content: ''; position: absolute; left: 0; top: -24px; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--stone); border: 2px solid var(--line-strong); box-sizing: border-box; z-index: 1;
+  transition: background-color 300ms var(--ease), border-color 300ms var(--ease), box-shadow 300ms var(--ease); }
+.js .dia[data-linha="b"] .dia-m.visto .dia-cab::before { background: var(--accent); border-color: var(--accent); }
+.js .dia[data-linha="b"] .dia-m.ativo .dia-cab::before { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 5px rgba(74, 100, 60, 0.16); }
+.js .dia[data-linha="b"] .dia-nome { color: var(--ink-soft); }
+.js .dia[data-linha="b"] .dia-m.ativo .dia-hora { color: var(--accent); }
+.js .dia[data-linha="b"] .dia-m.ativo .dia-nome { color: var(--ink); }
+/* o texto do momento sai da régua e fica embaixo dela, à esquerda da demonstração */
+.js .dia[data-linha="b"] .dia-corpo { position: absolute; left: 0; top: calc(100% + 40px); width: 320px; }
+.js .dia[data-linha="b"] .dia-t { margin-top: 0; font-size: 22px; line-height: 1.3; }
+
+/* ===== c, o relógio ===== */
+.dia-relogio { display: none; }
+.js .dia[data-linha="c"] .dia-grade { grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr); }
+.js .dia[data-linha="c"] .dia-tela { grid-row: 1 / 5; }
+.js .dia[data-linha="c"] .dia-relogio { display: block; grid-column: 1; grid-row: 2; position: relative; z-index: 2; }
+.js .dia[data-linha="c"] .dia-linha { grid-row: 3; align-content: start; }
+.js .dia[data-linha="c"] .dia-m:not(.ativo) { display: none; }
+.js .dia[data-linha="c"] .dia-hora { display: none; }
+.js .dia[data-linha="c"] .dia-nome { font-size: 14px; color: var(--accent); }
+.js .dia[data-linha="c"] .dia-t { margin-top: 6px; font-size: 22px; line-height: 1.3; }
+.js .dia[data-linha="c"] .dia-pontos { display: flex; gap: 6px; grid-column: 1; grid-row: 4; align-self: start; margin-top: 24px; position: relative; z-index: 2; }
+.dia-relogio-dia { --h: 22px; display: block; height: var(--h); overflow: hidden; font-size: 14px; line-height: var(--h); color: var(--ink-faint); }
+.dia-relogio-hora { --h: 76px; display: block; height: var(--h); overflow: hidden; font-size: 68px; line-height: var(--h); letter-spacing: -0.03em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.dia-relogio-dia > span, .dia-relogio-hora > span { display: block; transition: transform 640ms var(--ease); transform: translateY(calc(var(--k, 0) * var(--h) * -1)); }
+.dia-relogio-dia i, .dia-relogio-hora i { display: block; height: var(--h); font-style: normal; white-space: nowrap; }
+.dia-relogio-hora i.txt { font-size: 46px; }
+
+@media (max-width: 900px) {
+  /* no celular, a linha e a régua somem: só o momento aberto, com os pontos do dia em cima dele */
+  .js .dia[data-linha="a"] .dia-linha { padding-left: 0; }
+  .js .dia[data-linha="a"] .dia-linha::before, .js .dia[data-linha="a"] .dia-linha::after,
+  .js .dia[data-linha="a"] .dia-m::before, .js .dia[data-linha="b"] .dia-linha::before, .js .dia[data-linha="b"] .dia-linha::after,
+  .js .dia[data-linha="b"] .dia-cab::before { display: none; }
+  .js .dia[data-linha="b"] .dia-grade { grid-template-rows: minmax(0, 1fr) auto auto; row-gap: 12px; }
+  .js .dia[data-linha="b"] .dia-tela { grid-column: 1; grid-row: 1; }
+  .js .dia[data-linha="b"] .dia-linha { grid-column: 1; grid-row: 3; display: grid; grid-template-columns: minmax(0, 1fr); padding-top: 0; }
+  .js .dia[data-linha="b"] .dia-m { padding-right: 0; }
+  .js .dia[data-linha="b"] .dia-corpo { position: static; width: auto; }
+  .js .dia[data-linha="a"] .dia-pontos, .js .dia[data-linha="b"] .dia-pontos { display: flex; gap: 6px; grid-column: 1; grid-row: 2; margin: 0; }
+  .js .dia[data-linha="a"] .dia-grade { grid-template-rows: minmax(0, 1fr) auto auto; }
+  .js .dia[data-linha="a"] .dia-linha { grid-row: 3; }
+  .js .dia[data-linha="c"] .dia-grade { grid-template-rows: minmax(0, 1fr) auto auto auto; row-gap: 10px; }
+  .js .dia[data-linha="c"] .dia-tela { grid-row: 1; }
+  .js .dia[data-linha="c"] .dia-relogio { grid-row: 2; }
+  .js .dia[data-linha="c"] .dia-linha { grid-row: 3; }
+  .js .dia[data-linha="c"] .dia-pontos { grid-row: 4; margin-top: 4px; }
+  .dia-relogio-dia { --h: 20px; font-size: 13px; }
+  .dia-relogio-hora { --h: 44px; font-size: 38px; }
+  .dia-relogio-hora i.txt { font-size: 28px; }
+  .js .dia[data-linha] .dia-t { font-size: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .dia[data-linha] .dia-m::before, .js .dia[data-linha] .dia-cab::before, .dia-relogio-dia > span, .dia-relogio-hora > span, .dia-pontos button { transition: none; }
+}

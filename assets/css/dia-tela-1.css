@@ -1,0 +1,511 @@
+/* Um dia com o Plexus, a demonstração 1 (14/10/2026): «a janela inteira». A janela do Plexus, fiel ao front, ocupa o
+ * palco (820 por 600 no computador): a barra lateral do front à esquerda e a página à direita, com um cursor que
+ * anda e toca nas coisas. No celular (400 por 560), a janela vira a Hoje do front no celular, e o momento 4 vira a
+ * própria conversa do WhatsApp. As medidas e as cores são as dos tokens do front (styles/tokens.css): o papel
+ * #fdfdfc, a barra #fafaf9, a tinta #1b1b19 e #5c5b56, o fio a 14 %, o verde #4a643c. A letra da voz do front
+ * (Bricolage) não existe no site, salvo na palavra «Plexus»: o título da Hoje e o dos diálogos ficam na IBM Plex
+ * Sans em 500 e 600 (a divergência dita no relatório). Nenhuma letra abaixo de 13 px no computador (12,2 px na
+ * escala de 0,937); no celular, as letras crescem pelo fator --u quando a escala fica pequena (375 por 667). */
+
+.dia[data-tela="1"] .t1 {
+  --papel: #fdfdfc; --barra: #fafaf9; --sup: #ffffff; --tinta: #1b1b19; --suave: #5c5b56; --apagada: #74736f;
+  --fio: rgba(27, 27, 25, 0.14); --leve: rgba(27, 27, 25, 0.05); --ativo: rgba(27, 27, 25, 0.09);
+  --verde: #4a643c; --verde-f: #3e5433; --verde-c: #ecf0ea; --veu: rgba(27, 27, 25, 0.45);
+  --sombra-card: 0 1px 2px rgba(27, 27, 25, 0.06), 0 2px 8px rgba(27, 27, 25, 0.06);
+  --sombra-flut: 0 2px 6px rgba(27, 27, 25, 0.06), 0 12px 32px rgba(27, 27, 25, 0.08);
+  --u: 1;
+  --f1: 13px; --f2: 14px; --f3: 15px; --f4: 17px; --f5: 20px; --ft: 26px;
+  --lento: 260ms; --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: absolute; inset: 0; font-family: var(--font-ui); color: var(--tinta); font-size: var(--f2); line-height: 1.4;
+  -webkit-font-smoothing: antialiased; text-align: left;
+}
+.dia[data-tela="1"] .t1 * { box-sizing: border-box; }
+.dia[data-tela="1"] .t1 :where(p, h4, h5, ul, li, dl, dd) { margin: 0; padding: 0; list-style: none; }
+.dia[data-tela="1"] .t1 :where(svg, img) { display: block; flex: none; }
+/* o que anda com o rolar: só transform e opacity, com uma suavização curta para o rolar rápido */
+.dia[data-tela="1"] .t1-m { transition: transform var(--lento) var(--ease), opacity var(--lento) var(--ease); }
+.dia[data-tela="1"] .t1-fora { visibility: hidden; }
+
+/* ===== a janela ===== */
+.dia[data-tela="1"] .t1-jan {
+  position: absolute; left: 0; top: 0; width: 820px; height: 600px; overflow: hidden; border-radius: 14px;
+  background: var(--papel); border: 1px solid var(--fio);
+  box-shadow: 0 1px 2px rgba(27, 27, 25, 0.05), 0 18px 48px rgba(27, 27, 25, 0.10);
+  transform-origin: 30% 50%;
+}
+
+/* ===== a barra lateral (Sidebar.module.css): a palavra, as cinco páginas, as conversas e a conta ===== */
+.dia[data-tela="1"] .t1-side { position: absolute; left: 0; top: 0; bottom: 0; width: 204px; display: flex; flex-direction: column; padding: 16px 0 12px; background: var(--barra); border-right: 1px solid var(--fio); }
+.dia[data-tela="1"] .t1-side-topo { display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 8px 0 20px; }
+.dia[data-tela="1"] .t1-palavra { font-family: 'Plexus Marca', var(--font-ui); font-weight: 700; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; color: var(--tinta); }
+.dia[data-tela="1"] .t1-recolher { width: 32px; height: 32px; display: grid; place-items: center; color: var(--suave); }
+.dia[data-tela="1"] .t1-recolher svg { width: 16px; height: 16px; }
+.dia[data-tela="1"] .t1-nav { margin-top: 16px; padding: 0 8px; }
+.dia[data-tela="1"] .t1-it { position: relative; display: flex; align-items: center; gap: 8px; height: 36px; padding: 4px 12px; color: var(--suave); font-size: var(--f3); }
+.dia[data-tela="1"] .t1-it > * { position: relative; }
+.dia[data-tela="1"] .t1 .t1-it > .t1-f { position: absolute; inset: 0; border-radius: 10px; background: var(--ativo); opacity: 0; }
+.dia[data-tela="1"] .t1-it svg { width: 18px; height: 18px; }
+.dia[data-tela="1"] .t1-it.t1-sim { color: var(--tinta); }
+.dia[data-tela="1"] .t1-num { margin-left: auto; color: var(--suave); font-variant-numeric: tabular-nums; }
+/* as conversas de antes: começam vazias no primeiro dia e crescem (o resumo da reunião, depois a pergunta) */
+.dia[data-tela="1"] .t1-recentes { position: relative; height: 68px; margin-top: 4px; }
+.dia[data-tela="1"] .t1 .t1-rc { position: absolute; left: 8px; right: 8px; top: 2px; height: 32px; opacity: 0; }
+.dia[data-tela="1"] .t1-rc > span { position: relative; display: block; padding: 6px 12px 6px 38px; font-size: var(--f2); line-height: 20px; color: var(--tinta); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dia[data-tela="1"] .t1 .t1-rc > .t1-f { position: absolute; inset: 0; border-radius: 10px; background: var(--ativo); opacity: 0; }
+.dia[data-tela="1"] .t1-conta { margin-top: auto; padding: 8px 8px 0; border-top: 1px solid var(--fio); }
+.dia[data-tela="1"] .t1-conta > span { display: flex; align-items: center; gap: 12px; padding: 8px 12px; }
+.dia[data-tela="1"] .t1-av { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--ativo); color: var(--tinta); font-size: var(--f1); font-weight: 500; flex: none; }
+.dia[data-tela="1"] .t1-quem { display: grid; line-height: 1.3; }
+.dia[data-tela="1"] .t1-quem b { font-weight: 500; font-size: var(--f2); }
+.dia[data-tela="1"] .t1-quem small { font-size: var(--f1); color: var(--suave); }
+
+/* a barra do topo do celular (o menu, o laço e o nome da página); some no computador */
+.dia[data-tela="1"] .t1-topo-cel { display: none; }
+
+/* ===== a página ===== */
+.dia[data-tela="1"] .t1-main { position: absolute; left: 204px; top: 0; right: 0; bottom: 0; overflow: hidden; }
+.dia[data-tela="1"] .t1-rola { position: absolute; left: 0; top: 0; right: 0; }
+.dia[data-tela="1"] .t1-pg { position: absolute; left: 0; top: 0; right: 0; padding: 30px 32px 0; }
+.dia[data-tela="1"] .t1-cab { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 34px; }
+.dia[data-tela="1"] .t1-tit { position: relative; flex: 1; height: 34px; font-weight: 500; font-size: var(--ft); line-height: 34px; letter-spacing: -0.012em; color: var(--tinta); white-space: nowrap; }
+.dia[data-tela="1"] .t1-tit span { position: absolute; left: 0; top: 0; }
+/* os botões do front (controls.module.css): a pílula cheia no verde, a leve no preenchimento, a fantasma no texto */
+.dia[data-tela="1"] .t1-bt { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 999px; font-size: var(--f2); font-weight: 500; white-space: nowrap; line-height: 1; flex: none; }
+.dia[data-tela="1"] .t1-pri { background: var(--verde); color: #fff; padding: 0 16px; }
+.dia[data-tela="1"] .t1-sec { background: var(--leve); color: var(--tinta); }
+.dia[data-tela="1"] .t1-fan { color: var(--suave); }
+.dia[data-tela="1"] .t1-bt svg { width: 16px; height: 16px; }
+.dia[data-tela="1"] .t1-abas { position: relative; display: flex; flex-wrap: wrap; gap: 4px; margin-top: 14px; }
+.dia[data-tela="1"] .t1-aba { position: relative; display: inline-flex; align-items: center; height: 32px; padding: 0 12px; font-size: var(--f2); font-weight: 500; color: var(--suave); white-space: nowrap; }
+.dia[data-tela="1"] .t1-aba > span { position: relative; }
+.dia[data-tela="1"] .t1 .t1-aba > .t1-f { position: absolute; inset: 0; border-radius: 10px; background: var(--ativo); opacity: 0; }
+.dia[data-tela="1"] .t1-aba.t1-sim { color: var(--tinta); }
+.dia[data-tela="1"] .t1-paineis { position: relative; margin-top: 16px; }
+.dia[data-tela="1"] .t1-p { position: absolute; left: 0; top: 0; right: 0; }
+
+/* as decisões: a frase de quando não há nada, o denominador, a linha de desfazer e o cartão */
+.dia[data-tela="1"] .t1-vazio { position: absolute; left: 0; top: 0; right: 0; font-weight: 500; font-size: var(--f5); line-height: 1.3; letter-spacing: -0.01em; color: var(--tinta); text-wrap: pretty; }
+.dia[data-tela="1"] .t1-cont { position: absolute; left: 0; top: 0; font-size: var(--f3); font-weight: 500; line-height: 1.25; font-variant-numeric: tabular-nums; }
+.dia[data-tela="1"] .t1-fb { position: absolute; left: 0; top: 0; right: 0; font-size: var(--f2); line-height: 1.4; color: var(--tinta); }
+.dia[data-tela="1"] .t1-fb b { font-weight: 400; color: var(--verde); }
+
+/* ===== o cartão (DecisionCard.module.css) ===== */
+.dia[data-tela="1"] .t1-card {
+  position: absolute; left: 0; right: 0; top: 30px; display: flex; flex-direction: column; gap: 16px; padding: 20px;
+  border: 1px solid var(--fio); border-radius: 16px; background: var(--sup); box-shadow: var(--sombra-card);
+}
+.dia[data-tela="1"] .t1-ct { font-size: var(--f4); font-weight: 600; line-height: 1.25; text-wrap: balance; }
+.dia[data-tela="1"] .t1-cx { font-size: var(--f2); line-height: 1.4; text-wrap: pretty; }
+.dia[data-tela="1"] .t1-lk { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.dia[data-tela="1"] .t1-ops { display: flex; flex-direction: column; gap: 4px; }
+.dia[data-tela="1"] .t1-op { position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 8px 12px; border-radius: 10px; }
+.dia[data-tela="1"] .t1-op > * { position: relative; }
+.dia[data-tela="1"] .t1 .t1-op > .t1-f { position: absolute; inset: 0; border-radius: 10px; background: var(--verde-c); opacity: 0; }
+.dia[data-tela="1"] .t1-rad { position: relative; width: 16px; height: 16px; margin-top: 2px; border-radius: 50%; border: 1px solid var(--fio); background: var(--sup); flex: none; }
+.dia[data-tela="1"] .t1-rad i { position: absolute; inset: -1px; border-radius: 50%; border: 1px solid var(--verde); opacity: 0; }
+.dia[data-tela="1"] .t1-rad i::after { content: ''; position: absolute; inset: 2px; border-radius: 50%; background: var(--verde); }
+.dia[data-tela="1"] .t1-ob { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; align-items: baseline; min-width: 0; }
+.dia[data-tela="1"] .t1-ol { font-size: var(--f2); font-weight: 500; line-height: 1.4; }
+.dia[data-tela="1"] .t1-rec { color: var(--verde-f); font-size: var(--f1); font-weight: 500; }
+.dia[data-tela="1"] .t1-ow { grid-column: 1 / -1; color: var(--suave); font-size: var(--f1); line-height: 1.4; }
+.dia[data-tela="1"] .t1-prev { padding: 0 12px 4px 40px; font-size: var(--f1); line-height: 1.4; color: var(--suave); }
+.dia[data-tela="1"] .t1-atos { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 8px; }
+.dia[data-tela="1"] .t1-arqs { display: flex; flex-wrap: wrap; gap: 8px; }
+.dia[data-tela="1"] .t1-arq { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border: 1px solid var(--fio); border-radius: 10px; background: var(--sup); font-size: var(--f1); }
+.dia[data-tela="1"] .t1-arq span { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 6px; background: var(--verde-c); color: var(--verde-f); }
+.dia[data-tela="1"] .t1-arq svg { width: 16px; height: 16px; }
+
+/* a confirmação do envio, no lugar do cartão: o e-mail desenhado como e-mail (o .mail do cartão) */
+.dia[data-tela="1"] .t1-env { position: absolute; left: 0; right: 0; top: 34px; border: 1px solid var(--fio); border-radius: 16px; background: var(--sup); box-shadow: var(--sombra-card); overflow: hidden; }
+.dia[data-tela="1"] .t1-env-cab { display: flex; align-items: center; gap: 12px; padding: 16px 20px 14px; border-bottom: 1px solid var(--fio); }
+.dia[data-tela="1"] .t1-env-cab img { width: 22px; height: 22px; }
+.dia[data-tela="1"] .t1-env-cab > span { display: grid; }
+.dia[data-tela="1"] .t1-env-cab b { font-size: var(--f3); font-weight: 600; line-height: 1.3; }
+.dia[data-tela="1"] .t1-env-cab small { font-size: var(--f1); color: var(--suave); line-height: 1.4; }
+.dia[data-tela="1"] .t1-env-ok { margin-left: auto; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--verde-c); color: var(--verde); flex: none; }
+.dia[data-tela="1"] .t1-env-ok svg { width: 14px; height: 14px; }
+.dia[data-tela="1"] .t1-env-corpo { padding: 14px 20px 18px; font-size: var(--f2); line-height: 1.6; text-wrap: pretty; }
+
+/* ===== as tarefas (TaskList.module.css e Segmented.module.css) ===== */
+.dia[data-tela="1"] .t1-seg { position: relative; display: inline-flex; gap: 2px; height: 32px; padding: 2px; border-radius: 10px; background: var(--leve); }
+.dia[data-tela="1"] .t1-sg { position: relative; display: inline-flex; align-items: center; padding: 0 12px; font-size: var(--f2); color: var(--suave); white-space: nowrap; border-radius: 10px; }
+.dia[data-tela="1"] .t1-sg > span { position: relative; }
+.dia[data-tela="1"] .t1 .t1-sg > .t1-f { position: absolute; inset: 0; border-radius: 10px; border: 1px solid var(--fio); background: var(--sup); box-shadow: 0 1px 2px rgba(27, 27, 25, 0.08); opacity: 0; }
+.dia[data-tela="1"] .t1-sg.t1-sim { color: var(--tinta); }
+.dia[data-tela="1"] .t1-grupo { margin-top: 18px; font-size: var(--f1); color: var(--suave); line-height: 1.4; }
+.dia[data-tela="1"] .t1-lista { position: relative; margin-top: 4px; }
+.dia[data-tela="1"] .t1-tk { position: relative; display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 0; }
+.dia[data-tela="1"] .t1-tk + .t1-tk { border-top: 1px solid var(--fio); }
+.dia[data-tela="1"] .t1-tk > * { position: relative; }
+.dia[data-tela="1"] .t1 .t1-tk > .t1-f { position: absolute; inset: 0 -10px; border-radius: 10px; background: var(--verde-c); opacity: 0; }
+.dia[data-tela="1"] .t1-ck { align-self: flex-start; position: relative; width: 16px; height: 16px; margin-top: 3px; border-radius: 50%; border: 1px solid var(--fio); flex: none; }
+.dia[data-tela="1"] .t1-ck.t1-feita { border-color: var(--verde); }
+.dia[data-tela="1"] .t1-ck.t1-feita::after { content: ''; position: absolute; inset: 2px; border-radius: 50%; background: var(--verde); }
+.dia[data-tela="1"] .t1-tb { flex: 1; display: grid; min-width: 0; }
+.dia[data-tela="1"] .t1-tt { font-size: var(--f3); font-weight: 500; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dia[data-tela="1"] .t1-ts { font-size: var(--f2); color: var(--suave); line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+.dia[data-tela="1"] .t1-to { font-size: var(--f2); color: var(--suave); flex: none; }
+.dia[data-tela="1"] .t1-tar-p .t1-lista { margin-top: 12px; }
+.dia[data-tela="1"] .t1-tar-p .t1-feitas { position: absolute; left: 0; right: 0; top: 0; margin-top: 0; }
+
+/* ===== o «Decidido pelo Plexus» (Decided.module.css) ===== */
+.dia[data-tela="1"] .t1-dg { font-size: var(--f1); color: var(--suave); line-height: 1.4; }
+.dia[data-tela="1"] .t1-dl { margin-top: 8px; margin-left: -8px; margin-right: -8px; }
+.dia[data-tela="1"] .t1-dr { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 10px; }
+.dia[data-tela="1"] .t1-dr > span { flex: 1; display: grid; min-width: 0; }
+.dia[data-tela="1"] .t1-dr b { font-size: var(--f2); font-weight: 500; line-height: 1.45; }
+.dia[data-tela="1"] .t1-dr small { font-size: var(--f1); color: var(--suave); line-height: 1.45; }
+.dia[data-tela="1"] .t1-dr em { font-style: normal; font-size: var(--f1); color: var(--suave); font-variant-numeric: tabular-nums; flex: none; }
+
+/* ===== o aviso do que chega de fora (o e-mail do Sérgio, com o logo do Gmail) ===== */
+.dia[data-tela="1"] .t1-aviso {
+  position: absolute; right: 18px; bottom: 18px; width: 300px; display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px;
+  border-radius: 14px; background: var(--sup); border: 1px solid var(--fio); box-shadow: var(--sombra-flut); z-index: 6;
+}
+.dia[data-tela="1"] .t1-aviso img { width: 22px; height: 22px; margin-top: 1px; }
+.dia[data-tela="1"] .t1-aviso > span { flex: 1; display: grid; min-width: 0; }
+.dia[data-tela="1"] .t1-aviso b { font-size: var(--f2); font-weight: 600; line-height: 1.35; }
+.dia[data-tela="1"] .t1-aviso small { font-size: var(--f1); color: var(--suave); line-height: 1.4; }
+.dia[data-tela="1"] .t1-aviso em { font-style: normal; font-size: var(--f1); color: var(--suave); font-variant-numeric: tabular-nums; }
+.dia[data-tela="1"] .t1-lendo { position: relative; height: 18px; margin-top: 4px; }
+.dia[data-tela="1"] .t1-lendo > * { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 6px; font-size: var(--f1); line-height: 18px; white-space: nowrap; }
+.dia[data-tela="1"] .t1-lendo svg { width: 13px; height: 14px; color: var(--verde); }
+.dia[data-tela="1"] .t1-lendo .t1-l1 { color: var(--suave); }
+.dia[data-tela="1"] .t1-lendo .t1-l2 { color: var(--verde-f); }
+
+/* ===== os diálogos (Dialog.module.css): o véu, a caixa de 16 de raio com a sombra que flutua ===== */
+.dia[data-tela="1"] .t1-veu { position: absolute; inset: 0; background: var(--veu); z-index: 7; }
+.dia[data-tela="1"] .t1-capa { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 8; pointer-events: none; }
+.dia[data-tela="1"] .t1-dlg {
+  position: relative; width: 460px; display: flex; flex-direction: column; gap: 16px; padding: 24px;
+  border-radius: 16px; background: var(--sup); box-shadow: var(--sombra-flut);
+}
+.dia[data-tela="1"] .t1-dlg-ent { width: 520px; }
+.dia[data-tela="1"] .t1-dh { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.dia[data-tela="1"] .t1-dh h5 { font-size: var(--f5); font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; text-wrap: balance; }
+.dia[data-tela="1"] .t1-x { width: 32px; height: 32px; margin: -6px -6px 0 0; display: grid; place-items: center; color: var(--suave); flex: none; }
+.dia[data-tela="1"] .t1-x svg { width: 16px; height: 16px; }
+.dia[data-tela="1"] .t1-dsub { margin-top: -6px; font-size: var(--f2); color: var(--suave); line-height: 1.4; }
+.dia[data-tela="1"] .t1-dtx { font-size: var(--f3); line-height: 1.6; text-wrap: pretty; }
+.dia[data-tela="1"] .t1-drot { font-size: var(--f2); font-weight: 500; color: var(--suave); }
+.dia[data-tela="1"] .t1-dbt { display: flex; justify-content: flex-end; align-items: center; gap: 8px; }
+.dia[data-tela="1"] .t1-mais { width: 32px; height: 32px; display: grid; place-items: center; color: var(--tinta); }
+.dia[data-tela="1"] .t1-mais svg { width: 16px; height: 16px; }
+/* o e-mail dentro do diálogo: o cabeçalho com o ícone, as linhas «Para» e «Assunto» e o corpo */
+.dia[data-tela="1"] .t1-mail { position: relative; border: 1px solid var(--fio); border-radius: 10px; background: var(--sup); }
+.dia[data-tela="1"] .t1-mail-cab { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--fio); font-size: var(--f1); font-weight: 500; color: var(--suave); }
+.dia[data-tela="1"] .t1-mail-cab svg { width: 16px; height: 16px; }
+.dia[data-tela="1"] .t1-mail dl { margin: 0; padding: 0 12px; }
+.dia[data-tela="1"] .t1-mail dl > div { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--fio); }
+.dia[data-tela="1"] .t1-mail dt { min-width: 56px; font-size: var(--f1); color: var(--suave); line-height: 1.4; }
+.dia[data-tela="1"] .t1-mail dd { margin: 0; font-size: var(--f2); line-height: 1.4; color: var(--suave); }
+.dia[data-tela="1"] .t1-mail-corpo { position: relative; padding: 12px 12px 14px; font-size: var(--f2); line-height: 1.6; color: var(--suave); text-wrap: pretty; }
+.dia[data-tela="1"] .t1-mail-corpo.t1-livre { color: var(--tinta); }
+.dia[data-tela="1"] .t1-resp .t1-mail-corpo { padding-bottom: 44px; }
+.dia[data-tela="1"] .t1-editar { position: absolute; right: 8px; bottom: 8px; display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; background: var(--sup); font-size: var(--f1); color: var(--tinta); }
+.dia[data-tela="1"] .t1-editar svg { width: 16px; height: 16px; }
+.dia[data-tela="1"] .t1-cur { display: inline-block; width: 1.5px; height: 1.15em; margin: 0 -1.5px -0.2em 0; background: var(--tinta); }
+.dia[data-tela="1"] .t1-pisca { animation: t1-pisca 1.06s steps(1) infinite; }
+@keyframes t1-pisca { 50% { opacity: 0; } }
+.dia[data-tela="1"] .t1-salvar > i { position: absolute; inset: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.5); }
+/* de onde veio (OriginalBox, no card da tarefa) */
+.dia[data-tela="1"] .t1-origem { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--fio); border-radius: 10px; }
+.dia[data-tela="1"] .t1-origem img { width: 18px; height: 18px; }
+.dia[data-tela="1"] .t1-origem span { display: grid; }
+.dia[data-tela="1"] .t1-origem b { font-size: var(--f2); font-weight: 500; line-height: 1.4; }
+.dia[data-tela="1"] .t1-origem small { font-size: var(--f1); color: var(--suave); line-height: 1.4; }
+/* a entrega aberta (DeliveryCard.module.css): a linha de cima com a marca, «Entregue», as lâminas e as fontes */
+.dia[data-tela="1"] .t1-sobre { display: flex; align-items: center; gap: 8px; margin-bottom: -8px; font-size: var(--f1); color: var(--suave); font-variant-numeric: tabular-nums; }
+.dia[data-tela="1"] .t1-sobre svg { width: 14px; height: 15px; color: var(--verde); }
+.dia[data-tela="1"] .t1-parte { display: grid; gap: 8px; }
+.dia[data-tela="1"] .t1-selo { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; margin: 0 2px; border-radius: 999px; background: var(--ativo); font-size: var(--f1); font-weight: 500; line-height: 1; vertical-align: 1px; }
+.dia[data-tela="1"] .t1-laminas { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.dia[data-tela="1"] .t1-lam { position: relative; aspect-ratio: 16 / 10; display: grid; align-content: start; gap: 5px; padding: 8px 9px; border: 1px solid var(--fio); border-radius: 6px; background: var(--papel); overflow: hidden; }
+.dia[data-tela="1"] .t1-lam i { display: block; height: 4px; border-radius: 2px; background: rgba(27, 27, 25, 0.12); }
+.dia[data-tela="1"] .t1-lam i.t1-lt { height: 6px; width: 70%; background: rgba(27, 27, 25, 0.24); }
+.dia[data-tela="1"] .t1-lam i.t1-lv { width: 30%; height: 12px; background: rgba(74, 100, 60, 0.5); }
+.dia[data-tela="1"] .t1-lam .t1-lc { display: flex; align-items: flex-end; gap: 3px; height: 22px; margin-top: 2px; border-bottom: 1px solid var(--fio); }
+.dia[data-tela="1"] .t1-lam .t1-lc i { flex: 1; border-radius: 2px 2px 0 0; }
+.dia[data-tela="1"] .t1-lam .t1-lc i:nth-child(even) { background: rgba(74, 100, 60, 0.5); }
+.dia[data-tela="1"] .t1-lam .t1-l2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.dia[data-tela="1"] .t1-lam .t1-l2 i { height: 22px; border-radius: 3px; background: rgba(27, 27, 25, 0.07); }
+.dia[data-tela="1"] .t1-lam .t1-l2 i + i { background: rgba(74, 100, 60, 0.18); }
+.dia[data-tela="1"] .t1-fontes li { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+.dia[data-tela="1"] .t1-fontes li + li { border-top: 1px solid var(--fio); }
+.dia[data-tela="1"] .t1-fontes .t1-fi { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 6px; background: var(--leve); flex: none; }
+.dia[data-tela="1"] .t1-fontes .t1-fi img { width: 16px; height: 16px; }
+.dia[data-tela="1"] .t1-fontes .t1-fn { font-size: var(--f2); color: var(--suave); width: 10px; flex: none; }
+.dia[data-tela="1"] .t1-fontes b { flex: 1; font-size: var(--f2); font-weight: 500; }
+.dia[data-tela="1"] .t1-fontes small { font-size: var(--f1); color: var(--suave); flex: none; }
+.dia[data-tela="1"] .t1-dlg-ent .t1-dbt { justify-content: space-between; }
+.dia[data-tela="1"] .t1-nota { font-size: var(--f1); color: var(--suave); }
+
+/* ===== a cena que se repete: pelo relógio, sem as transições curtas; o salto do recomeço sem transição nenhuma ===== */
+.dia[data-tela="1"] .t1-relogio .t1-m, .dia[data-tela="1"] .t1-relogio .t1-cursor,
+.dia[data-tela="1"] .t1-salto .t1-conteudo .t1-m, .dia[data-tela="1"] .t1-salto .t1-sobre-c .t1-m, .dia[data-tela="1"] .t1-salto .t1-cursor { transition: none !important; }
+/* o conteúdo que some e volta no recomeço: dentro da moldura, por cima da barra lateral (o véu e as caixas a cobrem) e
+   da barra do topo do celular (a página começa embaixo dela); e o que entra por cima da janela */
+.dia[data-tela="1"] .t1-conteudo { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.dia[data-tela="1"] .t1-sobre-c { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+
+/* ===== Conexões: todas as portas do Plexus pronto, no padrão da lista de portas (a arte B de 13/10), na letra e nas
+   cores do front: o ladrilho com o logo, o nome com o que ela traz embaixo, «Conectar» (o botão leve do front) que vira
+   «ao vivo» com o ponto verde ===== */
+.dia[data-tela="1"] .t1-portas { margin-top: 14px; border-top: 1px solid var(--fio); }
+.dia[data-tela="1"] .t1-porta { position: relative; display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; column-gap: 12px; min-height: 52px; padding: 6px 2px; border-bottom: 1px solid var(--fio); }
+.dia[data-tela="1"] .t1-porta > span { position: relative; }
+.dia[data-tela="1"] .t1 .t1-porta > .t1-f { position: absolute; inset: 0 -8px; border-radius: 10px; background: var(--verde-c); opacity: 0; }
+.dia[data-tela="1"] .t1-ladrilho { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px; background: #fff; border: 1px solid var(--fio); box-shadow: 0 1px 2px rgba(27, 27, 25, 0.06); }
+.dia[data-tela="1"] .t1-ladrilho img { width: 20px; height: 20px; }
+.dia[data-tela="1"] .t1-ladrilho > svg { width: 18px; height: 19px; color: var(--verde); }
+.dia[data-tela="1"] .t1-badge { position: absolute; right: -4px; bottom: -4px; width: 11px; height: 11px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 0 2px var(--papel); opacity: 0; }
+.dia[data-tela="1"] .t1-pn { display: grid; min-width: 0; }
+.dia[data-tela="1"] .t1-pn b { display: flex; align-items: center; gap: 8px; font-size: var(--f3); font-weight: 500; line-height: 1.35; }
+.dia[data-tela="1"] .t1-pn small { font-size: var(--f1); color: var(--suave); line-height: 1.35; text-wrap: pretty; }
+.dia[data-tela="1"] .t1-plogos { display: inline-flex; gap: 5px; }
+.dia[data-tela="1"] .t1-plogos img { width: 15px; height: 15px; }
+.dia[data-tela="1"] .t1-pe { display: grid; justify-items: end; align-items: center; }
+.dia[data-tela="1"] .t1-pe > span { grid-area: 1 / 1; }
+.dia[data-tela="1"] .t1-pc { display: inline-flex; align-items: center; height: 30px; padding: 0 14px; border-radius: 999px; background: var(--leve); font-size: var(--f2); font-weight: 500; color: var(--tinta); white-space: nowrap; }
+.dia[data-tela="1"] .t1-pv { display: inline-flex; align-items: center; gap: 7px; font-size: var(--f2); font-weight: 500; color: var(--verde-f); white-space: nowrap; opacity: 0; }
+.dia[data-tela="1"] .t1-pv i { width: 7px; height: 7px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 0 3px rgba(74, 100, 60, 0.16); }
+
+/* ===== o mapa do primeiro dia, embaixo das portas ===== */
+.dia[data-tela="1"] .t1-mapa { margin-top: 16px; padding: 18px 20px 16px; border: 1px solid var(--fio); border-radius: 16px; background: var(--sup); box-shadow: var(--sombra-card); }
+.dia[data-tela="1"] .t1-mapa-cab { display: flex; align-items: center; gap: 8px; font-size: var(--f3); line-height: 20px; }
+.dia[data-tela="1"] .t1-mapa-cab > svg { width: 16px; height: 17px; color: var(--verde); }
+.dia[data-tela="1"] .t1-mapa-cab b { font-weight: 600; }
+.dia[data-tela="1"] .t1-mapa-st { position: relative; margin-left: auto; width: 170px; height: 20px; }
+.dia[data-tela="1"] .t1-mapa-st em { position: absolute; right: 0; top: 0; display: inline-flex; align-items: center; gap: 4px; font-style: normal; font-size: var(--f1); white-space: nowrap; color: var(--suave); }
+.dia[data-tela="1"] .t1-mapa-st .t1-st-2 { color: var(--verde-f); font-weight: 500; }
+.dia[data-tela="1"] .t1-mapa-st svg { width: 15px; height: 15px; }
+.dia[data-tela="1"] .t1-leit { display: grid; gap: 8px; margin-top: 12px; }
+.dia[data-tela="1"] .t1-leit li { position: relative; display: flex; align-items: center; gap: 10px; padding-bottom: 6px; }
+.dia[data-tela="1"] .t1-lok { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; background: var(--verde-c); color: var(--verde); flex: none; }
+.dia[data-tela="1"] .t1-lok svg { width: 13px; height: 13px; }
+.dia[data-tela="1"] .t1-ltx { flex: 1; font-size: var(--f2); line-height: 1.4; }
+.dia[data-tela="1"] .t1-ltx small { margin-left: 8px; font-size: var(--f1); color: var(--suave); font-variant-numeric: tabular-nums; }
+.dia[data-tela="1"] .t1-barra { position: absolute; left: 28px; right: 0; bottom: 0; height: 2px; border-radius: 1px; background: var(--leve); overflow: hidden; }
+.dia[data-tela="1"] .t1-barra i { position: absolute; inset: 0; background: var(--verde); transform-origin: 0 50%; transform: scaleX(0); }
+.dia[data-tela="1"] .t1-mapa-g { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-top: 14px; }
+.dia[data-tela="1"] .t1-mrot { font-size: var(--f1); font-weight: 500; color: var(--suave); margin-bottom: 2px; }
+.dia[data-tela="1"] .t1-pess li { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
+.dia[data-tela="1"] .t1-pess .t1-av { width: 26px; height: 26px; font-size: var(--f1); }
+.dia[data-tela="1"] .t1-pess li > span:last-child { display: grid; min-width: 0; }
+.dia[data-tela="1"] .t1-pess b { font-size: var(--f2); font-weight: 500; line-height: 1.35; }
+.dia[data-tela="1"] .t1-pess b em { margin-left: 8px; padding: 1px 8px; border-radius: 999px; background: var(--verde-c); color: var(--verde-f); font-style: normal; font-size: var(--f1); font-weight: 500; }
+.dia[data-tela="1"] .t1-pess small { font-size: var(--f1); color: var(--suave); line-height: 1.35; }
+
+/* ===== Conversas (ConversationView): a resposta do Plexus com a marca acima, a lista numerada e as fontes ===== */
+.dia[data-tela="1"] .t1-resp-p { display: flex; flex-direction: column; gap: 8px; }
+.dia[data-tela="1"] .t1-marca-r { width: 19px; height: 20px; color: var(--verde); }
+.dia[data-tela="1"] .t1-marca-r svg { width: 100%; height: 100%; }
+.dia[data-tela="1"] .t1-rt { font-size: var(--f4); font-weight: 600; line-height: 1.25; }
+.dia[data-tela="1"] .t1-rx { font-size: var(--f3); line-height: 1.6; text-wrap: pretty; }
+.dia[data-tela="1"] .t1-itens { counter-reset: t1i; font-size: var(--f3); line-height: 1.6; }
+.dia[data-tela="1"] .t1-itens li { position: relative; padding-left: 28px; counter-increment: t1i; text-wrap: pretty; }
+.dia[data-tela="1"] .t1-itens li::before { content: counter(t1i) '.'; position: absolute; left: 0; }
+.dia[data-tela="1"] .t1-itens li + li { margin-top: 4px; }
+.dia[data-tela="1"] .t1-itens b { font-weight: 600; }
+.dia[data-tela="1"] .t1-origem-l { display: flex; align-items: center; gap: 8px; font-size: var(--f1); color: var(--suave); }
+.dia[data-tela="1"] .t1-origem-l img { width: 16px; height: 16px; }
+.dia[data-tela="1"] .t1-suave { color: var(--suave); }
+/* a proposta (live/ProposalCard.tsx), no corpo do cartão da Hoje */
+.dia[data-tela="1"] .t1-props { display: grid; gap: 12px; margin-top: 20px; }
+.dia[data-tela="1"] .t1-pslot { position: relative; }
+.dia[data-tela="1"] .t1-prop { display: flex; flex-direction: column; gap: 10px; padding: 16px 20px; border: 1px solid var(--fio); border-radius: 16px; background: var(--sup); box-shadow: var(--sombra-card); }
+.dia[data-tela="1"] .t1-fimc { position: absolute; left: 0; top: 0; font-size: var(--f2); color: var(--suave); line-height: 1.4; }
+/* a conversa nova: a marca e «Perguntar ao Plexus» centrados, a caixa embaixo */
+.dia[data-tela="1"] .t1-nova-c { position: absolute; left: 32px; right: 32px; top: 150px; display: grid; justify-items: center; gap: 20px; }
+/* as tarefas sugeridas pela reunião: a proposta com a origem embaixo e os atos à direita */
+.dia[data-tela="1"] .t1-t3 { margin-top: 16px; }
+.dia[data-tela="1"] .t1-t3-props { display: grid; gap: 12px; }
+.dia[data-tela="1"] .t1-t3-lista .t1-grupo:first-child { margin-top: 14px; }
+.dia[data-tela="1"] .t1-prop-pe { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.dia[data-tela="1"] .t1-prop-pe .t1-origem-l { min-width: 0; }
+.dia[data-tela="1"] .t1-slot-6 { margin-top: 12px; }
+.dia[data-tela="1"] .t1-nc-t { display: flex; align-items: center; gap: 10px; font-size: var(--ft); font-weight: 500; letter-spacing: -0.012em; }
+.dia[data-tela="1"] .t1-nc-t svg { width: 24px; height: 25px; color: var(--verde); }
+.dia[data-tela="1"] .t1-caixa { position: relative; display: flex; align-items: center; gap: 8px; width: 100%; min-height: 52px; padding: 8px 10px 8px 16px; border: 1px solid var(--fio); border-radius: 16px; background: var(--sup); }
+.dia[data-tela="1"] .t1-cxt { position: relative; flex: 1; min-width: 0; font-size: var(--f3); line-height: 1.4; }
+.dia[data-tela="1"] .t1-ph { position: absolute; left: 0; top: 0; right: 0; color: var(--suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dia[data-tela="1"] .t1-envb { position: relative; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--leve); color: var(--suave); flex: none; }
+.dia[data-tela="1"] .t1-envb > svg { width: 16px; height: 16px; }
+.dia[data-tela="1"] .t1-envb-p { position: absolute; inset: 0; border-radius: 50%; display: grid; place-items: center; background: var(--verde); color: #fff; opacity: 0; }
+.dia[data-tela="1"] .t1-envb-p svg { width: 16px; height: 16px; }
+/* a conversa aberta: a pergunta num balão cinza à direita com a bolinha acima; a resposta à esquerda, sem balão */
+.dia[data-tela="1"] .t1-q { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.dia[data-tela="1"] .t1-qb { max-width: 72%; padding: 10px 16px; border-radius: 16px; background: var(--ativo); font-size: var(--f3); line-height: 1.55; text-wrap: pretty; }
+.dia[data-tela="1"] .t1-ans { margin-top: 22px; }
+.dia[data-tela="1"] .t1-fontes-r { margin-top: 6px; }
+.dia[data-tela="1"] .t1-fontes-r .t1-fontes li { padding: 5px 0; }
+.dia[data-tela="1"] .t1-pilula { position: absolute; left: 32px; right: 32px; bottom: 16px; height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 9px 0 18px; border: 1px solid var(--fio); border-radius: 999px; background: var(--sup); box-shadow: var(--sombra-card); font-size: var(--f3); color: var(--suave); opacity: 0; }
+/* Loops: a caixa de pedir, o pedido, a proposta da rotina e a rotina na lista */
+.dia[data-tela="1"] .t1-pg-loops .t1-caixa { margin-top: 16px; }
+.dia[data-tela="1"] .t1-loops-c { position: relative; margin-top: 18px; }
+.dia[data-tela="1"] .t1-vz-l { position: absolute; left: 0; top: 0; font-size: var(--f2); color: var(--suave); }
+.dia[data-tela="1"] .t1-pedido { position: absolute; left: 0; right: 0; top: 0; }
+.dia[data-tela="1"] .t1-prop-l { position: absolute; left: 0; right: 0; top: 62px; }
+.dia[data-tela="1"] .t1-prop-l .t1-atos { margin-top: 0; }
+.dia[data-tela="1"] .t1-loop-l { position: absolute; left: 0; right: 0; top: 0; }
+.dia[data-tela="1"] .t1-loop-l .t1-lista { margin-top: 0; }
+.dia[data-tela="1"] .t1-nota-l { margin-top: 8px; font-size: var(--f2); color: var(--suave); line-height: 1.4; text-wrap: pretty; }
+.dia[data-tela="1"] .t1-lp { align-self: flex-start; width: 18px; height: 18px; margin-top: 2px; color: var(--verde); flex: none; }
+.dia[data-tela="1"] .t1-lp svg { width: 100%; height: 100%; }
+
+/* ===== a reunião no Google Meet: os ladrilhos, o gravador do Plexus e a barra de baixo ===== */
+.dia[data-tela="1"] .t1-meet { position: absolute; left: 46px; top: 44px; width: 728px; height: 512px; display: flex; flex-direction: column; padding: 14px 16px 0; border-radius: 16px; background: #202124; z-index: 11; opacity: 0; box-shadow: 0 2px 6px rgba(27, 27, 25, 0.12), 0 24px 56px rgba(27, 27, 25, 0.28); }
+.dia[data-tela="1"] .t1-mt-grade { flex: 1; min-height: 0; display: grid; grid-template-columns: 1.35fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; }
+.dia[data-tela="1"] .t1-mt { position: relative; display: grid; place-items: center; border-radius: 12px; background: #3c4043; overflow: hidden; }
+.dia[data-tela="1"] .t1-mt-s { grid-row: 1 / 3; }
+.dia[data-tela="1"] .t1-mt-av { width: 88px; height: 88px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 36px; font-weight: 500; }
+.dia[data-tela="1"] .t1-mt-h .t1-mt-av, .dia[data-tela="1"] .t1-mt-p .t1-mt-av { width: 60px; height: 60px; font-size: 24px; }
+.dia[data-tela="1"] .t1-mt-laco { background: var(--verde); }
+.dia[data-tela="1"] .t1-mt-laco svg { width: 27px; height: 28px; color: #fff; }
+.dia[data-tela="1"] .t1-mt-n { position: absolute; left: 12px; bottom: 10px; color: #fff; font-size: var(--f2); font-weight: 500; }
+.dia[data-tela="1"] .t1-fala { position: absolute; inset: 0; border-radius: 12px; box-shadow: inset 0 0 0 3px #8ab4f8; opacity: 0; }
+.dia[data-tela="1"] .t1-grav { position: absolute; left: 10px; top: 10px; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 8px; border-radius: 999px; background: rgba(0, 0, 0, 0.5); color: #fff; font-size: var(--f1); }
+.dia[data-tela="1"] .t1-grav i { width: 8px; height: 8px; border-radius: 50%; background: #ea4335; }
+.dia[data-tela="1"] .t1-mt-pe { display: flex; align-items: center; justify-content: space-between; height: 64px; color: #e8eaed; font-size: var(--f2); flex: none; }
+.dia[data-tela="1"] .t1-mt-info { display: flex; align-items: center; gap: 10px; min-width: 0; white-space: nowrap; }
+.dia[data-tela="1"] .t1-mt-info img { width: 20px; height: 20px; }
+.dia[data-tela="1"] .t1-mt-info b { font-weight: 500; font-variant-numeric: tabular-nums; }
+.dia[data-tela="1"] .t1-mt-bts { display: flex; gap: 10px; }
+.dia[data-tela="1"] .t1-mt-bts i { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: #3c4043; color: #fff; }
+.dia[data-tela="1"] .t1-mt-bts svg { width: 18px; height: 18px; }
+.dia[data-tela="1"] .t1-mt-bts .t1-mt-sair { width: 56px; border-radius: 999px; background: #ea4335; }
+
+/* ===== o momento 4: o celular com a conversa do WhatsApp (a da parte 6 da arte C) ===== */
+.dia[data-tela="1"] .t1-esm { position: absolute; inset: 0; background: #ecebe6; z-index: 9; opacity: 0; }
+.dia[data-tela="1"] .t1-zap {
+  position: absolute; right: 26px; top: 14px; width: 300px; height: 572px; display: flex; flex-direction: column; overflow: hidden;
+  border-radius: 40px; border: 8px solid #1b1b19; background: #efeae2; z-index: 10;
+  box-shadow: 0 2px 6px rgba(27, 27, 25, 0.10), 0 24px 56px rgba(27, 27, 25, 0.22);
+}
+.dia[data-tela="1"] .t1-zap-hora { display: flex; justify-content: space-between; align-items: center; height: 32px; padding: 0 22px 0 26px; background: #fff; font-size: var(--f1); font-weight: 600; font-variant-numeric: tabular-nums; flex: none; }
+.dia[data-tela="1"] .t1-zap-hora i { width: 70px; height: 20px; border-radius: 999px; background: #1b1b19; margin-top: 2px; }
+.dia[data-tela="1"] .t1-zap-hora span { position: relative; width: 40px; height: 18px; }
+.dia[data-tela="1"] .t1-zap-hora span > * { position: absolute; left: 0; top: 0; line-height: 18px; }
+.dia[data-tela="1"] .t1-zap-hora em { width: 40px; font-style: normal; }
+.dia[data-tela="1"] .t1-zap-topo { display: flex; align-items: center; gap: 10px; height: 54px; padding: 0 14px 0 10px; background: #fff; border-bottom: 1px solid rgba(27, 27, 25, 0.1); flex: none; }
+.dia[data-tela="1"] .t1-zap-topo .t1-volta { width: 16px; height: 16px; color: #54656f; }
+.dia[data-tela="1"] .t1-zap-av { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--verde); color: #fff; flex: none; }
+.dia[data-tela="1"] .t1-zap-av svg { width: 17px; height: 18px; }
+.dia[data-tela="1"] .t1-zap-nome { display: grid; gap: 2px; font-size: var(--f3); line-height: 1.2; }
+.dia[data-tela="1"] .t1-zap-nome small { font-size: var(--f1); color: #667781; }
+.dia[data-tela="1"] .t1-zap-topo img { width: 20px; height: 20px; margin-left: auto; }
+.dia[data-tela="1"] .t1-zap-tela { position: relative; flex: 1; min-height: 0; overflow: hidden; background-color: #efeae2; background-image: radial-gradient(rgba(27, 27, 25, 0.05) 1px, transparent 1.4px); background-size: 16px 16px; }
+.dia[data-tela="1"] .t1-zap-lista { position: absolute; left: 0; right: 0; top: 0; display: flex; flex-direction: column; gap: 6px; padding: 12px 10px; }
+.dia[data-tela="1"] .t1-zm { display: flex; flex-direction: column; align-items: flex-start; }
+.dia[data-tela="1"] .t1-zm p { position: relative; max-width: 86%; padding: 7px 10px 8px; border-radius: 10px; font-size: var(--f2); line-height: 1.38; color: #111b21; box-shadow: 0 1px 1px rgba(27, 27, 25, 0.1); background: #fff; border-top-left-radius: 3px; }
+.dia[data-tela="1"] .t1-zm.t1-eu { align-items: flex-end; }
+.dia[data-tela="1"] .t1-zm.t1-eu p { background: #d9fdd3; border-top-left-radius: 10px; border-top-right-radius: 3px; }
+.dia[data-tela="1"] .t1-zh { float: right; display: inline-flex; align-items: center; gap: 3px; margin: 7px 0 -4px 10px; font-size: var(--f1); line-height: 1; color: #667781; font-variant-numeric: tabular-nums; }
+.dia[data-tela="1"] .t1-zh svg { width: 16px; height: 12px; color: #53bdeb; }
+.dia[data-tela="1"] .t1-zm p.t1-zaudio { display: flex; align-items: center; gap: 8px; width: 230px; }
+.dia[data-tela="1"] .t1-play { position: relative; width: 18px; height: 26px; flex: none; }
+.dia[data-tela="1"] .t1-play::after { content: ''; position: absolute; left: 3px; top: 6px; border-style: solid; border-width: 7px 0 7px 12px; border-color: transparent transparent transparent #54656f; }
+.dia[data-tela="1"] .t1-onda { display: flex; align-items: center; gap: 2px; height: 26px; flex: 1; min-width: 0; overflow: hidden; }
+.dia[data-tela="1"] .t1-onda i { width: 3px; border-radius: 2px; background: rgba(27, 27, 25, 0.28); flex: none; }
+.dia[data-tela="1"] .t1-zaudio .t1-zh { float: none; margin: 0; align-self: flex-end; }
+.dia[data-tela="1"] .t1-zm p.t1-zdig { display: inline-flex; gap: 4px; align-items: center; padding: 12px 14px; }
+.dia[data-tela="1"] .t1-zdig i { width: 7px; height: 7px; border-radius: 50%; background: #8696a0; }
+.dia[data-tela="1"] .t1-anda .t1-zdig i { animation: t1-dig 1.2s infinite ease-in-out; }
+.dia[data-tela="1"] .t1-anda .t1-zdig i:nth-child(2) { animation-delay: 0.16s; }
+.dia[data-tela="1"] .t1-anda .t1-zdig i:nth-child(3) { animation-delay: 0.32s; }
+@keyframes t1-dig { 0%, 60%, 100% { transform: translateY(0); opacity: 0.55; } 30% { transform: translateY(-3px); opacity: 1; } }
+.dia[data-tela="1"] .t1-zbt { position: relative; display: grid; place-items: center; width: 86%; height: 36px; margin-top: 4px; border-radius: 8px; background: #fff; box-shadow: 0 1px 1px rgba(27, 27, 25, 0.1); font-size: var(--f2); color: #027eb5; }
+.dia[data-tela="1"] .t1-zbt i { position: absolute; inset: 0; border-radius: 8px; background: rgba(2, 126, 181, 0.13); box-shadow: inset 0 0 0 1.5px rgba(2, 126, 181, 0.35); opacity: 0; }
+/* a caixa de baixo: «Mensagem» e o microfone; ao gravar, o ponto, o tempo e a onda que cresce */
+.dia[data-tela="1"] .t1-zap-pe { position: relative; display: flex; align-items: center; gap: 8px; height: 58px; padding: 0 8px 4px; flex: none; }
+.dia[data-tela="1"] .t1-zcx { position: relative; flex: 1; height: 42px; border-radius: 999px; background: #fff; box-shadow: 0 1px 1px rgba(27, 27, 25, 0.08); }
+.dia[data-tela="1"] .t1-zcx > span { position: absolute; left: 16px; right: 12px; top: 0; bottom: 0; display: flex; align-items: center; gap: 8px; font-size: var(--f2); color: #667781; }
+.dia[data-tela="1"] .t1-zgrav i.t1-ponto { width: 9px; height: 9px; border-radius: 50%; background: #e5484d; flex: none; }
+.dia[data-tela="1"] .t1-zgrav b { font-weight: 400; color: #111b21; font-variant-numeric: tabular-nums; width: 34px; flex: none; }
+.dia[data-tela="1"] .t1-zmic { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: #00a884; color: #fff; flex: none; }
+.dia[data-tela="1"] .t1-zmic svg { width: 18px; height: 18px; }
+
+/* ===== o cursor e o toque ===== */
+.dia[data-tela="1"] .t1-cursor { position: absolute; left: 0; top: 0; width: 20px; height: 26px; z-index: 20; pointer-events: none; transition: transform 220ms var(--ease), opacity 220ms var(--ease); }
+.dia[data-tela="1"] .t1-cursor svg { width: 20px; height: 26px; filter: drop-shadow(0 1px 2px rgba(27, 27, 25, 0.25)); }
+.dia[data-tela="1"] .t1-toque { position: absolute; left: 0; top: 0; width: 36px; height: 36px; margin: -18px 0 0 -18px; border-radius: 50%; background: rgba(27, 27, 25, 0.16); z-index: 19; pointer-events: none; }
+
+/* o enfeite que corre pelo relógio para com a aba escondida */
+.dia[data-tela="1"] .t1.t1-parado * { animation-play-state: paused !important; }
+
+/* ===== a forma alta (celular, 400 por 560): a Hoje do front no celular ===== */
+.dia[data-tela="1"][data-forma="alto"] .t1 {
+  /* o menor tamanho que dá 12,2 px na tela nesta escala: em 390 por 844 (0,855) fica abaixo de 14,5; em 375 por 667
+     (0,654) sobe a 18,7, e a hierarquia fica pelo peso */
+  --m: calc(12.2px / var(--escala, 1));
+  --f1: max(14px, var(--m)); --f2: max(14.5px, var(--m)); --f3: max(15.5px, calc(var(--m) + 0.5px)); --f4: max(17.5px, calc(var(--m) + 1.5px)); --f5: max(19px, calc(var(--m) + 2px)); --ft: max(20px, calc(var(--m) + 2px));
+}
+.dia[data-tela="1"][data-forma="alto"] .t1-jan { width: 400px; height: 560px; border-radius: 26px; transform-origin: 50% 50%; }
+.dia[data-tela="1"][data-forma="alto"] .t1-side { display: none; }
+.dia[data-tela="1"][data-forma="alto"] .t1-topo-cel { position: absolute; left: 0; top: 0; right: 0; height: 52px; display: flex; align-items: center; gap: 14px; padding: 0 16px; background: var(--barra); z-index: 3; }
+.dia[data-tela="1"][data-forma="alto"] .t1-topo-cel .t1-menu { display: block; width: 18px; height: 18px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-topo-cel .t1-laco { display: block; width: 26px; height: 27px; color: var(--verde); }
+.dia[data-tela="1"][data-forma="alto"] .t1-topo-cel svg { width: 100%; height: 100%; }
+.dia[data-tela="1"][data-forma="alto"] .t1-topo-cel > span { position: relative; height: 22px; flex: 1; }
+.dia[data-tela="1"][data-forma="alto"] .t1-topo-cel > span > b { position: absolute; left: 0; top: 0; font-weight: 500; font-size: var(--f3); line-height: 22px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-main { left: 0; top: 52px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-pg { padding: 20px 16px 0; }
+.dia[data-tela="1"][data-forma="alto"] .t1-cab { height: auto; min-height: 34px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-tit { height: calc(var(--ft) * 1.3); line-height: calc(var(--ft) * 1.3); }
+/* no celular, «Nova conversa» sai do topo da Hoje para a frase caber inteira na letra do site (a do front é mais estreita) */
+.dia[data-tela="1"][data-forma="alto"] .t1-pg-hoje .t1-cab .t1-bt { display: none; }
+.dia[data-tela="1"][data-forma="alto"] .t1-abas { margin-top: 12px; row-gap: 4px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-bt { height: 34px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-card { padding: 16px; top: 32px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-atos { flex-direction: column; align-items: stretch; }
+.dia[data-tela="1"][data-forma="alto"] .t1-atos .t1-bt { height: 40px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-env { top: 36px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-env-cab { padding: 14px 16px 12px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-env-corpo { padding: 12px 16px 16px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-tk { min-height: 60px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-to { display: none; }
+.dia[data-tela="1"][data-forma="alto"] .t1-tt, .dia[data-tela="1"][data-forma="alto"] .t1-ts { white-space: normal; }
+.dia[data-tela="1"][data-forma="alto"] .t1-seg { height: 40px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-aviso { left: 10px; right: 10px; top: 8px; bottom: auto; width: auto; border-radius: 18px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-esm { border-radius: 26px; }
+/* no celular, o diálogo é a folha que sobe de baixo (Dialog com «sheet») */
+.dia[data-tela="1"][data-forma="alto"] .t1-capa { align-items: flex-end; }
+.dia[data-tela="1"][data-forma="alto"] .t1-dlg { width: 100%; max-height: 546px; overflow: hidden; padding: 20px 16px 22px; gap: 14px; border-radius: 18px 18px 0 0; }
+.dia[data-tela="1"][data-forma="alto"] .t1-dbt { flex-wrap: wrap; }
+.dia[data-tela="1"][data-forma="alto"] .t1-dbt .t1-bt { height: 40px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-laminas { grid-template-columns: repeat(3, 1fr); }
+.dia[data-tela="1"][data-forma="alto"] .t1-lam:nth-child(n+4) { display: none; }
+.dia[data-tela="1"][data-forma="alto"] .t1-dlg-ent .t1-dbt { justify-content: flex-start; }
+/* no celular, o momento 4 é a própria conversa: o WhatsApp ocupa o palco */
+.dia[data-tela="1"][data-forma="alto"] .t1-zap { left: 0; right: auto; top: 0; width: 400px; height: 560px; border: 0; border-radius: 26px; box-shadow: 0 1px 2px rgba(27, 27, 25, 0.05), 0 18px 48px rgba(27, 27, 25, 0.12); }
+.dia[data-tela="1"][data-forma="alto"] .t1-zap-hora { display: none; }
+.dia[data-tela="1"][data-forma="alto"] .t1-zap-topo { height: 60px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-zap-lista { padding: 14px 12px; gap: 8px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-zm p { max-width: 84%; }
+.dia[data-tela="1"][data-forma="alto"] .t1-zbt { width: 84%; height: 40px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-zm p.t1-zaudio { width: 260px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-cursor { display: none; }
+
+/* no celular: o mapa numa coluna, a reunião ocupando o palco, a conversa e os loops na largura do celular */
+.dia[data-tela="1"][data-forma="alto"] .t1-mapa { padding: 16px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-mapa-g { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-mapa-st { width: 150px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-ltx small { display: block; margin-left: 0; }
+.dia[data-tela="1"][data-forma="alto"] .t1-meet { left: 0; top: 0; width: 400px; height: 560px; padding: 12px 12px 0; border-radius: 26px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-mt-grade { grid-template-columns: 1fr 1fr; grid-template-rows: 1.5fr 1fr; }
+.dia[data-tela="1"][data-forma="alto"] .t1-mt-s { grid-row: 1; grid-column: 1 / 3; }
+.dia[data-tela="1"][data-forma="alto"] .t1-mt-info span { display: none; }
+.dia[data-tela="1"][data-forma="alto"] .t1-nova-c { top: 96px; gap: 16px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-nc-t { font-size: var(--f5); }
+.dia[data-tela="1"][data-forma="alto"] .t1-qb { max-width: 86%; }
+.dia[data-tela="1"][data-forma="alto"] .t1-pilula { left: 16px; right: 16px; bottom: 12px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-prop { padding: 14px 16px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-prop .t1-atos { flex-direction: row; justify-content: flex-end; }
+.dia[data-tela="1"][data-forma="alto"] .t1-prop-pe { flex-direction: column; align-items: stretch; gap: 8px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-nova-c { left: 16px; right: 16px; }
+.dia[data-tela="1"][data-forma="alto"] .t1-prop-l { top: 96px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dia[data-tela="1"] .t1-m, .dia[data-tela="1"] .t1-cursor { transition: opacity 120ms linear; }
+  .dia[data-tela="1"] .t1-pisca, .dia[data-tela="1"] .t1-anda .t1-zdig i { animation: none; }
+}

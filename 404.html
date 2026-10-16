@@ -4,13 +4,14 @@
 <!-- parte:cabeca -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-akoxaEuAuNgYBtnJFRKo92ummvLjMeFtbiV9QWZlzyo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://app.plexusbrain.com; form-action https://app.plexusbrain.com; base-uri 'none'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#4a643c">
 <link rel="icon" href="/assets/img/plexus-mark.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/img/plexus-icon-180.png">
 <link rel="preload" href="/assets/fonts/plex-pt-400-600.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/assets/css/site.css?v=1612">
+<script>(function (d) { d.classList.add('js'); var q = new URLSearchParams(location.search); [].forEach(function (k) { var v = q.get(k); if (v && /^[a-z0-9]+$/.test(v)) d.dataset[k] = v; }); })(document.documentElement)</script>
 <!-- /parte:cabeca -->
 <title>Página não encontrada · Plexus</title>
 <meta name="robots" content="noindex">
@@ -26,14 +27,23 @@
 <a class="pular" href="#conteudo">Pular para o conteúdo</a>
 <header class="nav" id="nav">
   <div class="wrap">
+    <nav class="nav-links" aria-label="Principal">
+      <a href="/#numero">O problema</a>
+      <a href="/#solucao">Como funciona</a>
+      <a href="/#um-dia">Um dia</a>
+      <a href="/#integracoes">Integrações</a>
+    </nav>
     <a class="brand" href="/" aria-label="Plexus, início"><svg aria-hidden="true" focusable="false"><use href="#marca"/></svg><span class="wordmark">Plexus</span></a>
+    <div class="nav-end">
+      <a class="btn" href="/#entrada">Lista de espera<i class="arrow" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6h7M6.5 3l3 3-3 3"/></svg></i></a>
+    </div>
   </div>
 </header>
 <!-- /parte:topo -->
 <main class="only" id="conteudo">
   <div class="wrap">
-    <h1 class="display">Esta página não existe.</h1>
-    <p class="lead">O endereço pode ter mudado. A página inicial leva você de volta.</p>
+    <h1 class="display">Esta página não existe</h1>
+    <p class="lead">O endereço pode ter mudado. Na página inicial está o que o Plexus faz.</p>
     <a class="btn" href="/">Voltar ao início</a>
   </div>
 </main>
@@ -41,32 +51,38 @@
 <footer>
   <div class="wrap">
     <div class="cols">
-      <div>
-        <a class="brand" href="/" aria-label="Plexus, início"><svg aria-hidden="true" focusable="false"><use href="#marca"/></svg><span class="wordmark">Plexus</span></a>
-        <p class="made">Feito no Brasil.<br>© 2026 Plexus.</p>
-      </div>
-      <nav aria-labelledby="rodape-privacidade">
-        <h2 id="rodape-privacidade">A privacidade</h2>
+      <nav aria-labelledby="rodape-produto">
+        <h2 id="rodape-produto">Produto</h2>
+        <ul>
+          <li><a href="/#numero">O problema</a></li>
+          <li><a href="/#solucao">Como funciona</a></li>
+          <li><a href="/#um-dia">Um dia</a></li>
+          <li><a href="/#integracoes">Integrações</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="rodape-legal">
+        <h2 id="rodape-legal">Legal</h2>
         <ul>
           <li><a href="/privacidade/">Política de privacidade</a></li>
-        </ul>
-      </nav>
-      <nav aria-labelledby="rodape-termos">
-        <h2 id="rodape-termos">Os termos</h2>
-        <ul>
           <li><a href="/termos/">Termos de uso</a></li>
+          <li><a href="/privacidade/#excluir">Excluir os meus dados</a></li>
         </ul>
       </nav>
-      <nav aria-labelledby="rodape-contato">
-        <h2 id="rodape-contato">O contato</h2>
-        <ul>
+      <div>
+        <h2 id="rodape-contato">Contato</h2>
+        <ul aria-labelledby="rodape-contato">
           <li><a href="mailto:matheus@plexusbrain.com">matheus@plexusbrain.com</a></li>
         </ul>
-      </nav>
+      </div>
+    </div>
+    <div class="base">
+      <a class="brand" href="/" aria-label="Plexus, início"><svg aria-hidden="true" focusable="false"><use href="#marca"/></svg><span class="wordmark">Plexus</span></a>
+      <p class="made">© 2026 Plexus</p>
+      <p class="feito">Feito no Brasil</p>
     </div>
   </div>
-  <div class="giant" aria-hidden="true"><svg viewBox="0 0 514 540"><use href="#marca"/></svg></div>
 </footer>
+<script src="/assets/js/site.js?v=1637" defer></script>
 <!-- /parte:rodape -->
 </body>
 </html>

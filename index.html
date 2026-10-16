@@ -4,13 +4,14 @@
 <!-- parte:cabeca -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-akoxaEuAuNgYBtnJFRKo92ummvLjMeFtbiV9QWZlzyo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://app.plexusbrain.com; form-action https://app.plexusbrain.com; base-uri 'none'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#4a643c">
 <link rel="icon" href="/assets/img/plexus-mark.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/img/plexus-icon-180.png">
 <link rel="preload" href="/assets/fonts/plex-pt-400-600.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/assets/css/site.css?v=1612">
+<script>(function (d) { d.classList.add('js'); var q = new URLSearchParams(location.search); [].forEach(function (k) { var v = q.get(k); if (v && /^[a-z0-9]+$/.test(v)) d.dataset[k] = v; }); })(document.documentElement)</script>
 <!-- /parte:cabeca -->
 <title>Plexus · Sua empresa deve focar no que gera valor</title>
 <meta name="description" content="Sua empresa deve focar no que gera valor. O Plexus tira da sua empresa o trabalho que não gera valor.">
@@ -22,10 +23,10 @@
 <meta property="og:url" content="https://plexusbrain.com/">
 <meta property="og:title" content="Sua empresa deve focar no que gera valor">
 <meta property="og:description" content="O Plexus tira da sua empresa o trabalho que não gera valor.">
-<meta property="og:image" content="https://plexusbrain.com/assets/img/compartilhar.png">
+<meta property="og:image" content="https://plexusbrain.com/assets/img/compartilhar-v2.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Sua empresa deve focar no que gera valor. O Plexus tira da sua empresa o trabalho que não gera valor.">
+<meta property="og:image:alt" content="Sua empresa deve focar no que gera valor. Plexus.">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 { "@context": "https://schema.org",
@@ -37,92 +38,645 @@
       "publisher": { "@id": "https://plexusbrain.com/#org" } } ] }
 </script>
 <style>
-/* A página inicial provisória (14/10/2026): uma tela só, o fundo do topo da V2 em tela inteira, o título,
- * a frase dele e, embaixo, o rodapé mínimo com a privacidade, os termos e o contato.
- * O fundo: a paleta da V0 com o creme mais fechado (a decisão dele de 13/10, 10:19, «C»), o véu leve da V2
- * e o halo em volta das letras. Sem a sombra larga atrás do texto. Fica a técnica da V1: a imagem parada
- * primeiro, o pedido de menos movimento e o peso. O botão de pausar saiu (o recado dele de 13/10, 10:48). */
-body { background: #24311d; }
-.palco {
-  position: relative; display: flex; flex-direction: column; overflow: hidden;
-  min-height: max(480px, 100svh);
+/* O topo (V3): o fundo da V0 «cinema» em tela inteira, com o creme da paleta mais fechado (a decisão dele de
+ * 13/10, 10:19, «C», a mesma da publicação), o véu leve e o halo em volta das letras. Sem a sombra larga da V2:
+ * no lugar dela, a sombra pequena da publicação, presa ao bloco do texto. Sem o botão de pausar (o recado dele
+ * de 13/10, 10:48); quem pede menos movimento continua com a imagem parada, também com a página aberta. */
+.hero .stage {
+  position: relative; display: flex; align-items: center; overflow: hidden;
+  min-height: max(560px, 100svh);
+  padding: 64px 0;
   background: #24311d url('/assets/img/fundo-960.webp') center / cover no-repeat;
   color: #fff;
 }
+.js .hero .stage { padding-top: calc(var(--nav-h) + 48px); }
 .hero-media { position: absolute; inset: 0; }
 .hero-media canvas { display: block; opacity: 0; transition: opacity 600ms ease; }
 .hero-media.vivo canvas { opacity: 1; }
-.palco::after {
+.hero .stage::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background:
     linear-gradient(180deg, rgba(8, 12, 6, 0.32) 0%, rgba(8, 12, 6, 0) 26%),
     linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.38) 100%),
-    linear-gradient(rgba(8, 12, 6, 0.14), rgba(8, 12, 6, 0.14));
+    linear-gradient(rgba(8, 12, 6, 0.34), rgba(8, 12, 6, 0.34));
 }
-/* a barra fica sobre o fundo, transparente, com a marca em branco */
-.palco .nav { position: absolute; top: 0; left: 0; right: 0; z-index: 3; background: transparent; border-bottom-color: transparent; color: #fff; }
-.hero { position: relative; z-index: 2; flex: 1; display: flex; align-items: center; padding: calc(var(--nav-h) + 32px) 0 32px; }
-.hero-text { width: 100%; text-align: center; }
+.hero-text { position: relative; z-index: 2; width: 100%; text-align: center; }
 /* o halo escuro e macio em volta de cada letra, preso ao texto */
-.palco { --halo: 0 0 1px rgba(8, 12, 6, 0.5), 0 0 6px rgba(8, 12, 6, 0.45), 0 0 18px rgba(8, 12, 6, 0.35); }
-.hero h1, .hero .lead, .pe, .palco .nav .wordmark { text-shadow: var(--halo); }
-.palco .nav .brand svg { filter: drop-shadow(0 0 10px rgba(10, 15, 8, 0.5)); }
-/* o título no desenho da V0 cinema (a Plex 400, -0,03em, linha de 1,08) na escala da V1 (48 no computador) */
-.hero h1 { color: #fff; letter-spacing: -0.03em; line-height: 1.08; max-width: none; margin: 0 auto; width: fit-content; }
-.hero .lead { max-width: var(--measure-lead); margin: 20px auto 0; color: #fff; }
-/* a sombra pequena, presa ao bloco do título e da frase, com 20 % de preto (a da V2 tinha 66 %): só o creme mais
- * fechado não bastava, porque o verde claro da paleta deixa o título em 3,99:1. Ela cobre o bloco e se apaga em volta. */
-.bloco { position: relative; width: fit-content; margin: 0 auto; }
-.bloco::before { content: ''; position: absolute; z-index: -1; inset: -8px -24px; border-radius: 48px; pointer-events: none;
-  background: rgba(8, 12, 6, 0.2); box-shadow: 0 0 48px 24px rgba(8, 12, 6, 0.2); }
-/* o rodapé mínimo, dentro da primeira tela */
-.pe { position: relative; z-index: 2; padding: 0 0 20px; color: #fff; }
-.pe .wrap { display: flex; align-items: center; justify-content: space-between; gap: 8px 32px; flex-wrap: wrap; min-height: 36px; }
-.pe ul { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 24px; }
-.pe a { color: #fff; text-decoration: none; border-radius: 4px; }
-.pe a:hover { text-decoration: underline; }
-
-/* O celular: a mesma tela, o rodapé centrado em duas linhas */
-@media (max-width: 640px) {
-  .hero { padding: calc(var(--nav-h) + 24px) 0 24px; }
-  .pe .wrap { flex-direction: column; justify-content: center; }
-  .pe ul { justify-content: center; gap: 4px 20px; }
+.hero-text, .js .over .nav:not(.rolou) .nav-links a, .js .over .nav:not(.rolou) .brand {
+  --halo: 0 0 1px rgba(8, 12, 6, 0.5), 0 0 6px rgba(8, 12, 6, 0.45), 0 0 18px rgba(8, 12, 6, 0.35);
 }
+.hero h1, .hero .lead, .hero .note, .hero .aviso, .hero .erro,
+.js .over .nav:not(.rolou) .nav-links a, .js .over .nav:not(.rolou) .wordmark { text-shadow: var(--halo); }
+.js .over .nav:not(.rolou) .brand svg { filter: drop-shadow(0 0 10px rgba(10, 15, 8, 0.5)); }
+/* sobre o topo, os links da barra ficam brancos inteiros em repouso (com 0,86 caíam a 4,25:1 no momento claro, a revisão da V3, G1);
+ * sob o ponteiro apagam a 60% como em toda a barra, o efeito da Legora (o pedido dele em 16/10, no lugar do sublinhado) */
+.hero h1, .hero .lead, .hero .note { width: fit-content; margin-left: auto; margin-right: auto; }
+/* a sombra pequena da publicação, presa ao bloco do título, da frase, do campo e da frase de baixo: escurece no
+ * máximo 20 % e se apaga em volta (a da V2 escurecia 66 % e ocupava 1.560 por 353 px) */
+.bloco { position: relative; width: fit-content; max-width: 100%; margin: 0 auto; }
+.bloco::before { display: none; content: ''; position: absolute; z-index: -1; inset: -8px -24px; border-radius: 48px; pointer-events: none;
+  background: rgba(8, 12, 6, 0.2); box-shadow: 0 0 48px 24px rgba(8, 12, 6, 0.2); }
+.hero .ask input[type=email], .hero .ask input::placeholder { text-shadow: 0 0 1px rgba(10, 15, 8, 0.5), 0 0 8px rgba(10, 15, 8, 0.5); }
+/* no topo, o vidro da caixa é levemente escuro: com o branco translúcido da V0, o texto de espera caía a 2:1 no creme do fundo */
+.hero .ask .field { background: rgba(10, 15, 8, 0.34); }
+/* o título no desenho da V0 cinema (a Plex 400, -0,03em, linha de 1,08) na escala da V1 (48);
+ * com ?titulo=56, o meio-termo; com ?titulo=v0, o tamanho da V0 (64), para ele comparar */
+.hero h1 { color: #fff; letter-spacing: -0.03em; line-height: 1.08; max-width: none; margin: 0 auto; }
+:root[data-titulo="56"] .hero h1 { font-size: clamp(36px, 4.2vw, 56px); }
+:root[data-titulo="v0"] .hero h1 { font-size: clamp(40px, 4.8vw, 64px); }
+.hero .lead { max-width: var(--measure-lead); margin: 20px auto 0; color: #fff; }
+.hero .ask { margin: 28px auto 0; text-align: left; }
+.end .ask .field { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.28); }
+.hero .ask .field, .end .ask .field { border-color: rgba(255, 255, 255, 0.28); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.hero .ask .field:focus-within, .end .ask .field:focus-within { border-color: rgba(255, 255, 255, 0.7); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 8px 20px -12px rgba(0, 0, 0, 0.35); }
+.hero .ask input[type=email], .end .ask input[type=email] { color: #fff; }
+.hero .ask input::placeholder, .end .ask input::placeholder { color: #fff; }
+.hero .ask .note, .hero .ask .aviso { text-align: center; color: #fff; }
+.hero .ask .erro, .end .ask .erro { color: #ffe1d9; }
+
+/* Os pedaços da tela do produto, nos tokens do front (src/styles/tokens.css): fora da escala da página.
+ * O «recomendada» fica no #3e5433 do front (o token accent-strong), porque a réplica segue a tela real. */
+.tela {
+  --t-paper: #fdfdfc; --t-nav: #fafaf9; --t-surface: #ffffff; --t-ink: #1b1b19; --t-soft: #5c5b56; --t-faint: #74736f;
+  --t-accent: #4a643c; --t-accent-strong: #3e5433; --t-accent-soft: #ecf0ea; --t-line: rgba(27, 27, 25, 0.14);
+  --t-fill: rgba(27, 27, 25, 0.05); --t-fill-active: rgba(27, 27, 25, 0.09);
+  font: 400 15px/1.4 var(--font-ui); color: var(--t-ink); text-align: left; letter-spacing: 0;
+}
+.tela p { text-wrap: wrap; }
+.card { background: var(--t-surface); border: 1px solid var(--t-line); border-radius: 16px; padding: 20px; }
+.card-t { font-weight: 600; font-size: 17px; line-height: 1.35; }
+.card-c { margin-top: 12px; line-height: 1.6; }
+.u { text-decoration: underline; text-underline-offset: 3px; }
+.opts { margin-top: 16px; display: grid; gap: 4px; }
+.opt { display: grid; grid-template-columns: 16px 1fr auto; gap: 12px; padding: 10px 12px; border-radius: 10px; }
+.opt.on { background: var(--t-accent-soft); }
+.opt .r { width: 16px; height: 16px; margin-top: 2px; border-radius: 50%; border: 1.5px solid var(--t-line); background: #fff; }
+.opt.on .r { border: 4.5px solid var(--t-accent); }
+.opt b { font-weight: 500; display: block; }
+.opt small { display: block; font-size: 14px; color: var(--t-soft); line-height: 1.45; }
+.opt .rec { font-size: 13px; font-weight: 500; color: var(--t-accent-strong); }
+.opt .see { display: block; margin-top: 6px; font-size: 14px; color: var(--t-soft); }
+.acts { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 16px; }
+.b { height: 32px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; font-weight: 500; }
+.b.second { background: var(--t-fill-active); }
+.b.first { background: var(--t-accent); color: #fff; }
+.b.dots { padding: 0 8px; color: var(--t-soft); letter-spacing: 1px; }
+.meta { margin-top: 6px; font-size: 14px; color: var(--t-soft); }
+.src-l { margin-top: 16px; font-size: 13px; font-weight: 500; color: var(--t-soft); }
+.src { margin-top: 8px; display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--t-line); border-radius: 10px; }
+.src svg { width: 16px; height: 16px; flex: none; color: var(--t-soft); }
+.src b { display: block; font-weight: 500; font-size: 14px; }
+.src span { font-size: 13px; color: var(--t-soft); }
+.sent { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; }
+.sent svg { width: 20px; height: 20px; color: var(--t-accent); flex: none; }
+.quote { margin-top: 14px; padding: 14px 16px; border-radius: 10px; background: var(--t-fill); line-height: 1.6; }
+.quote p + p { margin-top: 8px; }
+.group { font-size: 13px; color: var(--t-soft); margin: 4px 0 4px; }
+.row { display: grid; grid-template-columns: 18px 1fr auto; gap: 12px; align-items: start; padding: 10px 0; }
+.row + .row { border-top: 1px solid var(--t-line); }
+.row.plain { grid-template-columns: 1fr auto; }
+.row .ring { width: 18px; height: 18px; margin-top: 1px; border-radius: 50%; border: 1.5px solid var(--t-line); }
+.row .ring.done { border: 0; background: var(--t-accent); display: grid; place-items: center; }
+.row .ring.done svg { width: 11px; height: 11px; color: #fff; }
+.row b { display: block; font-weight: 500; }
+.row div > span:not(.nw) { display: block; font-size: 14px; color: var(--t-soft); }
+.row i { font-style: normal; font-size: 14px; color: var(--t-soft); }
+
+/* Os blocos de seção */
+.block { padding: var(--section) 0; }
+.head { max-width: var(--measure-title); }
+.head .lead { margin-top: var(--space-head); max-width: var(--measure-lead); color: var(--ink-soft); }
+
+/* Um dia com o Plexus: o índice preso à esquerda (a Granola) e um momento por tela à direita */
+.day { background: var(--stone); }
+.day-grid { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 72px; margin-top: var(--space-block); }
+.day-index { position: sticky; top: calc(var(--nav-h) + 56px); align-self: start; }
+.day-index ol { list-style: none; display: grid; gap: 4px; border-left: 1px solid var(--line-strong); }
+.day-index a { display: block; padding: 6px 0 6px 16px; margin-left: -1px; border-left: 2px solid transparent; text-decoration: none; color: var(--ink-soft); transition: color 250ms var(--ease), border-color 250ms var(--ease); }
+.day-index a .t { display: block; color: inherit; }
+.day-index a[aria-current] { color: var(--ink); border-left-color: var(--ink); }
+.moment { min-height: 64vh; display: flex; flex-direction: column; justify-content: center; padding: 48px 0; }
+.moment:first-child { padding-top: 0; min-height: 0; }
+.moment .label { display: none; color: var(--ink-soft); margin-bottom: 8px; }
+.moment h3 { font-weight: 400; }
+.moment > p { margin-top: 8px; color: var(--ink-soft); max-width: var(--measure-text); }
+.piece { margin-top: 32px; max-width: 640px; }
+.piece .card { padding: 24px; }
+
+/* O fim: o cartão verde, o único lugar do verde em área grande além do rodapé */
+.end { padding: 0 0 56px; }
+#integracoes + .end { padding-top: 120px; }
+.end .card-end { max-width: 1080px; margin: 0 auto; padding: 96px 32px; border-radius: 16px; background: var(--accent); color: #fff; text-align: center; }
+.end .mark { width: 40px; height: 42px; margin: 0 auto 32px; color: #fff; }
+.end .lead { max-width: var(--measure-lead); margin: var(--space-head) auto 0; color: #fff; }
+.end .ask { margin: 32px auto 0; text-align: left; }
+.end .ask .note, .end .ask .aviso { text-align: center; color: #fff; }
+.end .ask .note a { color: #fff; }
+
+/* A tela média */
+@media (max-width: 1020px) {
+  .day-grid { grid-template-columns: 1fr; gap: 0; }
+  .day-index { display: none; }
+  .moment { min-height: 0; padding: 40px 0; border-top: 1px solid var(--line-strong); }
+  .moment:first-child { padding-top: 40px; }
+  .moment .label { display: block; }
+}
+
+/* O celular */
+@media (max-width: 640px) {
+  .hero .stage { padding: 48px 0; }
+  .js .hero .stage { padding-top: calc(var(--nav-h) + 40px); }
+  .piece .card { padding: 16px; }
+  .end { padding: 0 0 24px; }
+  #integracoes + .end { padding-top: 88px; }
+  .end .wrap { padding: 0; }
+  .end .card-end { border-radius: 0; padding: 80px 24px; }
+}
+
 </style>
 </head>
-<body>
-<div class="palco">
-<div class="hero-media" aria-hidden="true"></div>
+<body class="over">
 <!-- parte:topo -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="marca" viewBox="254 242 514 540"><path fill="currentColor" fill-rule="evenodd" d="M 393 255.511 C 352.407 261.085, 317.144 279.939, 295.255 307.771 C 284.975 320.841, 275.372 340.537, 270.931 357.658 C 257.763 408.431, 272.084 474.891, 305.784 519.408 L 310.837 526.082 314.168 523.163 C 325.039 513.639, 345.746 501.731, 364 494.508 C 369.225 492.440, 373.647 490.621, 373.826 490.465 C 374.005 490.309, 371.246 486.372, 367.694 481.717 C 348.348 456.362, 339.015 429.594, 339.004 399.434 C 338.992 366.878, 350.710 345.587, 375.272 333.539 C 394.220 324.244, 414.831 322.021, 439.322 326.632 C 443.625 327.442, 448.318 328.551, 449.752 329.096 L 452.360 330.087 445.831 336.794 C 425.507 357.671, 412.339 378.063, 404.048 401.500 C 396.258 423.521, 394 440.736, 394 478.097 L 394 504.707 382.338 508.445 C 355.572 517.026, 338.811 526.429, 320.718 543.018 C 287.435 573.533, 266.778 625.315, 266.672 678.500 C 266.636 696.723, 267.416 702.142, 272.041 715.767 C 275.917 727.188, 280.747 735.404, 288.522 743.801 C 303.641 760.131, 322.788 768.527, 347.589 769.704 C 373.368 770.926, 397.048 763.715, 415.198 749.114 C 439.931 729.217, 454.548 704.106, 461.480 669.602 C 464.161 656.258, 465.974 638.226, 465.990 624.750 C 465.995 619.938, 466.337 616.003, 466.750 616.007 C 467.163 616.011, 471.325 616.938, 476 618.066 C 520.308 628.765, 562.354 632.160, 598 627.917 C 636.196 623.371, 673.150 607.157, 701.164 582.655 C 764.454 527.299, 776.204 434.118, 728.784 363.624 C 702.850 325.071, 658.276 296.466, 611.843 288.579 C 596.744 286.015, 581.404 284.928, 570.525 285.653 L 560.549 286.317 567.635 292.908 C 584.779 308.856, 596.007 323.416, 606.474 343.274 C 614.985 359.421, 622.650 385.012, 624.507 403.483 C 625.424 412.601, 628.168 421.302, 632.064 427.442 C 633.788 430.159, 640.462 437.809, 646.894 444.442 C 659.801 457.751, 662.512 461.121, 666.247 468.500 C 674.510 484.829, 673.977 505.166, 664.908 519.500 C 652.734 538.744, 631.935 550.493, 600.020 556.157 C 586.645 558.530, 555.403 559.047, 541 557.133 C 528.755 555.505, 509 551.752, 509 551.053 C 509 550.724, 513.837 548.064, 519.750 545.141 C 570.642 519.978, 598.583 483.427, 605.090 433.500 C 607.423 415.598, 604.806 392.252, 598.257 372.536 C 584.558 331.297, 553.622 298.038, 507.803 275.290 C 472.455 257.741, 430.010 250.428, 393 255.511 M 509.489 376.671 C 491.370 388.780, 476.100 410.263, 470.160 432 C 466.882 444, 465.877 454.319, 466.199 472.684 L 466.500 489.869 477 485.913 C 505.274 475.259, 525.707 455.579, 531.472 433.448 C 535.003 419.889, 532.800 399.610, 526.388 386.661 C 523.610 381.051, 517.810 372.005, 516.989 372.002 C 516.708 372.001, 513.333 374.102, 509.489 376.671 M 384.758 584.654 C 371.281 591.843, 359.336 605.202, 350.951 622.465 C 340.472 644.039, 335.226 678.935, 340.539 691.728 C 342.531 696.523, 347.290 698.992, 354.554 698.996 C 371.207 699.007, 384.869 682.467, 390.710 655.224 C 393.001 644.538, 393.268 640.734, 393.725 612.250 C 394.142 586.280, 393.996 581.005, 392.863 581.029 C 392.113 581.045, 388.466 582.676, 384.758 584.654"/></symbol></svg>
 <a class="pular" href="#conteudo">Pular para o conteúdo</a>
 <header class="nav" id="nav">
   <div class="wrap">
+    <nav class="nav-links" aria-label="Principal">
+      <a href="/#numero">O problema</a>
+      <a href="/#solucao">Como funciona</a>
+      <a href="/#um-dia">Um dia</a>
+      <a href="/#integracoes">Integrações</a>
+    </nav>
     <a class="brand" href="/" aria-label="Plexus, início"><svg aria-hidden="true" focusable="false"><use href="#marca"/></svg><span class="wordmark">Plexus</span></a>
+    <div class="nav-end">
+      <a class="btn" href="/#entrada">Lista de espera<i class="arrow" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6h7M6.5 3l3 3-3 3"/></svg></i></a>
+    </div>
   </div>
 </header>
 <!-- /parte:topo -->
-<main class="hero" id="conteudo">
-  <div class="wrap hero-text">
-    <div class="bloco">
-      <h1 id="titulo" class="display">Sua empresa deve focar no que gera valor</h1>
-      <p class="lead">O Plexus tira da sua empresa o trabalho que não gera valor.</p>
+
+<main id="conteudo">
+
+  <section class="hero" aria-labelledby="titulo">
+    <div class="stage">
+      <div class="hero-media" aria-hidden="true"></div>
+      <div class="wrap hero-text">
+        <div class="bloco">
+        <h1 id="titulo" class="display">Sua empresa deve focar no que gera valor</h1>
+        <p class="lead">Se inscreva para a transformação:</p>
+        <div class="ask" id="entrada">
+          <form action="https://app.plexusbrain.com/pedido" method="post">
+            <label class="sr-only" for="email-topo">Seu <span class="nw">e-mail</span> de trabalho</label>
+            <div class="field">
+              <input id="email-topo" type="email" name="email" autocomplete="email" placeholder="Seu e-mail de trabalho" required aria-describedby="email-topo-erro">
+              <button class="btn" type="submit">Inscrever-se</button>
+            </div>
+            <input class="isca" type="text" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <p class="erro" id="email-topo-erro"></p>
+          </form>
+          <p class="note">O Plexus tira da sua empresa o trabalho que não gera valor.</p>
+          <p class="aviso" role="status" tabindex="-1"></p>
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- a folha das três seções novas, presa aqui para não segurar a primeira pintura do topo -->
+  <link rel="stylesheet" href="/assets/css/secoes.css">
+  <link rel="stylesheet" href="/assets/css/dor.css">
+  <link rel="stylesheet" href="/assets/css/solucao.css">
+  <link rel="stylesheet" href="/assets/css/sol-a.css">
+  <link rel="stylesheet" href="/assets/css/sol-b.css">
+  <link rel="stylesheet" href="/assets/css/sol-c.css">
+  <link rel="stylesheet" href="/assets/css/dia.css?v=1704">
+  <link rel="stylesheet" href="/assets/css/dia-linha.css?v=1601">
+  <link rel="stylesheet" href="/assets/css/dia-tela-1.css?v=1601">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-hoje" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></g></symbol>
+    <symbol id="i-tarefas" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M8.3 12.2l2.5 2.5 4.9-5.2"/></g></symbol>
+    <symbol id="i-conexoes" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7V3M15 7V3M7 7h10v4a5 5 0 0 1-10 0zM12 16v5"/></g></symbol>
+    <symbol id="i-loops" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v4h-4"/></g></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.6a8.4 8.4 0 0 1-12.4 7.4L3.5 20.5l1.6-4.4a8.4 8.4 0 1 1 15.4-4.5z"/></g></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M3 6.5l9 6.5 9-6.5"/></g></symbol>
+    <symbol id="i-bandeja" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.5l2.2-7.2A2 2 0 0 1 7.1 5h9.8a2 2 0 0 1 1.9 1.3l2.2 7.2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 13.5h5l1.5 2.5h5l1.5-2.5h5"/></g></symbol>
+    <symbol id="i-agenda" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></g></symbol>
+    <symbol id="i-pasta" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 012-2h4.5l2 2.5H19a2 2 0 012 2V18a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></g></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 12 12"><path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <!-- 1. O número (?numero=a|b|c). A fonte e a frase são as da síntese da pesquisa de 13/10. -->
+  <section class="block dado-slack" id="numero" aria-labelledby="dado-texto">
+  <style>
+    /* O dado (13/10/2026, 15:2x): o caminho A dele, a linha da Legora (o parágrafo à esquerda, os números grandes
+     * empilhados à direita, cada um com o fio em cima e a fonte pequena no canto), na letra e nas cores do Plexus.
+     * A seção encosta no topo (o pedido dele: «bem próximo à imagem dinâmica da home»). O número é a exceção
+     * escrita à regra dos três tamanhos: ele é a imagem da seção, como na referência. 15:24: três números, porque
+     * um só deixava a coluna vazia («apenas uma deixou feio»). 15:29: os percentuais maiores e o valor em dólar menor (o pedido dele). */
+    .dado-slack { padding: 56px 0 56px; }
+    /* 13/10, 16:44: o vazio até a seção da dor encurtado (o pedido dele, com a imagem) */
+    .dado-slack .linha:last-child { padding-bottom: 0; }
+    .dado-slack .grade { display: grid; grid-template-columns: 5fr 7fr; gap: 64px; align-items: start; }
+    .dado-slack .texto { font-size: 20px; line-height: 1.5; color: var(--ink); max-width: 30em; text-wrap: pretty; padding-top: 20px; }
+    .dado-slack .lista { display: grid; }
+    .dado-slack .linha { border-top: 1px solid var(--line-strong); padding: 20px 0 48px; display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 32px; align-items: start; }
+    .dado-slack .num { font-size: clamp(64px, 6.6vw, 96px); line-height: 0.95; letter-spacing: -0.035em; color: var(--ink); font-weight: 400; white-space: nowrap; }
+    .dado-slack .num.menor { font-size: clamp(40px, 3.9vw, 56px); line-height: 1.05; letter-spacing: -0.03em; padding-top: 6px; }
+    .dado-slack .fonte { color: var(--ink-soft); font-size: var(--size-text); line-height: 1.45; padding-top: 4px; }
+    .dado-slack .fonte a { color: inherit; text-underline-offset: 3px; }
+    @media (max-width: 900px) {
+      .dado-slack { padding: 48px 0 40px; }
+      .dado-slack .grade { grid-template-columns: 1fr; gap: 24px; }
+      .dado-slack .texto { font-size: 18px; padding-top: 0; }
+      .dado-slack .linha { grid-template-columns: 1fr; gap: 10px; padding: 20px 0 32px; }
+    }
+  </style>
+  <div class="wrap">
+    <div class="grade">
+      <p class="texto" id="dado-texto">Fazer a ata, procurar o arquivo, explicar tudo de novo para a IA, cobrar quem prometeu. Nada disso é o trabalho para o qual a pessoa foi contratada. Mesmo assim, boa parte do dia vai para isso, e não para o que gera valor.</p>
+      <div class="lista">
+        <div class="linha">
+          <p class="num">41%</p>
+          <p class="fonte">do tempo de trabalho vai para tarefas de baixo valor, dizem os trabalhadores. <a href="https://slack.com/blog/news/new-slack-research-shows-accelerating-ai-use-at-work">Slack, 2024</a></p>
+        </div>
+        <div class="linha">
+          <p class="num">25%</p>
+          <p class="fonte">da semana vai para procurar informação, dizem as equipes. <a href="https://www.atlassian.com/blog/state-of-teams-2025">Atlassian, 2025</a></p>
+        </div>
+        <div class="linha">
+          <p class="num menor">US$ 12.506</p>
+          <p class="fonte">por funcionário ao ano, em tempo perdido esclarecendo, corrigindo e cobrando entregas, estimam líderes nos EUA. <a href="https://grammarly.com/business/learn/communication-cost-infographic">Grammarly, 2022</a></p>
+        </div>
+      </div>
     </div>
   </div>
+</section>
+  <!-- 2. A dor (V5b, 13/10/2026, 16:2x): ele escolheu a ideia da triagem (o que chega; o que não gera valor vai para
+       o Plexus; o que gera valor fica com a pessoa) e reprovou o desenho. Os pedidos dele: os logos reais das fontes,
+       a animação à esquerda e o texto à direita, e a animação do Bond como referência. Dois desenhos (?dor=a|b):
+       a, o fluxo, a escolha dele às 16:41 (o «On top of it» do Bond: os aplicativos entram no Plexus e o trabalho
+       sai em duas faixas; sem a pergunta, o pedido dele; os exemplos conferidos contra o que o Plexus pronto entrega);
+       b, a janela (o topo do Bond: o barulho dos aplicativos entra no Plexus e vira a lista do que ficou).
+       O estilo em dor.css e o movimento em dor.js; o HTML traz o estado final, parado. -->
+  <section class="block dor" id="dor" aria-labelledby="dor-t">
+    <div class="wrap dor-fl">
+      <h2 id="dor-t" class="pain-t">Seu dia é repleto de tarefas que não agregam valor. Com o Plexus, você pode focar no que importa.</h2>
+
+      <!-- b: a janela -->
+      <div class="op op-b">
+        <figure class="pj" aria-label="O que chega dos aplicativos passa pelo Plexus. O que não gera valor, o Plexus faz. O que gera valor fica com você.">
+          <div class="pj-palco">
+            <div class="pj-barulho" aria-hidden="true">
+              <div class="pj-doca">
+                <span class="app"><img src="/assets/img/fontes/gmail.svg" alt=""><b>12</b></span>
+                <span class="app"><img src="/assets/img/fontes/outlook.svg" alt=""><b>4</b></span>
+                <span class="app"><img src="/assets/img/fontes/whatsapp.svg" alt=""><b>31</b></span>
+                <span class="app"><img src="/assets/img/fontes/meet.svg" alt=""><b>2</b></span>
+                <span class="app"><img src="/assets/img/fontes/drive.svg" alt=""><b>7</b></span>
+                <span class="app"><img src="/assets/img/fontes/agenda.svg" alt=""><b>3</b></span>
+              </div>
+              <div class="pj-nota" data-n="1"><p class="de"><img src="/assets/img/fontes/gmail.svg" alt="">Gmail<span>agora</span></p><p>«Pode me mandar o contrato assinado?»</p></div>
+              <div class="pj-nota" data-n="2"><p class="de"><img src="/assets/img/fontes/whatsapp.svg" alt="">WhatsApp<span>agora</span></p><p>«Mando a nota até quarta.»</p></div>
+              <div class="pj-nota" data-n="3"><p class="de"><img src="/assets/img/fontes/meet.svg" alt="">Google Meet<span>agora</span></p><p>«Fechamos a entrega para o dia 20.»</p></div>
+              <div class="pj-nota" data-n="4"><p class="de"><img src="/assets/img/fontes/outlook.svg" alt="">Outlook<span>agora</span></p><p>«Qual preço fazemos para eles?»</p></div>
+              <div class="pj-nota" data-n="5"><p class="de"><img src="/assets/img/fontes/drive.svg" alt="">Google Drive<span>agora</span></p><p>«Planilha de vendas de setembro»</p></div>
+              <div class="pj-no"><svg viewBox="0 0 514 540"><use href="#marca"/></svg></div>
+            </div>
+            <div class="pj-janela">
+              <div class="pj-cromo" aria-hidden="true"><i></i><i></i><i></i></div>
+              <p class="pj-ola">Bom dia, Helena.<br>O Plexus fez o que não gera valor.</p>
+              <p class="pj-sub">Ficou com você o que gera valor.</p>
+              <ol class="pj-lista">
+                <li class="nao"><span class="caixa" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="txt"><span>Achar o contrato que o cliente pediu</span></span><span class="chips"><span class="de"><img src="/assets/img/fontes/gmail.svg" alt="">Gmail</span><span class="st"><span class="q" aria-hidden="true">O cliente pagaria?</span><span class="r">Não, o Plexus fez</span></span></span></li>
+                <li class="nao"><span class="caixa" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="txt"><span>Registrar o combinado da reunião</span></span><span class="chips"><span class="de"><img src="/assets/img/fontes/meet.svg" alt="">Google Meet</span><span class="st"><span class="q" aria-hidden="true">O cliente pagaria?</span><span class="r">Não, o Plexus fez</span></span></span></li>
+                <li class="sim"><span class="caixa" aria-hidden="true"></span><span class="txt"><span>Decidir o preço da proposta</span></span><span class="chips"><span class="de"><img src="/assets/img/fontes/outlook.svg" alt="">Outlook</span><span class="st"><span class="q" aria-hidden="true">O cliente pagaria?</span><span class="r">Sim, fica com você</span></span></span></li>
+                <li class="nao"><span class="caixa" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="txt"><span>Acompanhar a nota prometida para quarta</span></span><span class="chips"><span class="de"><img src="/assets/img/fontes/whatsapp.svg" alt="">WhatsApp</span><span class="st"><span class="q" aria-hidden="true">O cliente pagaria?</span><span class="r">Não, o Plexus fez</span></span></span></li>
+                <li class="nao"><span class="caixa" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="txt"><span>Juntar as vendas no relatório da semana</span></span><span class="chips"><span class="de"><img src="/assets/img/fontes/drive.svg" alt="">Google Drive</span><span class="st"><span class="q" aria-hidden="true">O cliente pagaria?</span><span class="r">Não, o Plexus fez</span></span></span></li>
+              </ol>
+            </div>
+          </div>
+        </figure>
+      </div>
+
+      <!-- a: o fluxo, a escolha dele (16:41) -->
+      <div class="op op-a">
+        <figure class="pf" aria-label="Os aplicativos entram no Plexus. O que não gera valor, o Plexus faz. O que gera valor fica com você.">
+          <div class="pf-palco">
+            <div class="pf-entram" aria-hidden="true">
+              <span class="app" style="--x: 7%; --y: 18%"><img src="/assets/img/fontes/gmail.svg" alt=""></span>
+              <span class="app" style="--x: 17%; --y: 34%"><img src="/assets/img/fontes/outlook.svg" alt=""></span>
+              <span class="app" style="--x: 3%; --y: 50%"><img src="/assets/img/fontes/whatsapp.svg" alt=""></span>
+              <span class="app" style="--x: 15%; --y: 64%"><img src="/assets/img/fontes/meet.svg" alt=""></span>
+              <span class="app" style="--x: 6%; --y: 80%"><img src="/assets/img/fontes/drive.svg" alt=""></span>
+              <span class="app" style="--x: 19%; --y: 12%"><img src="/assets/img/fontes/agenda.svg" alt=""></span>
+            </div>
+            <div class="pf-no"><svg aria-hidden="true" viewBox="0 0 514 540"><use href="#marca"/></svg></div>
+            <div class="pf-faixa pf-plexus">
+              <p class="pf-t"><svg class="laco-i" aria-hidden="true" viewBox="0 0 514 540"><use href="#marca"/></svg>O Plexus faz</p>
+              <ol>
+                <li class="pf-item feito"><img src="/assets/img/fontes/meet.svg" alt="Google Meet"><span>Registrar o que ficou combinado</span></li>
+                <li class="pf-item feito"><img src="/assets/img/fontes/gmail.svg" alt="Gmail"><span>Redigir a resposta com o contrato</span></li>
+                <li class="pf-item feito"><img src="/assets/img/fontes/drive.svg" alt="Google Drive"><span>Montar o relatório da semana</span></li>
+              </ol>
+            </div>
+            <div class="pf-faixa pf-voce">
+              <p class="pf-t"><span class="fl-ponto" aria-hidden="true"></span>Fica com você</p>
+              <ol>
+                <li class="pf-item"><img src="/assets/img/fontes/outlook.svg" alt="Outlook"><span>Decidir o preço da proposta</span></li>
+                <li class="pf-item"><img src="/assets/img/fontes/whatsapp.svg" alt="WhatsApp"><span>Recomendar o caminho ao cliente</span></li>
+              </ol>
+            </div>
+          </div>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Como o Plexus funciona (V6, 13/10/2026, 17:4x). O pedido dele: a seção na linha da Legora que trava a tela
+       (as partes à esquerda, a do momento aberta com o texto; a arte à direita muda conforme a pessoa desce), para
+       ninguém pular uma parte; começa pelas integrações. O título é a escolha dele das 17:37 («Como o Plexus
+       funciona», A); a frase de baixo fica para o fim. Três artes (?solucao=a|b|c; sem nada, a): a pilha (a Legora ao
+       pé da letra), a tela do Plexus e o mapa em volta do laço. Os textos são rascunho de conteúdo, conferidos contra
+       o Plexus pronto; cada parte se fecha com ele depois da arte escolhida. -->
+  <section class="block solucao sol" id="solucao" aria-labelledby="sol-t">
+    <div class="wrap">
+      <h2 id="sol-t" class="display">Como o Plexus funciona</h2>
+    </div>
+    <div class="sol-trilho">
+      <div class="sol-fixo">
+        <div class="wrap sol-grade">
+          <div class="sol-arte" aria-hidden="true"><div class="sol-palco"></div></div>
+          <ol class="sol-lista">
+            <li class="sol-item">
+              <button class="sol-pilula" type="button" aria-expanded="false" aria-controls="sol-c1"><span class="nome">Integrações</span><span class="mais" aria-hidden="true"></span></button>
+              <div class="sol-corpo" id="sol-c1"><div><p>Integre o Plexus ao seu trabalho e comece a usar na hora. Ele mapeia tudo sozinho e entrega valor desde o primeiro contato.</p></div></div>
+            </li>
+            <li class="sol-item">
+              <button class="sol-pilula" type="button" aria-expanded="false" aria-controls="sol-c2"><span class="nome">Contexto completo</span><span class="mais" aria-hidden="true"></span></button>
+              <div class="sol-corpo" id="sol-c2"><div><p>Tudo o que chega vira contexto, com a origem de cada coisa. Ninguém precisa fazer a ata, procurar o arquivo ou lembrar o que foi combinado.</p></div></div>
+            </li>
+            <li class="sol-item">
+              <button class="sol-pilula" type="button" aria-expanded="false" aria-controls="sol-c3"><span class="nome">Cartões</span><span class="mais" aria-hidden="true"></span></button>
+              <div class="sol-corpo" id="sol-c3"><div><p>Tudo o que depende de você chega num cartão, com o contexto, as opções e a resposta pronta. Nada se perde. Se faltar uma informação, o Plexus pede.</p></div></div>
+            </li>
+            <li class="sol-item">
+              <button class="sol-pilula" type="button" aria-expanded="false" aria-controls="sol-c4"><span class="nome">Tarefas vivas</span><span class="mais" aria-hidden="true"></span></button>
+              <div class="sol-corpo" id="sol-c4"><div><p>As tarefas abrem e fecham pelo que acontece no seu trabalho. A promessa vira tarefa de espera, e quando a entrega chega, o Plexus fecha a tarefa com o seu sim. Ninguém precisa atualizar a lista.</p></div></div>
+            </li>
+            <li class="sol-item">
+              <button class="sol-pilula" type="button" aria-expanded="false" aria-controls="sol-c5"><span class="nome">Entregas</span><span class="mais" aria-hidden="true"></span></button>
+              <div class="sol-corpo" id="sol-c5"><div><p>Peça a apresentação, a planilha ou o relatório sem explicar nada de novo. O Plexus já tem o contexto, faz a primeira versão e deixa com você só a parte que gera valor.</p></div></div>
+            </li>
+            <li class="sol-item">
+              <button class="sol-pilula" type="button" aria-expanded="false" aria-controls="sol-c6"><span class="nome">Plexus no WhatsApp</span><span class="mais" aria-hidden="true"></span></button>
+              <div class="sol-corpo" id="sol-c6"><div><p>O WhatsApp vira mais uma porta para o Plexus. Dá para responder os cartões ali mesmo, e um áudio basta para criar uma tarefa ou pedir uma entrega.</p></div></div>
+            </li>
+            <li class="sol-item">
+              <button class="sol-pilula" type="button" aria-expanded="false" aria-controls="sol-c7"><span class="nome">Loops</span><span class="mais" aria-hidden="true"></span></button>
+              <div class="sol-corpo" id="sol-c7"><div><p>O trabalho que se repete passa a rodar sozinho. O relatório de toda semana chega pronto para você aprovar, e cada correção sua melhora o próximo.</p></div></div>
+            </li>
+            <li class="sol-item">
+              <button class="sol-pilula" type="button" aria-expanded="false" aria-controls="sol-c8"><span class="nome">Chat Plexus</span><span class="mais" aria-hidden="true"></span></button>
+              <div class="sol-corpo" id="sol-c8"><div><p>Pergunte qualquer coisa sobre o seu trabalho e receba a resposta com a origem. Ou leve o mesmo contexto ao assistente de IA que você já usa, sem explicar tudo de novo.</p></div></div>
+            </li>
+          </ol>
+          <div class="sol-progresso" aria-hidden="true"><span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Um dia com o Plexus (V7, 14/10/2026). O pedido dele às 10:18: a demonstração das telas o mais perto do front
+       de verdade, animada como a arte C, ocupando o espaço da direita; três desenhos para a linha do tempo
+       (?linha=a|b|c) e três para a demonstração (?tela=1|2|3). A seção trava a tela como «Como o Plexus funciona»: os
+       seis momentos do dia à esquerda, o do momento aberto com o texto, e a tela à direita. O momento do áudio do
+       almoço é a história que saiu do WhatsApp em 13/10 às 20:07 (a direção dele); o texto dele é rascunho. 11:24: a
+       escolha dele, a demonstração 1 com a linha a (as outras demonstrações saíram da página). 11:31 a 11:37: o dia
+       ganhou a integração com o e-mail, a reunião, o loop e o Chat Plexus («ficou faltando ele integrando com o email,
+       fazendo uma reunião e um loop», «deve ter uma parte tambem do chat com o plexus»), nove momentos, A; é o primeiro
+       dia da Helena com o Plexus. Os textos dos momentos são rascunho, para fechar com ele junto com a tela. -->
+  <section class="block dia" id="um-dia" aria-labelledby="dia">
+    <div class="wrap">
+      <h2 id="dia" class="display">Um dia com o Plexus</h2>
+      <p class="lead dia-lead">A Helena é diretora de operações, e hoje é o primeiro dia dela com o Plexus.</p>
+    </div>
+    <div class="dia-trilho">
+      <div class="dia-fixo">
+        <div class="wrap dia-grade">
+          <div class="dia-tela" aria-hidden="true"><div class="dia-palco"></div></div>
+          <ol class="dia-linha" aria-label="Os momentos do dia">
+            <li class="dia-m" data-m="1">
+              <p class="dia-cab"><span class="dia-hora">08:00</span><span class="dia-nome">Ela conecta o <span class="nw">e-mail</span></span></p>
+              <div class="dia-corpo"><div><h3 class="dia-t">Ela conecta o <span class="nw">e-mail</span> e o Drive, e começa a usar na hora.</h3><p>Ela liga o <span class="nw">e-mail</span> e o Drive da empresa, e o Plexus mapeia sozinho quem é cliente, quem é da equipe e o que está em aberto.</p></div></div>
+            </li>
+            <li class="dia-m" data-m="2">
+              <p class="dia-cab"><span class="dia-hora">08:42</span><span class="dia-nome">O <span class="nw">e-mail</span> chega</span></p>
+              <div class="dia-corpo"><div><h3 class="dia-t">Chega um <span class="nw">e-mail</span> que pede decisão.</h3><p>O Sérgio, do Grupo Vértice, pede mais prazo para mandar o contrato assinado. O Plexus lê a conversa e monta o cartão com as opções e a resposta escrita.</p></div></div>
+            </li>
+            <li class="dia-m" data-m="3">
+              <p class="dia-cab"><span class="dia-hora">09:05</span><span class="dia-nome">A resposta sai</span></p>
+              <div class="dia-corpo"><div><h3 class="dia-t">Ela aprova. A resposta sai, e a promessa vira tarefa.</h3><p>A resposta sai do <span class="nw">e-mail</span> dela, na mesma conversa com o Sérgio, só depois do toque dela. A promessa dele, o contrato até quinta, vira uma tarefa de espera com a mensagem de onde veio.</p></div></div>
+            </li>
+            <li class="dia-m" data-m="4">
+              <p class="dia-cab"><span class="dia-hora">10:00</span><span class="dia-nome">A reunião com o Sérgio</span></p>
+              <div class="dia-corpo"><div><h3 class="dia-t">A reunião vira resumo e tarefas.</h3><p>O gravador do Plexus entra na chamada com o Sérgio. No fim, chega o resumo do que foi combinado. A Helena manda a apresentação dos dois cenários de preço até sexta, e o Sérgio manda o orçamento aprovado pela diretoria dele.</p></div></div>
+            </li>
+            <li class="dia-m" data-m="5">
+              <p class="dia-cab"><span class="dia-hora">13:40</span><span class="dia-nome">O áudio do almoço</span></p>
+              <div class="dia-corpo"><div><h3 class="dia-t">Um áudio no WhatsApp vira a apresentação.</h3><p>Saindo do almoço, ela pede por áudio a apresentação dos dois cenários que prometeu ao Sérgio. O Plexus monta a apresentação com o que já sabe e avisa quando fica pronta para revisar.</p></div></div>
+            </li>
+            <li class="dia-m" data-m="6">
+              <p class="dia-cab"><span class="dia-hora">16:20</span><span class="dia-nome">A pergunta ao Plexus</span></p>
+              <div class="dia-corpo"><div><h3 class="dia-t">Ela pergunta, e o Plexus responde com a origem.</h3><p>«Quais propostas ainda estão sem resposta?» A resposta vem com o nome de cada cliente e de onde veio cada informação, sem ela procurar nada.</p></div></div>
+            </li>
+            <li class="dia-m" data-m="7">
+              <p class="dia-cab"><span class="dia-hora">17:30</span><span class="dia-nome">O primeiro loop</span></p>
+              <div class="dia-corpo"><div><h3 class="dia-t">O que se repete passa a rodar sozinho.</h3><p>Ela pede, numa frase, o relatório da semana de cada cliente toda segunda. A rotina nasce em Loops, e cada relatório chega pronto para ela revisar e aprovar.</p></div></div>
+            </li>
+            <li class="dia-m" data-m="8">
+              <p class="dia-cab"><span class="dia-hora">Quinta, 10:14</span><span class="dia-nome">O contrato chega</span></p>
+              <div class="dia-corpo"><div><h3 class="dia-t">Quinta. O contrato chega e a tarefa fecha.</h3><p>O <span class="nw">e-mail</span> com o contrato assinado chega às 10:14. O Plexus liga a mensagem à promessa e pergunta se fecha. Ela confirma, e a tarefa fecha com o <span class="nw">e-mail</span> que chegou.</p></div></div>
+            </li>
+            <li class="dia-m" data-m="9">
+              <p class="dia-cab"><span class="dia-hora">O dia todo</span><span class="dia-nome">O que não precisa de você</span></p>
+              <div class="dia-corpo"><div><h3 class="dia-t">O que não pede decisão fica guardado.</h3><p>Boletins, comprovantes e contas já pagas vão para uma lista à parte, com a hora e o que foi feito. Nada dessa lista manda mensagem a ninguém.</p></div></div>
+            </li>
+          </ol>
+          <div class="dia-progresso" aria-hidden="true"><span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. As integrações (V7h, 14/10/2026). A ideia dele: o Plexus se conecta ao que a pessoa precisar. Gmail e Outlook
+       aparecem ativos (em cor, com o ponto verde e «ativo»); o resto se conecta a pedido (num tom só, com «a pedido»), e a
+       seção fecha com o pedido da ferramenta que falta, num tom de conversa (a Granola). Três desenhos, trocados pelo
+       endereço (?integracoes=a|b|c; sem nada, a), cada um num bloco próprio: a, a lista por canal (a Circleback); b, as
+       teclas grandes, paradas (a Harvey); c, a faixa que corre (a Attio e a Granola). Os textos são rascunho. -->
+  <link rel="stylesheet" href="/assets/css/integracoes.css?v=1703">
+  <section class="block apps" id="integracoes" aria-labelledby="portas">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="portas" class="display">O Plexus se conecta ao que você já usa</h2>
+        <p class="lead">Ele trabalha dentro das ferramentas da sua empresa, tira delas o que não gera valor, e só o que gera chega até você.</p>
+      </div>
+
+
+      <!-- a, a lista por canal -->
+      <div class="ig-op ig-a">
+        <ul class="canais">
+          <li class="canal ativo">
+            <div class="canal-nome"><span class="nome">E-mail</span><span class="quais">Gmail e Outlook</span></div>
+            <div class="canal-logos" aria-hidden="true"><img src="/assets/img/fontes/gmail.svg" alt="" width="24" height="24" decoding="async"><img src="/assets/img/fontes/outlook.svg" alt="" width="24" height="24" decoding="async"></div>
+            <p class="canal-frase">Lê cada mensagem, tira dela o que não gera valor e separa o que precisa de você.</p>
+            <span class="estado"><span class="ponto" aria-hidden="true"></span>ativo</span>
+          </li>
+          <li class="canal apedido">
+            <div class="canal-nome"><span class="nome">Reuniões</span><span class="quais">Meet, Teams e Zoom</span></div>
+            <div class="canal-logos" aria-hidden="true"><img src="/assets/img/fontes/meet.svg" alt="" width="24" height="24" decoding="async"><img src="/assets/img/fontes/teams.svg" alt="" width="24" height="24" decoding="async"><img src="/assets/img/fontes/zoom.svg" alt="" width="24" height="24" decoding="async"></div>
+            <p class="canal-frase">O Plexus grava a reunião, e o que ficou combinado sai como tarefa, com o trecho de onde veio.</p>
+            <span class="estado">em breve</span>
+          </li>
+          <li class="canal apedido">
+            <div class="canal-nome"><span class="nome">WhatsApp</span><span class="quais">Os grupos e as conversas</span></div>
+            <div class="canal-logos" aria-hidden="true"><img src="/assets/img/fontes/whatsapp.svg" alt="" width="24" height="24" decoding="async"></div>
+            <p class="canal-frase">O que se combina no grupo do cliente entra nas tarefas, sem ninguém copiar nada.</p>
+            <span class="estado">em breve</span>
+          </li>
+          <li class="canal apedido">
+            <div class="canal-nome"><span class="nome">Agenda</span><span class="quais">Google Agenda</span></div>
+            <div class="canal-logos" aria-hidden="true"><img src="/assets/img/fontes/agenda.svg" alt="" width="24" height="24" decoding="async"></div>
+            <p class="canal-frase">Os prazos e as reuniões ficam ao lado das tarefas, no mesmo lugar.</p>
+            <span class="estado">em breve</span>
+          </li>
+          <li class="canal apedido">
+            <div class="canal-nome"><span class="nome">Arquivos</span><span class="quais">Google Drive e OneDrive</span></div>
+            <div class="canal-logos" aria-hidden="true"><img src="/assets/img/fontes/drive.svg" alt="" width="24" height="24" decoding="async"><img src="/assets/img/fontes/onedrive.svg" alt="" width="24" height="24" decoding="async"></div>
+            <p class="canal-frase">As entregas saem com o que já está nas pastas da empresa.</p>
+            <span class="estado">em breve</span>
+          </li>
+          <li class="canal sua">
+            <div class="canal-nome"><span class="nome">A sua ferramenta</span><span class="quais">A que faltar aqui</span></div>
+            <div class="canal-logos" aria-hidden="true"><span class="mais">+</span></div>
+            <p class="canal-frase">Usa uma ferramenta que não está aqui? <a href="mailto:matheus@plexusbrain.com?subject=Uma%20ferramenta%20para%20o%20Plexus">Conte qual</a>, e a gente cuida do resto.</p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- b, as teclas grandes -->
+      <div class="ig-op ig-b">
+        <div class="teclas">
+          <div class="teclas-fila">
+            <div class="tecla ativo"><img src="/assets/img/fontes/gmail.svg" alt="" width="40" height="40" decoding="async"><span class="t-nome">Gmail</span><span class="estado"><span class="ponto" aria-hidden="true"></span>ativo</span></div>
+            <div class="tecla ativo"><img src="/assets/img/fontes/outlook.svg" alt="" width="40" height="40" decoding="async"><span class="t-nome">Outlook</span><span class="estado"><span class="ponto" aria-hidden="true"></span>ativo</span></div>
+            <div class="tecla apedido"><img src="/assets/img/fontes/whatsapp.svg" alt="" width="40" height="40" decoding="async"><span class="t-nome">WhatsApp</span><span class="estado">em breve</span></div>
+            <div class="tecla apedido"><img src="/assets/img/fontes/meet.svg" alt="" width="40" height="40" decoding="async"><span class="t-nome">Meet</span><span class="estado">em breve</span></div>
+            <div class="tecla apedido"><img src="/assets/img/fontes/teams.svg" alt="" width="40" height="40" decoding="async"><span class="t-nome">Teams</span><span class="estado">em breve</span></div>
+          </div>
+          <div class="teclas-fila">
+            <div class="tecla apedido"><img src="/assets/img/fontes/zoom.svg" alt="" width="40" height="40" decoding="async"><span class="t-nome">Zoom</span><span class="estado">em breve</span></div>
+            <div class="tecla apedido"><img src="/assets/img/fontes/agenda.svg" alt="" width="40" height="40" decoding="async"><span class="t-nome">Agenda</span><span class="estado">em breve</span></div>
+            <div class="tecla apedido"><img src="/assets/img/fontes/drive.svg" alt="" width="40" height="40" decoding="async"><span class="t-nome">Drive</span><span class="estado">em breve</span></div>
+            <div class="tecla apedido"><img src="/assets/img/fontes/onedrive.svg" alt="" width="40" height="40" decoding="async"><span class="t-nome">OneDrive</span><span class="estado">em breve</span></div>
+            <a class="tecla sua" href="mailto:matheus@plexusbrain.com?subject=Solicita%C3%A7%C3%A3o%20de%20integra%C3%A7%C3%A3o"><span class="mais" aria-hidden="true">+</span><span class="t-nome">Solicite uma integração</span></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- c, a faixa que corre -->
+      <div class="ig-op ig-c">
+        <div class="faixa">
+          <ul class="faixa-trilho">
+            <li class="fx-peca ativo"><span class="fx-icone"><img src="/assets/img/fontes/gmail.svg" alt="" width="40" height="40" decoding="async"></span><span class="fx-nome">Gmail</span><span class="estado"><span class="ponto" aria-hidden="true"></span>ativo</span></li>
+            <li class="fx-peca ativo"><span class="fx-icone"><img src="/assets/img/fontes/outlook.svg" alt="" width="40" height="40" decoding="async"></span><span class="fx-nome">Outlook</span><span class="estado"><span class="ponto" aria-hidden="true"></span>ativo</span></li>
+            <li class="fx-peca apedido"><span class="fx-icone"><img src="/assets/img/fontes/whatsapp.svg" alt="" width="40" height="40" decoding="async"></span><span class="fx-nome">WhatsApp</span><span class="estado">em breve</span></li>
+            <li class="fx-peca apedido"><span class="fx-icone"><img src="/assets/img/fontes/meet.svg" alt="" width="40" height="40" decoding="async"></span><span class="fx-nome">Meet</span><span class="estado">em breve</span></li>
+            <li class="fx-peca apedido"><span class="fx-icone"><img src="/assets/img/fontes/teams.svg" alt="" width="40" height="40" decoding="async"></span><span class="fx-nome">Teams</span><span class="estado">em breve</span></li>
+            <li class="fx-peca apedido"><span class="fx-icone"><img src="/assets/img/fontes/zoom.svg" alt="" width="40" height="40" decoding="async"></span><span class="fx-nome">Zoom</span><span class="estado">em breve</span></li>
+            <li class="fx-peca apedido"><span class="fx-icone"><img src="/assets/img/fontes/agenda.svg" alt="" width="40" height="40" decoding="async"></span><span class="fx-nome">Agenda</span><span class="estado">em breve</span></li>
+            <li class="fx-peca apedido"><span class="fx-icone"><img src="/assets/img/fontes/drive.svg" alt="" width="40" height="40" decoding="async"></span><span class="fx-nome">Drive</span><span class="estado">em breve</span></li>
+            <li class="fx-peca apedido"><span class="fx-icone"><img src="/assets/img/fontes/onedrive.svg" alt="" width="40" height="40" decoding="async"></span><span class="fx-nome">OneDrive</span><span class="estado">em breve</span></li>
+            <li class="fx-peca sua"><a class="fx-icone" href="mailto:matheus@plexusbrain.com?subject=Uma%20ferramenta%20para%20o%20Plexus" aria-label="A sua ferramenta, conte qual">+</a><span class="fx-nome">A sua ferramenta</span><span class="estado">conte qual</span></li>
+          </ul>
+        </div>
+        <p class="pedido">Usa uma ferramenta que não está aqui? <a href="mailto:matheus@plexusbrain.com?subject=Uma%20ferramenta%20para%20o%20Plexus">Conte qual</a>, e a gente cuida do resto.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="end" aria-labelledby="comece">
+    <div class="wrap">
+      <div class="card-end">
+        <svg class="mark" viewBox="0 0 514 540" aria-hidden="true" focusable="false"><use href="#marca"/></svg>
+        <h2 id="comece" class="display">Deixe com o Plexus o que não gera valor</h2>
+        <p class="lead">A entrada abre para poucas empresas por vez. Deixe o seu <span class="nw">e-mail</span> de trabalho e, se a sua entrada for liberada, o convite chega nele.</p>
+        <div class="ask" id="fim">
+          <form action="https://app.plexusbrain.com/pedido" method="post">
+            <label class="sr-only" for="email-fim">Seu <span class="nw">e-mail</span> de trabalho</label>
+            <div class="field">
+              <input id="email-fim" type="email" name="email" autocomplete="email" placeholder="Seu e-mail de trabalho" required aria-describedby="email-fim-erro">
+              <button class="btn" type="submit">Inscrever-se</button>
+            </div>
+            <input class="isca" type="text" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <p class="erro" id="email-fim-erro"></p>
+          </form>
+          <p class="note">Este <span class="nw">e-mail</span> é para o seu convite. A <a href="/privacidade/">política de privacidade</a> diz o que o Plexus guarda.</p>
+          <p class="aviso" role="status" tabindex="-1"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
-<footer class="pe">
+
+<!-- parte:rodape -->
+<footer>
   <div class="wrap">
-    <nav aria-label="O site">
-      <ul>
-        <li><a href="/privacidade/">Privacidade</a></li>
-        <li><a href="/termos/">Termos de uso</a></li>
-        <li><a href="mailto:matheus@plexusbrain.com">matheus@plexusbrain.com</a></li>
-      </ul>
-    </nav>
-    <p class="pe-fim">© 2026 Plexus</p>
+    <div class="cols">
+      <nav aria-labelledby="rodape-produto">
+        <h2 id="rodape-produto">Produto</h2>
+        <ul>
+          <li><a href="/#numero">O problema</a></li>
+          <li><a href="/#solucao">Como funciona</a></li>
+          <li><a href="/#um-dia">Um dia</a></li>
+          <li><a href="/#integracoes">Integrações</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="rodape-legal">
+        <h2 id="rodape-legal">Legal</h2>
+        <ul>
+          <li><a href="/privacidade/">Política de privacidade</a></li>
+          <li><a href="/termos/">Termos de uso</a></li>
+          <li><a href="/privacidade/#excluir">Excluir os meus dados</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2 id="rodape-contato">Contato</h2>
+        <ul aria-labelledby="rodape-contato">
+          <li><a href="mailto:matheus@plexusbrain.com">matheus@plexusbrain.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="base">
+      <a class="brand" href="/" aria-label="Plexus, início"><svg aria-hidden="true" focusable="false"><use href="#marca"/></svg><span class="wordmark">Plexus</span></a>
+      <p class="made">© 2026 Plexus</p>
+      <p class="feito">Feito no Brasil</p>
+    </div>
   </div>
 </footer>
-</div>
+<script src="/assets/js/site.js?v=1637" defer></script>
+<!-- /parte:rodape -->
+<script src="/assets/js/secoes.js" defer></script>
+<script src="/assets/js/dor.js?v=1612" defer></script>
+<script src="/assets/js/solucao.js" defer></script>
+<script src="/assets/js/sol-a.js" defer></script>
+<script src="/assets/js/sol-b.js" defer></script>
+<script src="/assets/js/sol-c.js?v=1612" defer></script>
+<script src="/assets/js/dia.js?v=1704" defer></script>
+<script src="/assets/js/dia-linha.js?v=1601" defer></script>
+<script src="/assets/js/dia-tela-1.js?v=1612" defer></script>
+<script src="/assets/js/integracoes.js?v=1703" defer></script>
 <script type="module" src="/assets/js/fundo.js"></script>
 </body>
 </html>

@@ -1,0 +1,335 @@
+/* As três seções depois do topo (V3, 13/10/2026), na ordem que ele pediu: o número, a dor, a solução.
+ * Cada uma tem três opções, trocadas pelo endereço (?numero=, ?dor=, ?solucao= com a, b ou c; sem nada, a).
+ * O movimento: o roteiro das seções marca a opção com «chegou» quando ela entra na tela, e cada peça anda
+ * uma vez, curta. Os estados de partida só valem com a classe «anima», que o roteiro põe quando o sistema
+ * não pede menos movimento; sem roteiro, ou com o pedido, aparece o estado final, parado. */
+.op { display: none; }
+.op-a { display: block; }
+:root[data-numero="b"] #numero .op-a, :root[data-numero="c"] #numero .op-a,
+:root[data-dor="b"] #dor .op-a, :root[data-dor="c"] #dor .op-a,
+:root[data-solucao="b"] #solucao .op-a, :root[data-solucao="c"] #solucao .op-a { display: none; }
+:root[data-numero="b"] #numero .op-b, :root[data-numero="c"] #numero .op-c,
+:root[data-dor="b"] #dor .op-b, :root[data-dor="c"] #dor .op-c,
+:root[data-solucao="b"] #solucao .op-b, :root[data-solucao="c"] #solucao .op-c { display: block; }
+.fonte { margin-top: 16px; color: var(--ink-soft); }
+.fonte a { color: inherit; }
+.anima .op { --t: 900ms; }
+.laco-i { display: inline-block; width: 13px; height: 14px; color: var(--accent); vertical-align: -1px; flex: none; }
+
+/* ===== O número ===== */
+.numero { padding-bottom: 0; }
+.numero h2 { max-width: 18em; }
+
+/* a: o anel. O dia de rotina em dez partes; o verde corre até 42 % enquanto o número conta. */
+.num-a h2 { margin: 0 auto; text-align: center; }
+.anel-linha { display: flex; align-items: center; justify-content: center; gap: 48px; margin-top: 48px; }
+.anel-linha > div { max-width: 30em; }
+.anel { position: relative; width: 208px; height: 208px; flex: none; }
+.anel svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.anel circle { fill: none; stroke-width: 18; }
+.anel-trilho { stroke: var(--stone); stroke-dasharray: 50.03 4; stroke-dashoffset: -2; }
+.anel-cheio { stroke: var(--accent); stroke-dasharray: 50.03 4; stroke-dashoffset: -2; }
+.anel-corte { stroke: #fff; stroke-width: 24; stroke-dasharray: 226.95 600; stroke-dashoffset: 0; }
+.anima .op.chegou .anel-corte { transition: stroke-dashoffset 1100ms var(--ease); }
+.anima .op:not(.chegou) .anel-corte { stroke-dashoffset: 226.95; }
+.anel-n { position: absolute; inset: 0; display: grid; place-items: center; font-variant-numeric: tabular-nums; }
+
+/* b: as duas vozes. Duas réguas de cem partes, uma em cima da outra, enchem juntas e param quase no mesmo
+ * lugar; um fio marca onde as duas param. */
+.num-b .vozes { position: relative; display: grid; gap: 12px; margin-top: 48px; --col: 168px; --gap: 32px; }
+.voz { display: grid; grid-template-columns: var(--col) minmax(0, 1fr); gap: var(--gap); align-items: center; }
+.voz-n { font-variant-numeric: tabular-nums; }
+.voz-n small { display: block; font-size: var(--size-text); line-height: var(--leading-text); letter-spacing: 0; color: var(--ink-soft); }
+.regua { position: relative; height: 40px; background: repeating-linear-gradient(90deg, var(--line-strong) 0 2px, transparent 2px 1%); }
+.regua span { position: absolute; inset: 0 auto 0 0; width: calc(var(--v) * 1%); background: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px calc(100% / var(--v))); }
+.anima .op.chegou .regua span { transition: width 1100ms var(--ease); }
+.anima .op:not(.chegou) .regua span { width: 0; }
+.mesma { position: absolute; top: -8px; height: calc(100% + 16px); width: 0; border-left: 1px dashed var(--ink);
+  left: calc(var(--col) + var(--gap) + (100% - var(--col) - var(--gap)) * 0.42); }
+.anima .op.chegou .mesma { transition: opacity 400ms var(--ease) 1100ms; }
+.anima .op:not(.chegou) .mesma { opacity: 0; }
+.vozes-texto { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); margin-top: 32px; padding-left: calc(var(--col) + var(--gap)); }
+.num-b .vozes-texto { --col: 168px; --gap: 32px; }
+.vozes-texto .fonte { margin-top: 8px; }
+
+/* c: as atividades. Cinco colunas sobem em cascata até a parte ineficiente de cada atividade; o fio
+ * marca a média de todas as atividades. */
+.num-c { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 72px; align-items: end; }
+.num-c .lead { margin-top: var(--space-head); max-width: 28em; }
+.num-c .cols { position: relative; margin-right: 112px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; height: 280px; align-items: end; }
+.col { display: grid; grid-template-rows: auto 1fr auto; height: 100%; gap: 8px; text-align: center; }
+.col b { font-weight: 400; font-variant-numeric: tabular-nums; }
+.col .trilho { position: relative; display: block; border-radius: 6px 6px 0 0; background: var(--stone); overflow: hidden; }
+.col .nivel { position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--v) * 1%); background: var(--accent); }
+.anima .op.chegou .col .nivel { transition: height 900ms var(--ease) calc(var(--i) * 110ms); }
+.anima .op:not(.chegou) .col .nivel { height: 0; }
+.col .nome { color: var(--ink-soft); }
+.media { position: absolute; left: -8px; right: -8px; border-top: 1px dashed var(--ink); pointer-events: none;
+  bottom: calc(var(--rodape) + (100% - var(--rodape) - var(--topo)) * 0.42); --rodape: 32px; --topo: 32px; }
+.media span { position: absolute; left: calc(100% + 4px); bottom: -12px; white-space: nowrap; color: var(--ink); }
+.anima .op.chegou .media { transition: opacity 400ms var(--ease) 1200ms; }
+.anima .op:not(.chegou) .media { opacity: 0; }
+.colunas figcaption { margin-top: 16px; color: var(--ink-soft); }
+
+/* ===== A dor (a frase dele fica, e a peça ao lado anda) ===== */
+.dor { background: var(--stone); }
+.dor-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 5fr); gap: 72px; align-items: center; }
+.pain-t { font-size: 32px; font-weight: 400; line-height: 1.2; letter-spacing: -0.015em; max-width: 15em; text-wrap: balance; }
+.peca { max-width: 440px; width: 100%; justify-self: end; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+
+/* a: o dia que se enche. As tarefas em volta entram uma a uma por cima e empurram o trabalho dela para o fim do dia. */
+.feed-cab { padding: 16px 20px 12px; color: var(--ink-soft); }
+.feed ol { list-style: none; padding: 0 20px; }
+.feed li { display: grid; grid-template-rows: 1fr; }
+.feed li > div { overflow: hidden; min-height: 0; display: grid; grid-template-columns: 44px minmax(0, 1fr) 14px; gap: 12px; align-items: baseline; padding: 6px 0; border-top: 1px solid var(--line); }
+.feed li:first-child > div { border-top: 0; }
+.feed .hora { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.feed .valor > div { color: var(--ink); }
+.feed .valor .ponto { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); align-self: center; }
+.anima .op.chegou .feed li:not(.valor) { transition: grid-template-rows 420ms var(--ease) calc(var(--i) * 170ms), opacity 420ms var(--ease) calc(var(--i) * 170ms); }
+.anima .op:not(.chegou) .feed li:not(.valor) { grid-template-rows: 0fr; opacity: 0; }
+.anima .op:not(.chegou) .feed li:not(.valor) > div { padding-top: 0; padding-bottom: 0; border-top-color: transparent; }
+.anima .op.chegou .feed li:not(.valor) > div { transition: padding 420ms var(--ease) calc(var(--i) * 170ms); }
+.feed-pe { padding: 12px 20px 16px; border-top: 1px solid var(--line-strong); margin: 0 0; }
+
+/* b: o almoço. Uma linha corre por cinco passos de trabalho em volta; no fim, o que o Plexus no WhatsApp tira, em seguida. */
+.dor-b .pain-t { max-width: 22em; }
+.trilha { position: relative; list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(0, 1.25fr); gap: 24px; margin-top: 48px; }
+.trilha::before { content: ''; position: absolute; top: 5px; left: 0; right: calc(100% / 6.25 * 1.25 + 24px); height: 1px; background: var(--ink); transform-origin: 0 50%; }
+.trilha li { position: relative; padding-top: 28px; }
+.trilha li::before { content: ''; position: absolute; top: 0; left: 0; width: 11px; height: 11px; border-radius: 50%; background: var(--stone); border: 1px solid var(--ink); }
+.trilha .hora { display: block; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.trilha .valor::before { background: var(--accent); border-color: var(--accent); }
+.trilha .depois { padding: 24px 0 0 20px; border-left: 1px dashed var(--ink-soft); }
+.trilha .depois::before { display: none; }
+.trilha .depois p + p { margin-top: 8px; color: var(--ink-soft); }
+.anima .op.chegou .trilha::before { transition: transform 1300ms var(--ease); }
+.anima .op:not(.chegou) .trilha::before { transform: scaleX(0); }
+.anima .op.chegou .trilha li { transition: opacity 360ms var(--ease) calc(var(--i) * 230ms), translate 360ms var(--ease) calc(var(--i) * 230ms); }
+.anima .op:not(.chegou) .trilha li { opacity: 0; translate: 0 6px; }
+.trilha-pe { margin-top: 32px; color: var(--ink-soft); max-width: 46em; }
+
+/* c: quatro lugares. Os quatro contadores sobem juntos; depois, o do e-mail encolhe no que o Plexus faz dele hoje. */
+.dor-c .dor-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 5fr); }
+.dor-c .peca { justify-self: start; order: -1; }
+.lugares { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.lugar { padding: 14px 18px 16px; }
+.lugar .display { color: var(--ink); }
+.lugar:nth-child(odd) { border-right: 1px solid var(--line); }
+.lugar:nth-child(n+3) { border-top: 1px solid var(--line); }
+.lugar .display { font-variant-numeric: tabular-nums; margin: 4px 0 2px; }
+.lugar p { color: var(--ink-soft); }
+.lugar.email { position: relative; }
+.lugar .feito { display: none; }
+.lugar.email .feito { display: flex; gap: 8px; align-items: baseline; margin-top: 8px; color: var(--ink); }
+.anima .op.chegou .lugar.email .feito { transition: opacity 400ms var(--ease) 1300ms; }
+.anima .op:not(.chegou) .lugar.email .feito { opacity: 0; }
+.lugares-pe { padding: 14px 20px 16px; border-top: 1px solid var(--line-strong); }
+
+/* ===== A solução, em sete partes ===== */
+.solucao .head { max-width: none; }
+.solucao .head .lead { max-width: 34em; }
+.em-seguida { color: var(--ink-soft); }
+
+/* a: a tela inclinada da Legora, com a barra lateral; a lista das sete partes troca a tela. */
+.sol-a { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: 56px; align-items: start; margin-top: var(--space-block); }
+.passos { list-style: none; border-top: 1px solid var(--line); }
+.passos li { border-bottom: 1px solid var(--line); }
+.passos button { display: block; width: 100%; padding: 12px 0; border: 0; background: none; text-align: left; cursor: pointer; border-radius: 4px; }
+.passos .p-t { display: flex; justify-content: space-between; gap: 16px; font-size: var(--size-lead); line-height: var(--leading-lead); color: var(--ink-soft); }
+.passos .p-t .em-seguida { font-size: var(--size-text); }
+.passos [aria-selected="true"] .p-t, .passos button:hover .p-t { color: var(--ink); }
+.passos .p-d { display: block; margin-top: 6px; color: var(--ink-soft); max-width: 30em; }
+.js .passos .p-d { display: none; }
+.js .passos [aria-selected="true"] .p-d { display: block; }
+.vitrine { position: relative; height: 470px; overflow: hidden; border-radius: 16px; background: linear-gradient(180deg, #d9d8d2 0%, #ecebe6 100%); perspective: 1800px; }
+.aparelho2 { position: absolute; left: 40px; top: 48px; width: 600px; height: 480px; transform-origin: 0 0;
+  transform: rotateX(18deg) rotateY(14deg) rotateZ(-6deg); border: 6px solid #0e0e0d; border-radius: 28px; background: #fdfdfc; overflow: hidden;
+  box-shadow: -4px 2px 0 0 #050505, 0 30px 60px -20px rgba(27, 27, 25, 0.35); }
+.anima .op.chegou .aparelho2 { transition: transform 1000ms var(--ease), opacity 600ms var(--ease); }
+.anima .op:not(.chegou) .aparelho2 { transform: translate3d(-20px, 30px, 0) rotateX(26deg) rotateY(10deg) rotateZ(-3deg); opacity: 0; }
+.app2 { display: grid; grid-template-columns: 172px 1fr; height: 100%; }
+.app2-side { background: var(--t-nav); border-right: 1px solid var(--t-line); padding: 16px 8px; }
+.app2-brand { display: flex; align-items: center; gap: 8px; padding: 4px 10px 16px; font: 700 17px/1.25 'Plexus Marca', var(--font-ui); letter-spacing: -0.01em; }
+.app2-brand svg { width: 18px; height: 19px; color: var(--t-accent); }
+.app2-nav { list-style: none; }
+.app2-nav li { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border-radius: 10px; color: var(--t-soft); font-size: 14px; }
+.app2-nav li.on { background: var(--t-fill-active); color: var(--t-ink); }
+.app2-nav svg { width: 16px; height: 16px; flex: none; }
+.app2-nav .futuro { color: var(--t-faint); }
+.app2-nav .futuro small { margin-left: auto; font-size: 13px; }
+.app2-main { padding: 24px 24px; overflow: hidden; }
+.sa-painel { display: none; }
+.sa-painel.on { display: block; }
+.app2-titulo { font-size: 20px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
+.app2-sub { margin-top: 4px; font-size: 14px; color: var(--t-soft); }
+.aviso-futuro { margin-bottom: 14px; padding: 8px 12px; border-radius: 10px; background: var(--t-fill); font-size: 14px; color: var(--t-soft); }
+.linhas { margin-top: 16px; list-style: none; border-top: 1px solid var(--t-line); }
+.linhas li { display: grid; grid-template-columns: 22px 1fr auto; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--t-line); font-size: 15px; }
+.linhas li span:last-child { font-size: 14px; color: var(--t-soft); }
+.linhas svg { width: 20px; height: 20px; color: var(--t-soft); }
+.linhas .ligado svg { color: var(--t-accent); }
+.linhas .ligado span:last-child { color: var(--t-accent-strong); }
+.linhas .longe { color: var(--t-faint); }
+.anima .op.chegou .sa-painel.on .linhas li { animation: entra 420ms var(--ease) both; animation-delay: calc(var(--i) * 90ms); }
+@keyframes entra { from { opacity: 0; transform: translateX(-14px); } }
+.fatos2 { margin-top: 14px; list-style: none; display: grid; gap: 10px; }
+.fatos2 li { padding: 10px 12px; border: 1px solid var(--t-line); border-radius: 10px; font-size: 15px; }
+.fatos2 li small { display: block; margin-top: 2px; font-size: 13px; color: var(--t-soft); }
+.anima .op.chegou .sa-painel.on .fatos2 li { animation: sobe 420ms var(--ease) both; animation-delay: calc(var(--i) * 110ms); }
+@keyframes sobe { from { opacity: 0; transform: translateY(8px); } }
+.mini-card { margin-top: 12px; padding: 14px 16px; border: 1px solid var(--t-line); border-radius: 14px; background: var(--t-surface); }
+.mini-card .card-t { font-size: 16px; }
+.mini-card .opt { padding: 7px 10px; }
+.mini-card .acts { margin-top: 10px; }
+.pergunta-c .campo { margin-top: 10px; height: 34px; display: flex; align-items: center; padding: 0 12px; border: 1px solid var(--t-line); border-radius: 10px; color: var(--t-faint); font-size: 14px; }
+.anima .op.chegou .sa-painel.on .mini-card { animation: sobe 420ms var(--ease) both; animation-delay: calc(var(--i) * 160ms); }
+.tarefa-viva .chegada { display: block; margin-top: 4px; font-size: 14px; color: var(--t-accent-strong); }
+.anima .op.chegou .sa-painel.on .tarefa-viva .chegada { animation: aparece 400ms var(--ease) 900ms both; }
+@keyframes aparece { from { opacity: 0; } }
+.audio { display: flex; align-items: center; gap: 10px; width: max-content; max-width: 100%; margin-top: 12px; padding: 10px 14px; border-radius: 14px 14px 4px 14px; background: var(--t-accent-soft); margin-left: auto; font-size: 14px; }
+.audio i { display: flex; gap: 3px; align-items: center; height: 20px; }
+.audio i b { width: 3px; border-radius: 2px; background: var(--t-accent); height: calc(var(--h) * 1px); }
+.resposta { margin-top: 10px; max-width: 86%; padding: 10px 14px; border-radius: 14px 14px 14px 4px; background: var(--t-fill); font-size: 14px; line-height: 1.45; }
+.chat-caixa { margin-top: 14px; padding: 12px 14px; border: 1px solid var(--t-line); border-radius: 14px; background: var(--t-surface); font-size: 14px; color: var(--t-soft); }
+.chat-caixa .modelos { display: flex; gap: 6px; margin-top: 10px; }
+.chat-caixa .modelos span { padding: 3px 10px; border-radius: 8px; background: var(--t-fill); color: var(--t-soft); }
+.chat-caixa .modelos span.on { background: var(--t-accent-soft); color: var(--t-accent-strong); }
+
+/* b: o documento e o painel ao lado, como as sugestões da Legora: o e-mail do Sérgio, e o que o Plexus faz com ele. */
+.sol-b { position: relative; margin-top: var(--space-block); display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: start; }
+.documento { padding: 28px 96px 32px 32px; margin-right: -72px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
+.documento .de { display: flex; gap: 12px; align-items: center; padding-bottom: 14px; border-bottom: 1px solid var(--t-line); font-size: 14px; color: var(--t-soft); }
+.documento .de b { color: var(--t-ink); font-weight: 500; }
+.documento .assunto { margin-top: 16px; font-size: 17px; font-weight: 600; }
+.documento .corpo { margin-top: 12px; line-height: 1.7; max-width: 34em; }
+.documento .corpo p + p { margin-top: 10px; }
+.marca-t { background: linear-gradient(var(--t-accent-soft), var(--t-accent-soft)) 0 0 / 100% 100% no-repeat; box-shadow: inset 0 -2px 0 var(--t-accent); padding: 1px 2px; border-radius: 2px; }
+.anima .op.chegou .marca-t { transition: background-size 600ms var(--ease) calc(500ms + var(--i) * 250ms); }
+.anima .op:not(.chegou) .marca-t { background-size: 0 100%; }
+.marca-t sup { font-size: 12px; color: var(--t-accent-strong); margin-left: 2px; }
+.painel { position: relative; z-index: 1; margin-top: 40px; padding: 18px 18px 8px; border-radius: 18px; background: var(--t-surface); border: 1px solid var(--t-line);
+  box-shadow: 0 24px 48px -24px rgba(27, 27, 25, 0.28), 0 2px 6px rgba(27, 27, 25, 0.06); }
+.anima .op.chegou .painel { transition: transform 700ms var(--ease), opacity 500ms var(--ease); }
+.anima .op:not(.chegou) .painel { transform: translateX(32px); opacity: 0; }
+.painel-cab { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; }
+.painel-cab svg { width: 16px; height: 17px; color: var(--t-accent); }
+.painel ol { list-style: none; margin-top: 10px; }
+.painel li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 8px 0; border-top: 1px solid var(--t-line); }
+.painel li > span { font-size: 14px; color: var(--t-soft); font-variant-numeric: tabular-nums; }
+.painel li b { display: block; font-weight: 500; }
+.portas-mini { display: flex; gap: 6px; }
+.portas-mini i { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; border: 1px dashed var(--t-line); color: var(--t-faint); }
+.portas-mini i svg { width: 14px; height: 14px; }
+.portas-mini i.on { border: 1px solid var(--t-accent); color: var(--t-accent); background: var(--t-accent-soft); }
+.anima .op.chegou .portas-mini i { transition: opacity 400ms var(--ease) calc(400ms + var(--n, 0) * 80ms), transform 400ms var(--ease) calc(400ms + var(--n, 0) * 80ms); }
+.anima .op:not(.chegou) .portas-mini i { opacity: 0; transform: translateX(10px); }
+.portas-mini i:nth-child(2) { --n: 1; } .portas-mini i:nth-child(3) { --n: 2; } .portas-mini i:nth-child(4) { --n: 3; } .portas-mini i:nth-child(5) { --n: 4; } .portas-mini i:nth-child(6) { --n: 5; }
+.painel li p { margin-top: 2px; font-size: 14px; color: var(--t-soft); line-height: 1.45; }
+.painel .b { height: 28px; font-size: 14px; margin-top: 8px; }
+.anima .op.chegou .painel li { transition: opacity 360ms var(--ease) calc(300ms + var(--i) * 120ms); }
+.anima .op:not(.chegou) .painel li { opacity: 0; }
+.painel .divisa { display: block; padding: 14px 0 4px; border-top: 1px solid var(--t-line); font-size: 14px; font-weight: 500; color: var(--t-ink); }
+.painel .depois b, .painel .depois li > span { color: var(--t-soft); }
+
+/* c: as sete partes em sete quadros pequenos, numa linha do que funciona hoje e noutra do que vem em seguida. */
+.fileira { margin-top: 48px; }
+.fileira + .fileira { margin-top: 40px; }
+.fileira-t { display: flex; align-items: center; gap: 12px; color: var(--ink-soft); }
+.fileira-t::after { content: ''; flex: 1; border-top: 1px solid var(--line-strong); }
+.fileira.depois .fileira-t::after { border-top-style: dashed; }
+.quadros { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-top: 20px; }
+.quadro { display: grid; align-content: start; gap: 6px; }
+.quadro > p { color: var(--ink-soft); }
+.quadro h3 { font-weight: 400; }
+.cena { position: relative; height: 150px; margin-bottom: 10px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); overflow: hidden; padding: 14px; }
+.depois .cena { background: transparent; border: 1px dashed var(--line-strong); }
+.anima .fileira.chegou .cena * { transition-duration: 600ms; transition-timing-function: var(--ease); }
+/* 1: as portas entram, só o Gmail liga */
+.cena-portas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-content: center; }
+.cena-portas span { display: grid; place-items: center; height: 52px; border-radius: 12px; border: 1px dashed var(--line-strong); color: var(--ink-faint); }
+.cena-portas span svg { width: 22px; height: 22px; }
+.cena-portas .on { border: 1px solid var(--accent); color: var(--accent); background: #ecf0ea; }
+.anima .fileira.chegou .cena-portas span { transition-property: opacity, transform; transition-delay: calc(var(--i) * 90ms); }
+.anima .fileira:not(.chegou) .cena-portas span { opacity: 0; transform: translateY(-14px); }
+/* 2: o contexto se monta, cada linha com o ponto de onde veio */
+.cena-contexto p { display: flex; gap: 8px; align-items: center; font-size: 13px; line-height: 1.4; color: var(--t-ink); padding: 5px 0; border-bottom: 1px solid var(--t-line); }
+.cena-contexto p i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: none; }
+.cena-contexto b { font-weight: 600; font-size: 14px; display: block; margin-bottom: 4px; }
+.anima .fileira.chegou .cena-contexto p { transition-property: opacity; transition-delay: calc(var(--i) * 160ms); }
+.anima .fileira:not(.chegou) .cena-contexto p { opacity: 0; }
+/* 3: o cartão, com a recomendada marcada */
+.cena-cartao .card-t { font-size: 14px; line-height: 1.35; }
+.cena-cartao .opt { padding: 6px 8px; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; }
+.cena-cartao .opt .r { width: 14px; height: 14px; }
+.cena-cartao .opts { margin-top: 8px; }
+.anima .fileira.chegou .cena-cartao .opt.on { transition-property: background-color; transition-delay: 500ms; }
+.anima .fileira.chegou .cena-cartao .opt.on .r { transition-property: border-width; transition-delay: 500ms; }
+.anima .fileira:not(.chegou) .cena-cartao .opt.on { background: transparent; }
+.anima .fileira:not(.chegou) .cena-cartao .opt.on .r { border-width: 1.5px; }
+/* 4: a tarefa espera, a prova chega e ela fecha */
+.cena-tarefa .row { padding: 6px 0; font-size: 13px; grid-template-columns: 16px 1fr; gap: 10px; }
+.cena-tarefa .row b { font-size: 14px; }
+.cena-tarefa .ring { width: 16px; height: 16px; }
+.cena-tarefa .ring.done { transition-property: background-color, border-color; transition-delay: 900ms; }
+.anima .fileira:not(.chegou) .cena-tarefa .ring.done { background: transparent; border: 1.5px solid var(--t-line); }
+.cena-tarefa .chegou-t { color: var(--t-accent-strong); }
+.anima .fileira.chegou .cena-tarefa .chegou-t { transition-property: opacity; transition-delay: 700ms; }
+.anima .fileira:not(.chegou) .cena-tarefa .chegou-t { opacity: 0; }
+/* 5: o áudio e a apresentação pronta */
+.cena-zap .audio { margin-top: 0; font-size: 13px; padding: 8px 12px; }
+.cena-zap .resposta { font-size: 13px; padding: 8px 12px; }
+/* 6: o que se repete vira rotina */
+.cena-loop { display: grid; place-items: center; }
+.cena-loop svg { width: 64px; height: 64px; color: var(--accent); }
+.cena-loop p { font-size: 13px; color: var(--t-soft); text-align: center; }
+/* 7: o chat, com o modelo que você escolher */
+.cena-chat .chat-caixa { margin-top: 0; font-size: 13px; padding: 10px 12px; }
+.cena-chat .chat-caixa .modelos span { font-size: 12px; padding: 2px 8px; }
+
+/* A tela média */
+@media (max-width: 1020px) {
+  .num-c, .dor-grid, .dor-c .dor-grid, .sol-a, .sol-b { grid-template-columns: 1fr; gap: 40px; }
+  .peca, .dor-c .peca { justify-self: start; order: 0; }
+  .vitrine { height: 420px; }
+  .documento { margin-right: 0; }
+  .painel { margin-top: -40px; margin-left: 24px; }
+  .quadros { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .trilha { grid-template-columns: 1fr; gap: 0; }
+  .trilha::before { top: 0; bottom: 0; left: 5px; right: auto; width: 1px; height: auto; transform-origin: 50% 0; }
+  .anima .op:not(.chegou) .trilha::before { transform: scaleY(0); }
+  .trilha li { padding: 0 0 18px 32px; }
+  .trilha .depois { margin-left: 5px; padding: 8px 0 0 26px; }
+}
+
+/* O celular */
+@media (max-width: 640px) {
+  .anel-linha { flex-direction: column; gap: 24px; margin-top: 32px; }
+  .anel { width: 168px; height: 168px; }
+  .num-a h2 { text-align: left; margin: 0; }
+  .anel-linha > div { max-width: none; }
+  .num-b .vozes, .num-b .vozes-texto { --col: 92px; --gap: 16px; }
+  .vozes-texto { grid-template-columns: 1fr; padding-left: 0; gap: 20px; }
+  .regua { height: 32px; }
+  .num-c .cols { gap: 6px; height: 240px; margin-right: 0; }
+  .media span { display: none; }
+  .pain-t { font-size: 24px; }
+  .dor-grid { gap: 32px; }
+  .feed li > div { grid-template-columns: 44px minmax(0, 1fr) 14px; gap: 10px; }
+  .feed-cab, .feed ol, .feed-pe { padding-left: 16px; padding-right: 16px; }
+  .lugar { padding: 16px; }
+  .vitrine { height: 360px; }
+  /* no celular, a tela fica de frente e só com a parte principal, para a letra caber legível */
+  .vitrine { height: auto; min-height: 330px; perspective: none; padding: 16px; }
+  .aparelho2 { position: relative; left: 0; top: 0; width: 100%; height: auto; min-height: 300px; transform: none; border-width: 4px; border-radius: 18px; }
+  .anima .op:not(.chegou) .aparelho2 { transform: translateY(16px); }
+  .app2 { grid-template-columns: 1fr; }
+  .app2-side { display: none; }
+  .app2-main { padding: 18px 16px; }
+  .linhas li { grid-template-columns: 20px 1fr; }
+  .linhas li span:last-child { grid-column: 2; margin-top: -8px; }
+  .documento { padding: 20px; }
+  .painel { margin-left: 12px; margin-right: -4px; }
+  .quadros { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 16px; margin-right: calc(-1 * var(--gutter)); padding-right: var(--gutter); padding-bottom: 8px; }
+  .quadro { flex: 0 0 78%; scroll-snap-align: start; }
+}
