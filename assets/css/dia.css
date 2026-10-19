@@ -1,14 +1,19 @@
-/* Um dia com o Plexus (V7, 14/10/2026). A seção trava a tela como «Como o Plexus funciona»: enquanto a pessoa desce,
- * a tela fica parada; à esquerda, os seis momentos do dia, com o do momento aberto e o texto dele; à direita, a
- * demonstração ocupa o espaço inteiro (o pedido dele às 10:18: «não deve ter todo esse espaço vazio»). O desenho
- * da linha do tempo mora em dia-linha.css (?linha=a|b|c) e o da demonstração em dia-tela-N (?tela=1|2|3). Sem
- * JavaScript, a lista aparece aberta e a demonstração some. */
+/* Um dia com o Plexus (V7, 14/10/2026). À esquerda, os nove momentos do dia, com o do momento aberto e o texto dele;
+ * à direita, a demonstração ocupa o espaço inteiro (o pedido dele às 10:18: «não deve ter todo esse espaço vazio»). O
+ * desenho da linha do tempo mora em dia-linha.css (?linha=a|b|c) e o da demonstração em dia-tela-N (?tela=1|2|3). Sem
+ * JavaScript, a lista aparece aberta e a demonstração some.
+ * 18/10/2026: a seção não trava mais a tela; é um vídeo contínuo (o relógio no dia.js). Saíram o trilho alto, a tela
+ * presa (sticky), o corte da seção e o fundo medido pelo roteiro. A seção tem a altura do conteúdo; a área da janela
+ * tem a proporção do palco (820 por 600 no computador, 400 por 560 no celular), então a escala vem da largura da
+ * coluna. O vão até o título das integrações é o padding de baixo desta seção (64, ou 48 no celular) mais o de cima
+ * delas (56, ou 40), os 120 e 88 do site. */
 
 .dia { background: var(--stone); }
-.dia.block { padding-bottom: 0; }
-/* o trilho pode passar do fim da seção (o fundo embaixo da janela, no dia.js): o que passa não aparece; clip, e não
- * hidden, para a tela presa continuar presa; flow-root, para a margem do trilho não vazar para fora da seção */
-.js .dia.block { display: flow-root; overflow-y: clip; }
+/* 18/10: do fim do conteúdo ao título das integrações, 64 aqui mais os 56 delas (integracoes.css), os 120 do site */
+.dia.block { padding-bottom: 64px; }
+/* 18/10: o que entra pelo lado da janela no celular (a reunião e o WhatsApp) não alarga a página; antes, a tela presa
+ * cortava; clip, e não hidden, para não virar caixa de rolagem */
+.js .dia.block { overflow-x: clip; }
 /* 10:18: o vão de «Como o Plexus funciona» para esta seção igual ao da dor para «Como o Plexus funciona» */
 #solucao + #um-dia.block { padding-top: 56px; }
 .dia .wrap > .display { margin: 0; }
@@ -27,12 +32,12 @@
 .dia-corpo p { margin: 0 0 4px; font-size: var(--size-text); line-height: var(--leading-text); color: var(--ink-soft); text-wrap: pretty; }
 .dia-progresso { display: none; }
 
-/* Com JavaScript: o trilho alto, a tela presa, um momento aberto por vez */
-/* 11:37: nove momentos com um pouco menos de rolagem em cada um (A), para a seção ter o comprimento da anterior */
-.js .dia-trilho { height: calc(100svh - var(--nav-h) + var(--n, 9) * 62svh); }
-.js .dia-fixo { position: sticky; top: var(--nav-h); height: calc(100svh - var(--nav-h)); overflow: hidden; }
-.js .dia-grade { height: 100%; padding-top: 28px; padding-bottom: 28px; }
-.js .dia-tela { display: block; position: relative; grid-column: 2; grid-row: 1 / 3; min-height: 0; }
+/* Com JavaScript: a janela à direita e um momento aberto por vez. 18/10: a área da janela na proporção do palco (na
+ * largura de 1200, 768 por 562, a escala de 0,937 de antes), e nunca mais alta que a tela do navegador, como era com a
+ * tela presa (aí a janela fica centrada na coluna, como antes); da frase de apoio à janela, os 56 do site (24 do trilho mais 32 aqui) */
+.js .dia-grade { padding-top: calc(var(--space-block) - 24px); }
+.js .dia-tela { display: block; position: relative; grid-column: 2; grid-row: 1 / 3; min-height: 0; align-self: center;
+  width: 100%; aspect-ratio: 820 / 600; max-height: calc(100svh - var(--nav-h) - 56px); }
 .js .dia-linha { grid-column: 1; grid-row: 1 / 3; position: relative; z-index: 2; min-height: 0; }
 .js .dia-cab { cursor: pointer; }
 .js .dia-corpo { grid-template-rows: 0fr; transition: grid-template-rows 480ms var(--ease); }
@@ -46,8 +51,10 @@
 
 @media (max-width: 900px) {
   #solucao + #um-dia.block { padding-top: 40px; }
-  .js .dia-grade { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; row-gap: 16px; padding-top: 8px; padding-bottom: 20px; }
-  .js .dia-tela { grid-column: 1; grid-row: 1; }
+  .js .dia-grade { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; row-gap: 16px; }
+  /* 18/10: a janela na proporção do palco do celular, na largura que houver (em 390, 342 por 479, a escala de 0,855
+   * de antes), até a escala de 1,25 e nunca mais alta que a tela do navegador */
+  .js .dia-tela { grid-column: 1; grid-row: 1; width: 100%; aspect-ratio: 400 / 560; max-height: min(700px, calc(100svh - var(--nav-h) - 24px)); }
   .js .dia-linha { grid-column: 1; grid-row: 2; }
   /* 12:00: os nove textos no mesmo lugar, abertos, e só o do momento à vista: a lista tem sempre a altura do mais
    * longo, e a área da demonstração (e a escala do palco) não muda de um momento para o outro */
@@ -55,6 +62,10 @@
   .js .dia-m:not(.ativo) { visibility: hidden; }
   .js .dia-corpo { grid-template-rows: 1fr; }
   .js .dia-m:not(.ativo) .dia-corpo > div { opacity: 0; }
+}
+@media (max-width: 640px) {
+  /* 18/10: 48 aqui mais os 40 das integrações, os 88 do site no celular */
+  .dia.block { padding-bottom: 48px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .js .dia-corpo, .js .dia-corpo > div, .js .dia-m.ativo .dia-corpo > div { transition: none; }

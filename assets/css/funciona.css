@@ -1,0 +1,67 @@
+/* PLX-119, item 1, jeito A, «o texto grande» (18/10/2026). Mais de uma pessoa olhou só a animação e não leu as
+ * descrições da esquerda. Aqui a descrição sai da pílula verde e vira o protagonista da coluna: no topo, o nome da
+ * parte pequeno em verde e o texto grande na tinta; embaixo, as oito pílulas como um índice só com os nomes (a do
+ * momento cheia no verde), que levam à parte. Os oito textos ficam empilhados na mesma casa da grade: a altura do
+ * bloco é a do maior deles, e a troca é só um esmaecer, sem nada se reorganizar. A arte não muda. No celular, o
+ * mesmo bloco embaixo da arte. Sem JavaScript, os oito textos aparecem um embaixo do outro, com o nome em cima. */
+
+/* o texto curto abaixo do título: três redações (?texto=a|b|c), o mesmo respiro de «Um dia com o Plexus» */
+.sol-lead { margin: 12px 0 0; max-width: var(--measure-lead); color: var(--ink-soft); }
+.sol-lead[data-texto="b"], .sol-lead[data-texto="c"],
+.sol[data-texto="b"] .sol-lead[data-texto="a"], .sol[data-texto="c"] .sol-lead[data-texto="a"] { display: none; }
+.sol[data-texto="b"] .sol-lead[data-texto="b"], .sol[data-texto="c"] .sol-lead[data-texto="c"] { display: block; }
+
+/* o texto da parte */
+.fa-texto-nome { margin: 0 0 10px; font-size: 14px; line-height: 1.4; color: var(--accent); }
+.fa-texto-p { margin: 0; font-size: 26px; line-height: 1.3; color: var(--ink); text-wrap: pretty; }
+.fa-texto + .fa-texto { margin-top: 28px; }
+html:not(.js) .fa .sol-lista { display: none; }
+
+/* com JavaScript. Ajuste 2 do dono (18/10/2026, 18:16): «This text should be aligned with the animation» e as
+ * pílulas «in this place» (o retângulo azul do print dele, logo acima da barra). A coluna da esquerda ocupa a mesma
+ * altura do quadro da arte: o rótulo começa na borda de cima do quadro e a barra termina na borda de baixo. O quadro
+ * fica centrado na área da arte com o tamanho de sempre; funciona-a.js mede a folga entre a área e o quadro (em cima
+ * e embaixo) e a põe em --fa-folga-topo e --fa-folga-pe. Em cima, o bloco do texto (com a altura do maior texto, para
+ * nada pular); embaixo, as pílulas e, 16 pixels abaixo delas, a barra; o espaço que sobra fica entre os dois. */
+.js .fa.sol-grade { grid-template-rows: auto minmax(0, 1fr) auto auto; }
+.js .fa .sol-arte { grid-row: 1 / 5; }
+.js .fa .fa-leitura { grid-column: 1; grid-row: 1; display: grid; margin-top: var(--fa-folga-topo, 0px); }
+/* a borda de cima do rótulo é a das letras maiúsculas (sem o respiro da linha), para o olho ver o «I» de
+ * «Integrações» na altura da borda do quadro; onde o navegador não sabe aparar, fica 5 pixels abaixo */
+.js .fa .fa-texto-nome { text-box: trim-start cap alphabetic; }
+.js .fa .fa-texto { grid-area: 1 / 1; margin: 0; opacity: 0; visibility: hidden; transition: opacity 140ms var(--ease), visibility 0s linear 140ms; }
+.js .fa .fa-texto.fa-on { opacity: 1; visibility: visible; transition: opacity 280ms var(--ease) 100ms, visibility 0s linear 0s; }
+.js .fa .sol-lista { grid-row: 3; align-self: end; display: flex; flex-wrap: wrap; gap: 6px; margin: 24px 0 16px; align-content: start; }
+.js .fa .sol-progresso { grid-row: 4; margin-bottom: var(--fa-folga-pe, 0px); }
+
+/* o índice: as pílulas de hoje, menores, só com os nomes. A não escolhida no claro do print dele (#ecf0ea, medido
+ * no arquivo) com a letra na tinta (14,97:1; o verde da marca daria 5,6:1); ao passar o mouse, o mesmo claro um
+ * pouco mais fechado. A escolhida cheia no verde da marca com a letra branca. Sem o desfoque da transparência, que
+ * não tem papel num fundo opaco. */
+.js .fa .sol-item, .js .fa .sol-item.ativo { width: auto; max-width: 100%; border-radius: 999px; background: #ecf0ea; color: var(--ink);
+  -webkit-backdrop-filter: none; backdrop-filter: none; transition: background-color 300ms var(--ease), color 300ms var(--ease); }
+@media (hover: hover) { .js .fa .sol-item:not(.ativo):hover { background: #e2e8df; } }
+.js .fa .sol-item.ativo { background: var(--accent); color: #fff; }
+.js .fa .sol-pilula, .js .fa .sol-item.ativo .sol-pilula { height: 32px; padding: 0 13px; font-size: 14px; color: inherit; cursor: pointer; }
+
+/* a caixa da barra no mesmo claro e a barra que anda no verde da marca (o quadrado do print dele, #4a643c); o
+ * tamanho e o raio de hoje. O que falta andar fica num traço do verde bem fraco, como o branco fraco de antes. */
+.js .fa .sol-progresso { background: #ecf0ea; }
+.fa .sol-progresso::before { background: rgba(74, 100, 60, 0.2); }
+.fa .sol-progresso span { background: var(--accent); }
+
+@media (max-width: 900px) {
+  .js .fa.sol-grade { grid-template-rows: minmax(0, 1fr) auto auto auto; }
+  .js .fa .sol-arte { grid-row: 1; }
+  .js .fa .fa-leitura { grid-row: 2; padding-top: 4px; margin-top: 0; }
+  .js .fa .fa-texto-nome { text-box: normal; }
+  .js .fa .sol-lista { grid-row: 3; align-self: start; margin: 2px 0 0; gap: 5px; }
+  .js .fa .sol-progresso { grid-row: 4; margin-bottom: 0; }
+  .js .fa .sol-item:not(.ativo) { display: block; }
+  .js .fa .sol-pilula, .js .fa .sol-item.ativo .sol-pilula { height: 28px; padding: 0 11px; font-size: 13px; }
+  .fa-texto-nome { margin-bottom: 6px; font-size: 14px; }
+  .fa-texto-p { font-size: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .fa .fa-texto, .js .fa .fa-texto.fa-on, .js .fa .sol-item, .js .fa .sol-item.ativo { transition: none; }
+}

@@ -1,7 +1,10 @@
 // A linha do tempo de «Um dia com o Plexus» (V7, 14/10/2026), nos três desenhos (?linha=a|b|c; o CSS em
 // dia-linha.css). Monta os pontos do dia (o c no computador; os três no celular) e o relógio do c, e mede a linha
 // do a: onde ela começa e termina (o primeiro e o último ponto) e até onde o verde desce (o ponto do momento, mais
-// o quanto se andou até o próximo). Tudo segue o aviso «dia:passo» do motor; quem sobe a página vê tudo voltar.
+// o quanto se andou até o próximo). Tudo segue o aviso «dia:passo» do motor.
+// 18/10/2026: a seção virou um vídeo contínuo, e o aviso sai a cada quadro enquanto ele toca: o verde da linha desce
+// do ponto do momento ao seguinte no ritmo da cena (o t do aviso), como a barra de um vídeo. Os pontos e o relógio do
+// c só se escrevem quando o momento muda.
 (function () {
   var sec = document.getElementById('um-dia');
   if (!sec || !sec.classList.contains('dia')) return;
@@ -50,14 +53,17 @@
   };
 
   var estado = { i: 0, t: 0 };
-  var acompanhar = 0;
+  var acompanhar = 0, marcado = -1;
   var passo = function (e) {
     var s = e && e.detail ? e.detail : sec.diaEstado;
     if (!s) return;
     var mudou = s.i !== estado.i;
     estado = s;
-    botoes.forEach(function (b, k) { b.classList.toggle('ativo', k === s.i); b.classList.toggle('visto', k < s.i); });
-    rolos.forEach(function (r) { r.style.setProperty('--k', s.i); });
+    if (s.i !== marcado) {
+      marcado = s.i;
+      botoes.forEach(function (b, k) { b.classList.toggle('ativo', k === s.i); b.classList.toggle('visto', k < s.i); });
+      rolos.forEach(function (r) { r.style.setProperty('--k', s.i); });
+    }
     medirLinha(s.i, s.t);
     // o texto do momento abre e fecha em 480 ms e empurra os pontos: a linha acompanha até assentar
     if (mudou) {

@@ -1,0 +1,184 @@
+/* Abertura C, ajuste 2 (PLX-119, 18/10/2026): a disposição do Bond (só a posição das coisas).
+ * No computador, duas colunas no .wrap: à esquerda o título, a frase e o campo, alinhados à esquerda; à direita a
+ * animação. No celular, uma coluna, com a animação embaixo do campo.
+ * A animação (.cc): em cima os avisos que chegam (um por vez, cada um no seu lado); no meio a fileira das fontes
+ * (Gmail, Outlook, o laço, Google Meet, Google Drive); embaixo o cartão que abre do laço, ou só a linha do feito.
+ * Tudo em vidro sobre o escuro: o branco translúcido e o fio rgba(255, 255, 255, 0.28) do campo, letra branca, o laço
+ * e o Aprovar no verde da marca. O HTML traz o quadro parado (o cartão do Sérgio aberto e o aviso dele, do Gmail);
+ * abertura-c.js põe .vivo e anda pelo relógio. Com ?titulo=2, o título em duas linhas (uma frase por linha). Em movimento, o vidro do cartão e da primeira linha do
+ * feito é uma caixa só (.cc-caixa), que sai do laço, abre no cartão e se recolhe na linha. */
+
+/* ===== as duas colunas ===== */
+.hero .hero-text {
+  display: grid; grid-template-columns: minmax(0, 500fr) minmax(0, 600fr); column-gap: 36px; align-items: center;
+  text-align: left;
+}
+.hero .bloco { width: auto; max-width: 540px; margin: 0; }
+.hero .bloco h1, .hero .bloco .lead { width: auto; margin-left: 0; margin-right: 0; }
+.hero h1#titulo { font-size: clamp(36px, 4.2vw, 56px); }
+/* ?titulo=2: cada frase numa linha só na coluna da esquerda. Medido em 1440: a frase mais longa («O que gera valor vai
+ * para você.») tem 711 px a 56 px, e a coluna tem 500 px; a 38 px ela fica com 482 px. No celular fica o de sempre. */
+@media (min-width: 961px) {
+  .hero[data-titulo="2"] h1#titulo { font-size: clamp(30px, 2.64vw, 38px); }
+}
+.hero .bloco .lead { max-width: 30em; margin-top: 24px; }
+.hero .bloco .ask { margin: 32px 0 0; }
+.hero .bloco .ask .aviso { text-align: left; }
+
+/* as três versões da frase (?frase=a|b|c; sem nada, ou sem roteiro, a a) */
+.hero .lead[data-frase="b"], .hero .lead[data-frase="c"],
+.hero[data-frase="b"] .lead[data-frase="a"], .hero[data-frase="c"] .lead[data-frase="a"] { display: none; }
+.hero[data-frase="b"] .lead[data-frase="b"], .hero[data-frase="c"] .lead[data-frase="c"] { display: block; }
+
+/* ===== a animação ===== */
+.hero .cc {
+  position: relative; width: 100%; max-width: 620px; justify-self: end;
+  color: #fff; text-align: left; font-size: 15px; line-height: 1.5; letter-spacing: 0; pointer-events: none;
+  -webkit-user-select: none; user-select: none;
+}
+.hero .cc p { margin: 0; text-wrap: pretty; }
+.cc-vez { display: contents; }
+
+/* o vidro */
+.cc-aviso, .cc-barra, .cc-cartao, .cc-linha, .cc-caixa {
+  background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.28);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+
+/* em cima, os avisos que chegam */
+.cc-avisos { position: relative; height: 128px; }
+.cc-aviso {
+  position: absolute; display: flex; align-items: center; gap: 12px; width: max-content; min-width: 272px; max-width: 100%;
+  padding: 11px 16px 11px 14px; border-radius: 14px;
+}
+.cc-esq { left: 0; top: 6px; }
+.cc-dir { right: 0; top: 46px; }
+.cc-aviso img { width: 22px; height: 22px; flex: none; }
+.cc-aviso > span { display: grid; gap: 1px; min-width: 0; }
+.cc-aviso b, .cc-aviso b + span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.cc-aviso b { font-weight: 500; font-size: 14px; line-height: 1.35; }
+.cc-aviso b + span { font-size: 13px; line-height: 1.35; color: rgba(255, 255, 255, 0.82); }
+
+/* no meio, a fileira das fontes com o laço */
+.cc-barra {
+  position: relative; z-index: 2; display: flex; align-items: center; gap: 10px; width: fit-content;
+  margin: 8px auto 0; padding: 8px; border-radius: 20px;
+}
+.cc-fonte {
+  position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+.cc-fonte img { position: relative; width: 24px; height: 24px; }
+/* o logo acende quando o aviso dele chega (--a de 0 a 1, posto pelo roteiro) */
+.cc-fonte::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  background: rgba(255, 255, 255, 0.3); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.85); opacity: var(--a, 0);
+}
+.cc-no {
+  display: grid; place-items: center; width: 56px; height: 56px; margin: 0 4px; border-radius: 15px;
+  background: var(--accent); color: #fff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+.cc-no svg { width: 27px; height: 28px; }
+
+/* embaixo, o cartão (todos no mesmo lugar: a altura é a do maior) e as linhas do feito */
+.cc-palco { position: relative; z-index: 1; display: grid; margin-top: 16px; }
+.cc-cartao, .cc-feitos { grid-area: 1 / 1; align-self: start; }
+.cc-cartao { position: relative; padding: 16px 18px; border-radius: 18px; }
+.cc-de { display: flex; align-items: center; gap: 7px; font-size: 13px; line-height: 1.2; color: rgba(255, 255, 255, 0.82); }
+.cc-de img { width: 14px; height: 14px; flex: none; }
+.hero .cc .cc-texto { margin: 10px 0 14px; font-size: 15px; line-height: 1.5; }
+
+/* as opções, com a recomendada marcada (o fio, o fundo e a etiqueta acendem com --m, de 0 a 1) */
+.cc-ops { display: flex; flex-wrap: wrap; gap: 8px; }
+.cc-op, .cc-tarefa {
+  position: relative; display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 8px 12px;
+  border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.22); line-height: 1.3;
+}
+.cc-on { --m: 1; }
+.cc-ops .cc-on::before {
+  content: ''; position: absolute; inset: -1px; border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.1); opacity: var(--m);
+}
+.cc-r { position: relative; width: 16px; height: 16px; flex: none; border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.6); display: grid; place-items: center; }
+.cc-r i { width: 8px; height: 8px; border-radius: 50%; background: #fff; opacity: var(--m); transform: scale(calc(0.3 + 0.7 * var(--m))); }
+.cc-on .cc-r { border-color: #fff; }
+.cc-tarefa em {
+  position: relative; flex: none; font-style: normal; font-size: 13px; line-height: 1; padding: 5px 8px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* as tarefas da reunião, marcadas */
+.cc-tarefas { display: grid; gap: 8px; }
+.cc-tarefa > span { min-width: 0; }
+.cc-tarefa em { margin-left: auto; }
+.cc-q {
+  position: relative; display: grid; place-items: center; width: 16px; height: 16px; flex: none; border-radius: 4px;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.6);
+}
+.cc-q::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: #fff; opacity: var(--m); }
+.cc-q svg { position: relative; width: 12px; height: 12px; color: var(--accent); opacity: var(--m); }
+
+.cc-bts { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.cc-bts > span {
+  position: relative; display: inline-grid; place-items: center; height: 34px; padding: 0 16px; border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.32); font-size: 15px; line-height: 1;
+}
+.cc-bts .cc-pri { background: var(--accent); border-color: rgba(255, 255, 255, 0.28); }
+
+/* as linhas do feito, no alto do palco, embaixo do laço */
+.cc-feitos { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.cc-linha { display: flex; align-items: center; gap: 10px; max-width: 100%; padding: 10px 18px 10px 12px; border-radius: 14px; line-height: 1.35; }
+.cc-ok, .cc-esp { width: 20px; height: 20px; flex: none; border-radius: 50%; display: grid; place-items: center; }
+.cc-ok { background: #fff; color: var(--accent); }
+.cc-esp { box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.6); }
+.cc-ok svg, .cc-esp svg { width: 13px; height: 13px; }
+
+/* o cursor, o toque e a caixa que anda */
+.cc-caixa { position: absolute; z-index: 0; left: 0; top: 0; display: none; }
+.cc-seta { position: absolute; z-index: 5; left: 0; top: 0; width: 20px; height: 26px; }
+.cc-seta svg { width: 20px; height: 26px; filter: drop-shadow(0 1px 2px rgba(27, 27, 25, 0.25)); }
+.cc-toque { position: absolute; z-index: 4; left: 0; top: 0; width: 36px; height: 36px; margin: -18px 0 0 -18px; border-radius: 50%; background: rgba(255, 255, 255, 0.3); }
+
+/* o quadro parado (sem roteiro, ou com menos movimento): o cartão do Sérgio aberto e o aviso dele, do Gmail */
+.cc-aviso:not(.cc-parado), .cc-feitos, .cc-seta, .cc-toque, .cc-vez:not([data-i="0"]) > .cc-cartao { opacity: 0; }
+
+/* com roteiro e movimento, até o primeiro quadro: o aviso da reunião, como no quadro em que o roteiro começa (3,2 s) */
+@media (prefers-reduced-motion: no-preference) {
+  .js .cc:not(.vivo) .cc-parado { opacity: 0; }
+  .js .cc:not(.vivo) .cc-agora { opacity: 1; }
+}
+
+/* em movimento: o vidro do cartão e da primeira linha é a caixa; o resto é desenhado pelo roteiro */
+.cc.vivo .cc-caixa { display: block; }
+.cc.vivo .cc-feitos { opacity: 1; }
+.cc.vivo .cc-cartao, .cc.vivo .cc-l1 { background: none; border-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* ===== o tablete e o celular: uma coluna, a animação embaixo do campo ===== */
+@media (max-width: 960px) {
+  .hero .hero-text { grid-template-columns: minmax(0, 1fr); }
+  .hero .bloco { max-width: 620px; }
+  .hero .cc { justify-self: start; margin-top: 24px; }
+}
+@media (max-width: 640px) {
+  .hero .bloco .lead { margin-top: 20px; }
+  .hero .bloco .ask { margin-top: 28px; }
+  .cc-avisos { height: 60px; }
+  .cc-aviso { min-width: 0; gap: 10px; padding: 8px 12px 8px 10px; border-radius: 12px; }
+  .cc-esq { top: 0; }
+  .cc-dir { top: 0; }
+  .cc-aviso img { width: 18px; height: 18px; }
+  .cc-aviso b { font-size: 13px; }
+  .cc-barra { gap: 6px; padding: 6px; border-radius: 16px; margin-top: 6px; }
+  .cc-fonte { width: 38px; height: 38px; border-radius: 10px; }
+  .cc-fonte img { width: 20px; height: 20px; }
+  .cc-no { width: 48px; height: 48px; margin: 0 2px; border-radius: 13px; }
+  .cc-no svg { width: 23px; height: 24px; }
+  .cc-palco { margin-top: 12px; }
+  .cc-cartao { padding: 13px 14px; border-radius: 16px; }
+  .hero .cc .cc-texto { margin: 8px 0 12px; }
+  .cc-ops { flex-direction: column; align-items: stretch; gap: 6px; }
+  .cc-op, .cc-tarefa { min-height: 38px; padding: 7px 12px; }
+  .cc-tarefas { gap: 6px; }
+  .cc-bts { margin-top: 12px; }
+  .cc-linha { padding: 9px 14px 9px 10px; }
+}

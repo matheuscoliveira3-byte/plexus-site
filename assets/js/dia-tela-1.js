@@ -8,9 +8,15 @@
 // página rola como na mão, as caixas viram o painel que sobe de baixo, e a reunião e a conversa do WhatsApp ocupam o
 // palco.
 //
-// O estado de cada coisa é função do momento (i) e do quanto se andou nele (t), pela conta g = i + t (de 0 a 9): quem
-// sobe a página vê tudo voltar. O relógio só move enfeite pequeno (o cursor de texto piscando e os três pontinhos de
-// quem digita), que para com a aba escondida e some para quem pede menos movimento.
+// O estado de cada coisa é função do momento (i) e do quanto se andou nele (t), pela conta g = i + t (de 0 a 9). O
+// enfeite pequeno (o cursor de texto piscando e os três pontinhos de quem digita) corre pelo CSS, para com o vídeo
+// parado e com a aba escondida, e some para quem pede menos movimento.
+//
+// 18/10/2026: a seção virou um vídeo contínuo, e a cena deixou de ter relógio próprio. O relógio é o do motor
+// (dia.js): a cena é função do i e do s (os segundos no momento) de cada aviso «dia:passo». Esta peça publica a
+// duração de cada momento em sec.diaDuracoes (a cena, a pausa de leitura e, no último, o esmaecer do fim). Entre um
+// momento e o seguinte não há esmaecer; só no fim do dia o conteúdo some e volta no recomeço às 08:00. O desenho das
+// cenas (desenhar, RITMOS, montar, medir) não mudou.
 (function () {
   var sec = document.getElementById('um-dia');
   if (!sec || !sec.classList.contains('dia')) return;
@@ -103,9 +109,10 @@
   };
   var pessoa = function (ini, nome, papel, onde) { return '<li class="t1-m"><span class="t1-av">' + ini + '</span><span><b>' + nome + '<em>' + papel + '</em></b><small>' + onde + '</small></span></li>'; };
 
-  // as portas do Plexus pronto: o logo, o nome e o que ela traz; as reuniões pelo gravador do Plexus (Meet, Teams e Zoom)
+  // as portas do Plexus pronto: o logo, o nome e o que ela traz; as reuniões pelo gravador do Plexus (Meet, Teams e Zoom).
+  // 19/10/2026, 09:37, a decisão dele: o WhatsApp sai da lista (não é fonte lida; a conversa com o Plexus fica na cena das 13:40)
   var PORTAS = [['gmail', 'Gmail', 'e-mail'], ['outlook', 'Outlook', 'e-mail'], ['agenda', 'Google Agenda', 'agenda'], ['drive', 'Google Drive', 'arquivos'],
-    ['onedrive', 'OneDrive', 'arquivos'], ['whatsapp', 'WhatsApp', 'conversas'], ['reunioes', 'Reuniões', 'gravadas pelo gravador do Plexus', ['meet', 'teams', 'zoom']]];
+    ['onedrive', 'OneDrive', 'arquivos'], ['reunioes', 'Reuniões', 'gravadas pelo gravador do Plexus', ['meet', 'teams', 'zoom']]];
   var NOMES_PG = [['con', 'Conexões'], ['hoje', 'Hoje'], ['tar', 'Tarefas'], ['tar3', 'Tarefas'], ['perg', 'Conversas'], ['conv6', 'Conversas'], ['loops', 'Loops']];
 
   var MARCACAO =
@@ -727,11 +734,13 @@
   };
 
   // ===== a cena de cada momento =====
-  // O rolar escolhe o momento (o i do aviso); o t do rolar não move mais a peça. Cada momento é uma cena que toca pelo
-  // relógio, para no estado final, some num instante e recomeça. A cena começa com a tela do momento montada e para
-  // antes do que é a saída para o momento seguinte. Pausa com a aba escondida e com a seção fora da tela; quem pede
-  // menos movimento vê só o estado final, parado. O ritmo de cada cena: [os segundos, o ponto do dia] em cada parada,
-  // para a cena andar depressa onde nada acontece e devagar onde há o que ler.
+  // Desde 18/10 a cena não tem relógio próprio: o vídeo é o relógio do motor (dia.js), que diz o momento (o i do aviso)
+  // e os segundos dentro dele (o s). Cada momento é uma cena que começa com a tela do momento montada, toca pelo ritmo
+  // dela e para antes do que é a saída para o momento seguinte; depois da pausa de leitura, o vídeo passa ao momento
+  // seguinte, que começa onde este parou (sem esmaecer, só as transições curtas nos primeiros segundos). Só no fim do
+  // dia o conteúdo esmaece, e volta a aparecer no recomeço às 08:00. Quem pede menos movimento vê só o estado final,
+  // parado. O ritmo de cada cena: [os segundos, o ponto do dia] em cada parada, para a cena andar depressa onde nada
+  // acontece e devagar onde há o que ler.
   var RITMOS = [
     [[0, 0], [0.8, 0.11], [2.0, 0.23], [2.6, 0.3], [4.4, 0.55], [5.6, 0.72], [6.2, 0.86]],
     [[0, 1.04], [0.3, 1.12], [0.6, 1.22], [0.85, 1.32], [1.0, 1.4], [1.8, 1.49], [2.3, 1.58]],
@@ -746,54 +755,53 @@
   var PAUSAS = [2.5, 1.6, 2.5, 2.5, 3, 3, 2.5, 2.5, 2.5];
   var toca = function (i) { var r = RITMOS[i] || RITMOS[0]; return r[r.length - 1][0]; };
   var SOME = 0.4, VOLTA = 0.35, SUAVE = 0.45;
-  var cena = { i: -1, s: 0, antes: 0, repetiu: false, raf: 0, suave: 0 }, visivel = true;
+  var ULTIMO = RITMOS.length - 1;
+  var fimDoDia = function () { return toca(ULTIMO) + PAUSAS[ULTIMO]; };
+  // a duração de cada momento no vídeo, para o motor: a cena, a pausa de leitura e, no último, o esmaecer do fim
+  sec.diaDuracoes = RITMOS.map(function (r, k) { return toca(k) + PAUSAS[k] + (k === ULTIMO ? SOME : 0); });
+  var cena = { i: -1, s: 0, repetiu: false };
   var tDaCena = function () {
     var r = RITMOS[cena.i] || RITMOS[0], x = menos.matches ? Infinity : cena.s, g = r[r.length - 1][1];
     for (var k = 1; k < r.length; k++) { if (x <= r[k][0]) { g = mix(r[k - 1][1], r[k][1], faixa(x, r[k - 1][0], r[k][0])); break; } }
     return g - cena.i;
   };
-  var tocando = function () { return !menos.matches && visivel && !document.hidden && cena.i >= 0 && !!raiz; };
   var pintar = function () { if (raiz && cena.i >= 0) desenhar({ i: cena.i, t: tDaCena() }); };
   // no recomeço some só o conteúdo (a página e o que fica por cima dela); a moldura, a barra lateral e a sombra ficam
   var opacidade = function (o) { if (!raiz) return; var v = r3(lim(o)); [E.conteudo, E.sobreC].forEach(function (el) { if (el._opc !== v) { el.style.opacity = String(v); el._opc = v; } }); };
   // pelo relógio, a peça anda sem as transições curtas; elas voltam só para suavizar a troca de momento
   var relogio = function (on) { if (raiz) liga(raiz, 't1-relogio', on); };
-  var quadro = function (agora) {
-    cena.raf = 0;
-    if (!tocando()) { cena.antes = 0; return; }
-    var dt = cena.antes ? Math.min(0.1, (agora - cena.antes) / 1000) : 0;
-    cena.antes = agora;
-    cena.s += dt;
-    if (cena.suave > 0) { cena.suave -= dt; if (cena.suave <= 0) relogio(true); }
-    var fimToca = toca(cena.i) + PAUSAS[cena.i];
-    if (cena.s >= fimToca + SOME) {
-      // recomeça: volta ao começo de uma vez, com a peça escondida, e reaparece
-      // a barra lateral volta ao estado do começo numa transição curta, sem sumir; o conteúdo, escondido, salta
-      cena.s = 0; cena.repetiu = true; opacidade(0); relogio(false); cena.suave = SUAVE;
-      raiz.classList.add('t1-salto'); pintar(); void raiz.offsetWidth; raiz.classList.remove('t1-salto');
-    }
-    var o = 1;
-    if (cena.s > fimToca) o = 1 - (cena.s - fimToca) / SOME;
-    else if (cena.repetiu && cena.s < VOLTA) o = cena.s / VOLTA;
-    opacidade(o);
-    pintar();
-    cena.raf = requestAnimationFrame(quadro);
-  };
-  var acordar = function () {
-    if (cena.raf || !tocando()) return;
-    cena.antes = 0;
-    cena.raf = requestAnimationFrame(quadro);
-  };
-  var novaCena = function (i) {
-    cena.i = i; cena.s = 0; cena.repetiu = false; cena.suave = SUAVE;
+  var novaCena = function (i, laco) {
+    cena.i = i; cena.s = 0; cena.repetiu = !!laco;
     relogio(false);
-    opacidade(1);
+    if (laco) {
+      // o recomeço às 08:00: volta ao começo de uma vez, com o conteúdo escondido, e reaparece; a barra lateral volta
+      // ao estado do começo numa transição curta, sem sumir
+      opacidade(0);
+      raiz.classList.add('t1-salto'); pintar(); void raiz.offsetWidth; raiz.classList.remove('t1-salto');
+    } else {
+      opacidade(1);
+      pintar();
+    }
+  };
+  // um aviso do motor: a cena do momento no segundo dele
+  var tocar = function (est) {
+    var s = Math.max(0, +est.s || 0), i = est.i | 0;
+    if (i !== cena.i) novaCena(i, cena.i === ULTIMO && i === 0 && cena.s >= fimDoDia());
+    cena.s = s;
+    relogio(!menos.matches && !!est.tocando && s >= SUAVE);
+    var o = 1;
+    if (!menos.matches) {
+      if (cena.i === ULTIMO && s > fimDoDia()) o = 1 - (s - fimDoDia()) / SOME;
+      else if (cena.repetiu && s < VOLTA) o = s / VOLTA;
+    }
+    opacidade(o);
+    // o enfeite que corre sozinho (o cursor de texto e os três pontinhos) para com o vídeo parado
+    liga(raiz, 't1-parado', document.hidden || !est.tocando);
     pintar();
-    acordar();
   };
 
   // ===== a vida da peça =====
-  var estado = function () { return sec.diaEstado || { i: 0, t: 0, forma: sec.dataset.forma || 'largo' }; };
+  var estado = function () { return sec.diaEstado || { i: 0, s: 0, t: 0, forma: sec.dataset.forma || 'largo', tocando: false }; };
   var preparar = function (f) {
     forma = f;
     montar();
@@ -801,11 +809,11 @@
   };
   var passo = function (est) {
     if (sec.dataset.tela !== '1' && sec.dataset.tela !== undefined) return;
-    var f = est.forma || sec.dataset.forma || 'largo', nova = false;
-    if (f !== forma) { preparar(f); nova = true; }
+    var f = est.forma || sec.dataset.forma || 'largo';
+    if (f !== forma) { preparar(f); cena.i = -1; }
     var esc = sec.style.getPropertyValue('--escala');
     if (esc !== lay.esc) { lay.esc = esc; medir(); }
-    if (nova || est.i !== cena.i) novaCena(est.i);
+    tocar(est);
   };
   sec.addEventListener('dia:passo', function (e) { passo(e.detail); });
   var remedir = function () { if (!raiz) return; medir(); pintar(); };
@@ -816,9 +824,5 @@
     var esc = sec.style.getPropertyValue('--escala');
     if (raiz && esc !== lay.esc) { lay.esc = esc; requestAnimationFrame(remedir); }
   }).observe(sec, { attributes: true, attributeFilter: ['style'] });
-  // a cena pausa com a seção fora da tela e com a aba escondida, e retoma de onde parou
-  if (window.IntersectionObserver) new IntersectionObserver(function (es) { visivel = es[es.length - 1].isIntersecting; acordar(); }).observe(sec);
-  document.addEventListener('visibilitychange', function () { if (raiz) raiz.classList.toggle('t1-parado', document.hidden); acordar(); });
-  if (menos.addEventListener) menos.addEventListener('change', function () { opacidade(1); relogio(!menos.matches); pintar(); acordar(); });
   passo(estado());
 })();

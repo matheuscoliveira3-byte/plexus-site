@@ -91,13 +91,15 @@
   // gravador; a promessa vira tarefa de espera; o relatório e a apresentação voltam para a pessoa revisar.
   var ITENS = [
     ['gmail', 'Redigir a resposta com o contrato', 'p'], ['teams', 'Registrar o que ficou combinado', 'p'], ['outlook', 'Decidir o preço da proposta', 'v'],
-    ['whatsapp', 'Acompanhar a nota prometida', 'p'], ['drive', 'Montar o relatório da semana', 'p'], ['gmail', 'Escolher entre as duas cotações', 'v'],
-    ['outlook', 'Arquivar o anexo do cliente', 'p'], ['outlook', 'Marcar a reunião pedida', 'p'], ['whatsapp', 'Recomendar o caminho ao cliente', 'v'],
+    ['outlook', 'Acompanhar a nota prometida', 'p'], ['drive', 'Montar o relatório da semana', 'p'], ['gmail', 'Escolher entre as duas cotações', 'v'],
+    ['outlook', 'Arquivar o anexo do cliente', 'p'], ['outlook', 'Marcar a reunião pedida', 'p'], ['gmail', 'Recomendar o caminho ao cliente', 'v'],
     ['whatsapp', 'Preparar a apresentação pedida por áudio', 'p'], ['gmail', 'Separar o que importa do resto', 'p'], ['zoom', 'Negociar o prazo com o cliente', 'v']
   ];
   // 13/10, 19:17: o gravador do Plexus grava o Meet, o Teams e o Zoom (a correção dele: «aqui parece que você se limita
   // ao Google Meet»); o Teams entra como reunião gravada, nunca como porta de leitura de conversa
-  var LOGOS = ['gmail', 'whatsapp', 'meet', 'outlook', 'drive', 'teams', 'agenda', 'zoom', 'onedrive'];
+  // 19/10/2026, a regra dele das 09:12: o WhatsApp sai das fontes que o Plexus lê; fica só a conversa da pessoa com o Plexus
+  // (o áudio da apresentação, abaixo), por isso não entra mais na fila dos aplicativos
+  var LOGOS = ['gmail', 'meet', 'outlook', 'drive', 'teams', 'agenda', 'zoom', 'onedrive'];
   var fluxo = function (fig) {
     var p = { visivel: false, rodando: false, fig: fig };
     var palco = fig.querySelector('.pf-palco');

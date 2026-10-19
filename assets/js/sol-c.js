@@ -31,8 +31,8 @@
 
   // ===== o que se mostra (x e y em pixels do desenho, a partir do centro do papel) =====
   // d é o desenho largo (640 por 560); c o do celular, desenhado para o papel alongado de k = 1,6 (640 por 896).
-  // A parte 1: os nove aplicativos em volta do centro, na ordem do texto da esquerda (o e-mail, a agenda, os
-  // arquivos, o WhatsApp e as reuniões, que o gravador do Plexus grava no Meet, no Teams e no Zoom), no sentido do
+  // A parte 1: os oito aplicativos em volta do centro, na ordem do texto da esquerda (o e-mail, a agenda, os
+  // arquivos e as reuniões, que o gravador do Plexus grava no Meet, no Teams e no Zoom; o WhatsApp saiu em 19/10), no sentido do
   // relógio, com um vão em cima (para a equipe) e outro embaixo (para a frase do fim).
   var APPS = [
     { n: 'gmail', d: [-92, -202], c: [-88, -272], b: [-115, -260] },
@@ -40,9 +40,10 @@
     { n: 'agenda', d: [218, -118], c: [216, -159], b: [280, -162] },
     { n: 'drive', d: [262, 10], c: [258, 17], b: [334, -11] },
     { n: 'onedrive', d: [202, 140], c: [198, 186], b: [257, 136] },
-    { n: 'whatsapp', d: [-200, 140], c: [-198, 186], b: [-257, 136] },
-    { n: 'meet', d: [-256, 46], c: [-252, 63], b: [-327, 29] },
-    { n: 'teams', d: [-254, -56], c: [-249, -75], b: [-324, -90] },
+    // 19/10/2026, 09:37, a decisão dele: o WhatsApp sai do mapa das fontes (fica só na parte 6, a conversa com o Plexus);
+    // o Meet e o Teams descem um pouco para o lado esquerdo continuar equilibrado sem ele
+    { n: 'meet', d: [-214, 118], c: [-210, 160], b: [-275, 118] },
+    { n: 'teams', d: [-262, -24], c: [-256, -32], b: [-332, -44] },
     { n: 'zoom.png', d: [-192, -146], c: [-190, -196], b: [-247, -194] }
   ];
   // o mapa do primeiro dia: quem é quem (no celular, só três; no celular baixo, dois)
@@ -58,7 +59,7 @@
   // A parte 2: o que se sabe do Sérgio, cada coisa com o selo de onde veio
   var QUEM = { d: [0, 98], c: [0, -196], b: [0, -165] };
   var FATOS = [
-    { t: 'O jurídico dele ainda revisa o contrato', n: 'whatsapp', h: 'ontem, 18:20', d: [-178, -150], c: [-44, -50], b: [-70, -25] },
+    { t: 'O jurídico dele ainda revisa o contrato', n: 'outlook', h: 'ontem, 18:20', d: [-178, -150], c: [-44, -50], b: [-70, -25] },
     { t: 'Ele promete mandar o contrato assinado até quinta', n: 'gmail', h: 'hoje, 08:42', d: [178, -138], c: [44, 118], b: [70, 150] },
     { t: 'O início fica para o dia 20', n: 'meet', h: 'reunião de 02/10', d: [-174, 176], c: [-44, 286], b: null },
     { t: 'Mandou a planilha do trimestre', n: 'drive', h: '30/09, 16:05', d: [178, 182], c: null, b: null }
